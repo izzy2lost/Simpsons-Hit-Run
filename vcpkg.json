@@ -1,0 +1,7 @@
+{
+  "dependencies": [
+    "libpng",
+    "openal-soft",
+    "ffmpeg"
+  ]
+}
