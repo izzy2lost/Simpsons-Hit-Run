@@ -28,7 +28,7 @@
 #include <main/game.h>
 #include <main/platform.h>
 #include <gameflow/gameflow.h>
-#include <presentation/fmvplayer/FMVplayer.h>
+#include <presentation/fmvplayer/fmvplayer.h>
 #include <input/inputmanager.h>
 #include <sound/soundmanager.h>
 #include <memory/srrmemory.h>
@@ -344,7 +344,7 @@ void FMVPlayer::Initialize( radMemoryAllocator Allocator )
 
     // Note that there is a problem if we start creating multiple movie players
     //(why would we ever do this???). The allocator is stored as a single global
-    //value in the movieplayer (movieplayer.cpp for instance) and it is set
+    //value in the movieplayer (binkmovieplayer.cpp for instance) and it is set
     //when you call ::radMoviePlayerCreate2(). So if you make multiple calls
     //the most recent allocator you pass is the one used.
     m_refIRadMoviePlayer = ::radMoviePlayerCreate2( Allocator );

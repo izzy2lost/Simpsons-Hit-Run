@@ -50,6 +50,30 @@
     <Filter Include="shadow\implementation">
       <UniqueIdentifier>{a676b9fe-4a0d-4e58-a14a-21ab93dc80ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pddi Headers">
+      <UniqueIdentifier>{2ceaddf9-f7ec-4588-93ef-1bd83cb7ef49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pddi Source">
+      <UniqueIdentifier>{b554b21c-714c-42ec-91ec-9b32fbf8ac75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pddi Source\base">
+      <UniqueIdentifier>{b5a5ced4-40c2-4a39-b425-81c64c2884a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pddi Headers\base">
+      <UniqueIdentifier>{b7141d44-b2da-45d3-a700-744ed9a200b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pddi Source\dx8">
+      <UniqueIdentifier>{87eca145-e625-4e45-9247-1cde64ee953c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pddi Headers\dx8">
+      <UniqueIdentifier>{d67f1d2c-e913-45ec-9e8f-0d269fb4851e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pddi Source\gl">
+      <UniqueIdentifier>{ce648793-27fe-4f37-b5eb-f3589e043ccf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pddi Headers\gl">
+      <UniqueIdentifier>{f35bb267-cc9c-49e5-88ff-834a8f763337}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="p3d\anim\animate.cpp">
@@ -354,6 +378,57 @@
     </ClCompile>
     <ClCompile Include="p3d\vertexlist.cpp">
       <Filter>Core Source</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\base\basecontext.cpp">
+      <Filter>Pddi Source\base</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\base\baseshader.cpp">
+      <Filter>Pddi Source\base</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\base\font.cpp">
+      <Filter>Pddi Source\base</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\base\pddiobj.cpp">
+      <Filter>Pddi Source\base</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\dx8\context.cpp">
+      <Filter>Pddi Source\dx8</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\dx8\device.cpp">
+      <Filter>Pddi Source\dx8</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\dx8\display.cpp">
+      <Filter>Pddi Source\dx8</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\dx8\prim.cpp">
+      <Filter>Pddi Source\dx8</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\dx8\primstream.cpp">
+      <Filter>Pddi Source\dx8</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\dx8\state.cpp">
+      <Filter>Pddi Source\dx8</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\dx8\texture.cpp">
+      <Filter>Pddi Source\dx8</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\dx8\util.cpp">
+      <Filter>Pddi Source\dx8</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\dx8\vertprog.cpp">
+      <Filter>Pddi Source\dx8</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\gl\glcon.cpp">
+      <Filter>Pddi Source\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\gl\gldev.cpp">
+      <Filter>Pddi Source\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\gl\glmat.cpp">
+      <Filter>Pddi Source\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\gl\gltex.cpp">
+      <Filter>Pddi Source\gl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -722,6 +797,66 @@
     </ClInclude>
     <ClInclude Include="p3d\array.hpp">
       <Filter>Core Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\base\basecontext.hpp">
+      <Filter>Pddi Headers\base</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\base\baseshader.hpp">
+      <Filter>Pddi Headers\base</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\base\basetype.hpp">
+      <Filter>Pddi Headers\base</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\base\debug.hpp">
+      <Filter>Pddi Headers\base</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\base\font.hpp">
+      <Filter>Pddi Headers\base</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\base\romans.h">
+      <Filter>Pddi Headers\base</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\dx8\context.hpp">
+      <Filter>Pddi Headers\dx8</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\dx8\device.hpp">
+      <Filter>Pddi Headers\dx8</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\dx8\direct3d.hpp">
+      <Filter>Pddi Headers\dx8</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\dx8\display.hpp">
+      <Filter>Pddi Headers\dx8</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\dx8\prim.hpp">
+      <Filter>Pddi Headers\dx8</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\dx8\primstream.hpp">
+      <Filter>Pddi Headers\dx8</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\dx8\state.hpp">
+      <Filter>Pddi Headers\dx8</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\dx8\texture.hpp">
+      <Filter>Pddi Headers\dx8</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\dx8\util.hpp">
+      <Filter>Pddi Headers\dx8</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\dx8\vertprog.hpp">
+      <Filter>Pddi Headers\dx8</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\gl\glcon.hpp">
+      <Filter>Pddi Headers\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\gl\gldev.hpp">
+      <Filter>Pddi Headers\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\gl\glmat.hpp">
+      <Filter>Pddi Headers\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\gl\gltex.hpp">
+      <Filter>Pddi Headers\gl</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

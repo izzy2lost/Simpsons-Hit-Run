@@ -1,4 +1,0 @@
-with scrTstClassEvent named Event1
-{
-    InvokeEvent (  )
-}
