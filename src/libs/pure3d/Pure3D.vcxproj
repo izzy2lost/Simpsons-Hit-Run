@@ -91,7 +91,7 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Lib>
-      <OutputFile>../lib/pure3dwd.lib</OutputFile>
+      <OutputFile>lib/pure3dwd.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <ResourceCompile>
@@ -145,7 +145,7 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Lib>
-      <OutputFile>../lib/pure3dwr.lib</OutputFile>
+      <OutputFile>lib/pure3dwr.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <ResourceCompile>

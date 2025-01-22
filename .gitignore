@@ -1,3 +1,10 @@
+# Visual Studio files
+.vs/
+*.vcxproj.user
+
+# VCPkg files
+vcpkg_installed/
+
 # Prerequisites
 *.d
 *.log
@@ -34,13 +41,91 @@
 *.out
 *.app
 
-# Visual Studio
-.vs/
+# Project Build Files - lol probably can do wildcard here but whatever
 
-# VCPkg
-vcpkg_installed/
+# Game
+build/
 
-# Build Output
-Release/
-Debug/
-Tune/
+# Choreo
+src/libs/choreo/[Rr]elease/
+src/libs/choreo/[Dd]ebug/
+src/libs/choreo/[Tt]une/
+src/libs/choreo/lib/
+src/libs/choreo/obj/
+
+# Poser
+src/libs/poser/[Rr]elease/
+src/libs/poser/[Dd]ebug/
+src/libs/poser/[Tt]une/
+src/libs/poser/lib/
+src/libs/poser/obj/
+
+# Pure3D
+src/libs/pure3d/[Rr]elease/
+src/libs/pure3d/[Dd]ebug/
+src/libs/pure3d/[Tt]une/
+src/libs/pure3d/lib/
+src/libs/pure3d/obj/
+
+# RadContent
+src/libs/radcontent/[Rr]elease/
+src/libs/radcontent/[Dd]ebug/
+src/libs/radcontent/[Tt]une/
+src/libs/radcontent/lib/
+src/libs/radcontent/obj/
+
+# RadCore
+src/libs/radcore/[Rr]elease/
+src/libs/radcore/[Dd]ebug/
+src/libs/radcore/[Tt]une/
+src/libs/radcore/lib/
+src/libs/radcore/obj/
+
+# RadMath
+src/libs/radmath/[Rr]elease/
+src/libs/radmath/[Dd]ebug/
+src/libs/radmath/[Tt]une/
+src/libs/radmath/lib/
+src/libs/radmath/obj/
+
+# RadMovie
+src/libs/radmovie/[Rr]elease/
+src/libs/radmovie/[Dd]ebug/
+src/libs/radmovie/[Tt]une/
+src/libs/radmovie/lib/
+src/libs/radmovie/obj/
+
+# RadMusic
+src/libs/radmusic/[Rr]elease/
+src/libs/radmusic/[Dd]ebug/
+src/libs/radmusic/[Tt]une/
+src/libs/radmusic/lib/
+src/libs/radmusic/obj/
+
+# RadScript
+src/libs/radscript/[Rr]elease/
+src/libs/radscript/[Dd]ebug/
+src/libs/radscript/[Tt]une/
+src/libs/radscript/lib/
+src/libs/radscript/obj/
+
+# RadSound
+src/libs/radsound/[Rr]elease/
+src/libs/radsound/[Dd]ebug/
+src/libs/radsound/[Tt]une/
+src/libs/radsound/lib/
+src/libs/radsound/obj/
+
+# Scrooby
+src/libs/scrooby/[Rr]elease/
+src/libs/scrooby/[Dd]ebug/
+src/libs/scrooby/[Tt]une/
+src/libs/scrooby/lib/
+src/libs/scrooby/obj/
+
+# Sim
+src/libs/sim/[Rr]elease/
+src/libs/sim/[Dd]ebug/
+src/libs/sim/[Tt]une/
+src/libs/sim/lib/
+src/libs/sim/obj/

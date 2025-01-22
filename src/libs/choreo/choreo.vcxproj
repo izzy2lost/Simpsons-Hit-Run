@@ -90,7 +90,7 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Lib>
-      <OutputFile>..\..\lib\choreowr.lib</OutputFile>
+      <OutputFile>lib\choreowr.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <ResourceCompile>

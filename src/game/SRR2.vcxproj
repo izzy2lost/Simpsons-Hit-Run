@@ -57,18 +57,18 @@
     <_ProjectFileVersion>17.0.35309.182</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>.\Debug\</OutDir>
-    <IntDir>.\Debug\</IntDir>
+    <OutDir>..\..\build\Debug\</OutDir>
+    <IntDir>..\..\build\Debug\</IntDir>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>.\Release\</OutDir>
-    <IntDir>.\Release\</IntDir>
+    <OutDir>..\..\build\Release\</OutDir>
+    <IntDir>..\..\build\Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">
-    <OutDir>.\Tune\</OutDir>
-    <IntDir>.\Tune\</IntDir>
+    <OutDir>..\..\build\Tune\</OutDir>
+    <IntDir>..\..\build\Tune\</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
@@ -86,10 +86,10 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pchsrr2.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\Debug/SRR2.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
-      <ObjectFileName>.\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\build\Debug\SRR2.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\build\Debug\</AssemblerListingLocation>
+      <ObjectFileName>..\..\build\Debug\</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\build\Debug\</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -103,7 +103,7 @@
       <OutputFile>..\..\build\win\Simpsons-Debug.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\Debug/SRR2wd.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>..\..\build\Debug\SRR2wd.pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -111,7 +111,7 @@
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MkTypLibCompatible>true</MkTypLibCompatible>
-      <TypeLibraryName>.\Debug/srr2w.tlb</TypeLibraryName>
+      <TypeLibraryName>..\..\build\Debug\srr2w.tlb</TypeLibraryName>
     </Midl>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -133,10 +133,10 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pchsrr2.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\Release/SRR2.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Release/</AssemblerListingLocation>
-      <ObjectFileName>.\Release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Release/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\build\Release\SRR2.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\build\Release\</AssemblerListingLocation>
+      <ObjectFileName>..\..\build\Release\</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\build\Release\</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat />
       <CompileAs>Default</CompileAs>
@@ -147,7 +147,7 @@
       <OutputFile>..\..\build\win\Simpsons.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\Release/SRR2xr.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>..\..\build\Release\SRR2xr.pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -170,10 +170,10 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pchsrr2.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\Tune/SRR2.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Tune/</AssemblerListingLocation>
-      <ObjectFileName>.\Tune/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Tune/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\build\Tune\SRR2.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\build\Tune\</AssemblerListingLocation>
+      <ObjectFileName>..\..\build\Tune\</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\build\Tune\</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -185,7 +185,7 @@
       <OutputFile>..\..\build\win\Simpsons-Tune.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\Tune/SRR2wt.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>..\..\build\Tune\SRR2wt.pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
