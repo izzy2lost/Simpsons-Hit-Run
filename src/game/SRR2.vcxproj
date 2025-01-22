@@ -1436,7 +1436,7 @@
     <ClInclude Include="worldsim\worldcollisionsolveragent.h" />
     <ClInclude Include="worldsim\worldobject.h" />
     <ClInclude Include="worldsim\worldphysicsmanager.h" />
-    <ClInclude Include="..\resources\win\resource.h" />
+    <!--<ClInclude Include="..\resources\win\resource.h" />-->
   </ItemGroup>
   <!--<ItemGroup>
     <ResourceCompile Include="..\resources\win\SRR2.rc" />
@@ -1461,6 +1461,10 @@
       <Project>{b5c1c3a8-11bc-4d82-a7eb-a85b22db74ea}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+	<ProjectReference Include="..\libs\radcore\radcore.vcxproj">
+	  <Project>{3772a735-0353-433a-a8a2-eb45c84f9139}</Project>
+	  <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+	</ProjectReference>
     <ProjectReference Include="..\libs\radmath\radmath.vcxproj">
       <Project>{906e914f-eb63-4b12-9f07-00a727472080}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
