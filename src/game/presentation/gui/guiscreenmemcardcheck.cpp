@@ -31,10 +31,6 @@
 #include <screen.h>
 #include <text.h>
 
-#ifdef RAD_GAMECUBE
-#include <main/gamecube_extras/gcmanager.h>
-#endif
-
 //===========================================================================
 // Global Data, Local Data, Local Classes
 //===========================================================================
@@ -94,10 +90,6 @@ CGuiScreenMemCardCheck::CGuiScreenMemCardCheck
     m_messageText = foreground->GetText( "CheckingMemoryCards" );
     rAssert( m_messageText );
     m_messageText->SetTextMode( Scrooby::TEXT_WRAP );
-
-#ifdef RAD_GAMECUBE
-    m_messageText->SetIndex( CHECKING_MEMCARDS_GC );
-#endif
 
 #ifdef RAD_PS2
     m_messageText->SetIndex( CHECKING_MEMCARDS_PS2 );
@@ -183,7 +175,7 @@ void CGuiScreenMemCardCheck::HandleMessage
 	}
     else if (message == GUI_MSG_PROMPT_UPDATE)
     {
-#if defined( RAD_GAMECUBE ) || defined( RAD_PS2 )
+#if defined( RAD_PS2 )
         // detect memcard unplugged in prompt   
         // update so status up to date
         GetMemoryCardManager()->Update( param1 );
@@ -236,40 +228,7 @@ void CGuiScreenMemCardCheck::HandleMessage
 				case (CGuiMenuPrompt::RESPONSE_CONTINUE):
 				case (CGuiMenuPrompt::RESPONSE_CONTINUE_WITHOUT_SAVE):
 				{
-	/*
-					if( GetMemoryCardManager()->GetMemcardCheckingState() != MemoryCardManager::MEMCARD_CHECKING_DONE )
-					{
-						rAssert( m_messageText );
-	#ifdef RAD_GAMECUBE
-						m_messageText->SetIndex( CHECKING_MEMCARD_B_GC );
-	#endif
-	#ifdef RAD_PS2
-						m_messageText->SetIndex( CHECKING_MEMCARD_2_PS2 );
-	#endif
-						this->ReloadScreen();
-					}
-					else
-	*/
-                    this->OnContinue();
-
-					break;
-				}
-				case (CGuiMenuPrompt::RESPONSE_NO):
-				case (CGuiMenuPrompt::RESPONSE_RETRY):
-				{
-	/*
-					GetMemoryCardManager()->ResetMemoryCardCheck();
-
-					rAssert( m_messageText );
-	#ifdef RAD_GAMECUBE
-					m_messageText->SetIndex( CHECKING_MEMCARDS_GC );
-	#endif
-	#ifdef RAD_PS2
-					m_messageText->SetIndex( CHECKING_MEMCARDS_PS2 );
-	#endif
-	*/
 					this->ReloadScreen();
-
 					break;
 				}
                 case (CGuiMenuPrompt::RESPONSE_FORMAT_GC):
@@ -282,16 +241,10 @@ void CGuiScreenMemCardCheck::HandleMessage
 				}
 				case (CGuiMenuPrompt::RESPONSE_MANAGE_MEMCARDS):
 				{
-                    #ifdef RAD_GAMECUBE
-                        GCManager::GetInstance()->Reset();
-                        GCManager::GetInstance()->PerformReset( true, true );
-                    #else
-                        IRadMemoryAllocator* allocator = GetAllocator( GMA_PERSISTENT );
-                        IRadMemoryHeap* staticHeap = dynamic_cast< IRadMemoryHeap* >( allocator );
-                        staticHeap->AllowFreeing( true );
-                        GetGame()->GetPlatform()->LaunchDashboard();
-                    #endif
-
+                    IRadMemoryAllocator* allocator = GetAllocator( GMA_PERSISTENT );
+                    IRadMemoryHeap* staticHeap = dynamic_cast< IRadMemoryHeap* >( allocator );
+                    staticHeap->AllowFreeing( true );
+                    GetGame()->GetPlatform()->LaunchDashboard();
 					break;
 				}
 				default:
@@ -384,27 +337,7 @@ CGuiScreenMemCardCheck::OnMemoryCardCheckDone( radFileError errorCode,
 			format_response = ERROR_RESPONSE_FORMAT;
 #endif
 
-#ifdef RAD_GAMECUBE
-        if( mediaState == IRadDrive::MediaInfo::MediaEncodingErr )
-        {
-			format_response = ERROR_RESPONSE_FORMAT;
-        }
-#endif
-
         rAssert( errorMessage != -1 );
-
-#ifdef RAD_GAMECUBE
-		int manage_response = ERROR_RESPONSE_MANAGE;
-        
-        if (mediaState == IRadDrive::MediaInfo::MediaNotPresent 
-            || mediaState == IRadDrive::MediaInfo::MediaInvalid
-            || mediaState == IRadDrive::MediaInfo::MediaDamaged)
-            manage_response = 0; // no manage when no memory card
-		if (format_response)
-			manage_response = 0; // don't show both format and manage
-        m_guiManager->DisplayErrorPrompt( errorMessage, this, 
-			format_response | manage_response | ERROR_RESPONSE_CONTINUE_WITHOUT_SAVE | ERROR_RESPONSE_RETRY );
-#endif // RAD_GAMECUBE
 
 #ifdef RAD_PS2
         // add retry if card full, or no card

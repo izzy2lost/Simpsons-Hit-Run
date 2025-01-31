@@ -10,10 +10,6 @@
 #endif
 #include "../../radsound/radicaladpcm.hpp"
 
-#ifdef RAD_GAMECUBE
-    #include "audioformatgcn.hpp"
-#endif
-
 //
 // XADPCM 36 byte block (36*2 stereo) ( 64 samples/block ) Compression ratio: 9/32
 //
@@ -59,15 +55,6 @@ void radSoundHalAudioFormat::Initialize(
 		m_FrameSizeInSamples = 64.0f;
 		m_SampleSizeInBits = ::radSoundUIntToFloat( bitResolution * channels );
 	}
-	
-	#ifdef RAD_GAMECUBE
-		else if ( m_Encoding == IRadSoundHalAudioFormat::GCNADPCM )
-		{
-			m_FrameSizeInBytes   = ::radSoundUIntToFloat( GCN_ADPCM_BYTES_PER_FRAME * channels );
-			m_FrameSizeInSamples = ::radSoundUIntToFloat( GCN_ADPCM_SAMPLES_PER_FRAME );
-			m_SampleSizeInBits = ::radSoundUIntToFloat( bitResolution * channels );
-		}
-	#endif
 
     #ifdef RAD_PS2
 	    else if ( m_Encoding == IRadSoundHalAudioFormat::VAG )

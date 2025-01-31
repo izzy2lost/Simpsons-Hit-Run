@@ -348,12 +348,6 @@ void CGuiScreenLoadGame::HandleMessage
 
                 if (corrupt)
                 {
-#ifdef RAD_GAMECUBE
-                    int errorMessage = GetErrorMessageIndex( DataCorrupt, ERROR_DURING_LOADING );
-                    m_guiManager->DisplayErrorPrompt( errorMessage, this,
-                                                      ERROR_RESPONSE_CONTINUE | ERROR_RESPONSE_RETRY | ERROR_RESPONSE_DELETE );
-                    m_operation = LOAD;
-#endif
 #ifdef RAD_PS2
                     rAssertMsg( false, "Corrupted save games should not have been selectable!" );
 #endif
@@ -365,10 +359,6 @@ void CGuiScreenLoadGame::HandleMessage
                 }
                 else
                 {
-    #ifdef RAD_GAMECUBE
-                    m_guiManager->DisplayPrompt( PROMPT_LOAD_CONFIRM_GC, this );
-    #endif
-
     #ifdef RAD_PS2
                     m_guiManager->DisplayPrompt( PROMPT_LOAD_CONFIRM_PS2, this );
     #endif
@@ -433,38 +423,6 @@ CGuiScreenLoadGame::OnLoadGameComplete( radFileError errorCode )
 	else
     {
         int errorMessage = GetErrorMessageIndex( errorCode, ERROR_DURING_LOADING );
-
-#ifdef RAD_GAMECUBE
-        switch( errorCode )
-        {
-            case Success:
-            {
-                rAssert( false );
-                break;
-            }
-            case MediaEncodingErr:
-            case MediaNotFormatted:
-            {
-                m_guiManager->DisplayErrorPrompt( errorMessage, this,
-                                                  ERROR_RESPONSE_CONTINUE | ERROR_RESPONSE_RETRY | ERROR_RESPONSE_FORMAT );
-
-            }
-            case DataCorrupt:
-            {
-                m_guiManager->DisplayErrorPrompt( errorMessage, this,
-                                                  ERROR_RESPONSE_CONTINUE | ERROR_RESPONSE_RETRY | ERROR_RESPONSE_DELETE );
-
-                break;
-            }
-            default:
-            {
-                m_guiManager->DisplayErrorPrompt( errorMessage, this,
-                                                  ERROR_RESPONSE_CONTINUE | ERROR_RESPONSE_RETRY );
-
-                break;
-            }
-        }
-#endif // RAD_GAMECUBE
 
 #ifdef RAD_PS2
         switch( errorCode )
@@ -574,16 +532,7 @@ CGuiScreenLoadGame::HandleErrorResponse( CGuiMenuPrompt::ePromptResponse respons
             break;
         }
 
-#ifdef RAD_GAMECUBE
-        case (CGuiMenuPrompt::RESPONSE_DELETE):
-        {
-            m_guiManager->DisplayPrompt( PROMPT_LOAD_DELETE_CORRUPT_GC, this );
-
-            break;
-        }
-#endif // RAD_GAMECUBE
-
-#if defined( RAD_GAMECUBE ) || defined( RAD_PS2 )
+#if defined( RAD_PS2 )
         case (CGuiMenuPrompt::RESPONSE_YES):
         {
             // YES to delete corrupted file
@@ -618,7 +567,7 @@ CGuiScreenLoadGame::HandleErrorResponse( CGuiMenuPrompt::ePromptResponse respons
 
             break;
         }
-#endif // RAD_GAMECUBE || RAD_PS2
+#endif // RAD_PS2
 
         case (CGuiMenuPrompt::RESPONSE_FORMAT_GC):
         case (CGuiMenuPrompt::RESPONSE_FORMAT_XBOX):
@@ -667,26 +616,10 @@ void CGuiScreenLoadGame::InitIntro()
     IRadDrive::MediaInfo::MediaState mediaState;
     if( s_forceGotoMemoryCardScreen || !GetMemoryCardManager()->IsCurrentDriveReady( true, &unformatted, &mediaState ) )
     {
-		if (unformatted && !s_forceGotoMemoryCardScreen)
-		{
-#ifdef RAD_GAMECUBE 
-            int errorMessage = GetErrorMessageIndex( mediaState );
-            m_guiManager->DisplayErrorPrompt( errorMessage,
-                                              this,
-                                              ERROR_RESPONSE_CONTINUE | ERROR_RESPONSE_RETRY | ERROR_RESPONSE_FORMAT );
+		this->GotoMemoryCardScreen();
+		m_numTransitionsPending = -1; // disable all transitions
 
-			m_numTransitionsPending = -1; // disable all transitions
-
-            return;
-#endif
-		}
-		else
-		{
-			this->GotoMemoryCardScreen();
-			m_numTransitionsPending = -1; // disable all transitions
-
-            return;
-		}
+        return;
     }
 
     this->UpdateCurrentMemoryDevice();
@@ -731,9 +664,6 @@ void CGuiScreenLoadGame::InitIntro()
 #endif
 #ifdef RAD_PS2
                 corruptSlot.ReadUnicode( GetTextBibleString( "CORRUPT_SLOT_(PS2)" ) );
-#endif
-#ifdef RAD_GAMECUBE
-                corruptSlot.ReadUnicode( GetTextBibleString( "CORRUPT_SLOT_(GC)" ) );
 #endif
                 slotText->SetString(0,corruptSlot);
             }
@@ -866,10 +796,6 @@ void CGuiScreenLoadGame::LoadGame()
 {
 	m_operation = LOAD;
 
-#ifdef RAD_GAMECUBE
-    m_guiManager->DisplayMessage( CGuiScreenMessage::MSG_ID_LOADING_GAME_GC, this );
-#endif
-
 #ifdef RAD_PS2
     m_guiManager->DisplayMessage( CGuiScreenMessage::MSG_ID_LOADING_GAME_PS2, this );
 #endif
@@ -1001,15 +927,7 @@ void
 CGuiScreenAutoLoad::LoadGame()
 {
 	m_operation = LOAD;
-
-#ifdef RAD_GAMECUBE
-    // TC: GC does not require an auto-loading screen
-    //
-//    m_guiManager->DisplayMessage( CGuiScreenMessage::MSG_ID_AUTO_LOADING_GAME_GC, this );
-    GetGameDataManager()->LoadGame( m_currentSlot, this );
-    GetGameDataManager()->SetMinimumLoadSaveTime( 0 );
-#endif
-
+    
 #ifdef RAD_PS2
     m_guiManager->DisplayMessage( CGuiScreenMessage::MSG_ID_AUTO_LOADING_GAME_PS2, this );
     GetGameDataManager()->SetMinimumLoadSaveTime( AUTO_LOAD_MINIMUM_DISPLAY_TIME );

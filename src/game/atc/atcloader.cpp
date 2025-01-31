@@ -86,18 +86,10 @@ tEntity* ATCLoader::LoadObject(tChunkFile* f, tEntityStore* store)
     unsigned long numrows = f->GetUInt();
     
     //creating ATCTable
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PushHeap( GMA_PERSISTENT );
 
     p_AttributeRow = new AttributeRow [numrows];
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PopHeap( GMA_PERSISTENT );
 
     //populating ATCTable
     //read in the array row until there is no more rows

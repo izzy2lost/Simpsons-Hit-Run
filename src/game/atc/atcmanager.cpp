@@ -58,20 +58,12 @@ ATCManager* ATCManager::CreateInstance()
 {
     rAssert( spInstance == NULL );
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PushHeap( GMA_PERSISTENT );
 
     spInstance = new ATCManager;
     rAssert( spInstance );
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PopHeap( GMA_PERSISTENT );
     
     return spInstance;
 }

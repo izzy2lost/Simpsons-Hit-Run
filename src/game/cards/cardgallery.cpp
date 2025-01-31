@@ -130,19 +130,11 @@ CardList::Empty()
 CardGallery* CardGallery::CreateInstance()
 {
 MEMTRACK_PUSH_GROUP( "CardGallery" );
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PushHeap( GMA_PERSISTENT );
         spInstance = new(GMA_PERSISTENT) CardGallery;
     rAssert( spInstance != NULL );
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PopHeap( GMA_PERSISTENT );
  MEMTRACK_POP_GROUP( "CardGallery" );
     return spInstance;
 }
@@ -203,20 +195,12 @@ CardGallery::CardGallery()
 :   m_cardsDB( NULL ),
     m_numCollectedCards( 0 )
 {
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PushHeap( GMA_GC_VMM );
-#else
     HeapMgr()->PushHeap( GMA_PERSISTENT );
-#endif
 
     m_cardsDB = new CardsDB();
     rAssert( m_cardsDB );
 
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PopHeap( GMA_GC_VMM );
-#else
     HeapMgr()->PopHeap( GMA_PERSISTENT );
-#endif
 }
 
 //===========================================================================

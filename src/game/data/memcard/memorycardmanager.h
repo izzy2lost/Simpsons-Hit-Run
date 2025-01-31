@@ -32,11 +32,6 @@ namespace LoadingManager
 
 #include <radfile.hpp>
 
-#ifdef RAD_GAMECUBE
-    #include <charPipeline/texPalette.h>
-    #include <dolphin/dvd/DVDBanner.h>
-#endif
-
 //===========================================================================
 // Forward References
 //===========================================================================
@@ -176,13 +171,6 @@ private:
     void DetermineSavedGameCreationSize( unsigned int driveIndex );
     void OnMemoryCardCheckCompleted();
 
-#ifdef RAD_GAMECUBE
-    void UnpackTexPalette( TEXPalettePtr pal );
-
-    void LoadMemcardInfo_GC( GameMemoryAllocator heap );
-    void UnloadMemcardInfo_GC();
-#endif
-
 #ifdef RAD_PS2
     void LoadMemcardInfo_PS2( GameMemoryAllocator heap );
     void UnloadMemcardInfo_PS2();
@@ -202,20 +190,6 @@ private:
 
     eState m_currentState;
     unsigned int m_numDrivesOpened;
-
-#ifdef RAD_GAMECUBE
-    enum eMemcardInfoLoadState
-    {
-        MEMCARD_INFO_NOT_LOADED,
-        MEMCARD_INFO_LOADING_BANNER,
-        MEMCARD_INFO_LOADING_TEXPALETTE,
-
-        MEMCARD_INFO_LOAD_COMPLETED
-    };
-
-    DVDBanner* m_dvdBanner;
-    TEXPalette* m_texPalette;
-#endif
 
 #ifdef RAD_PS2
     enum eMemcardInfoLoadState

@@ -60,10 +60,6 @@
 #include <worldsim/worldphysicsmanager.h>
 #include <worldsim/character/charactermanager.h>
 
-#ifdef RAD_GAMECUBE
-    #include <main/gamecube_extras/gcmanager.h>
-#endif
-
 #ifdef RAD_WIN32
     #include <main/win32platform.h>
     #include <data/config/gameconfigmanager.h>
@@ -302,11 +298,6 @@ void BootupContext::OnStart( ContextEnum previousContext )
     GetCharacterSheetManager()->InitCharacterSheet();
 
     GetPresentationManager()->InitializePlayerDrawable();
-
-#ifdef RAD_GAMECUBE
-    //Initialize the GCManager's timers for testing reset and such.
-    GCManager::GetInstance()->Init();
-#endif
 
     GetWorldPhysicsManager()->Init();
 

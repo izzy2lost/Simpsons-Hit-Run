@@ -30,15 +30,6 @@ struct CheatInputMapping
 
 static const CheatInputMapping CHEAT_INPUT_MAPPINGS[] =
 {
-#ifdef RAD_GAMECUBE
-    { "A",              CHEAT_INPUT_0 },
-    { "B",              CHEAT_INPUT_1 },
-    { "X",              CHEAT_INPUT_2 },
-    { "Y",              CHEAT_INPUT_3 },
-    { "TriggerL",       CHEAT_INPUT_LTRIGGER },
-    { "TriggerR",       CHEAT_INPUT_RTRIGGER },
-#endif
-
 #ifdef RAD_PS2
     { "X",              CHEAT_INPUT_0 },
     { "Circle",         CHEAT_INPUT_1 },

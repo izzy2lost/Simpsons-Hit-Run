@@ -254,19 +254,11 @@ ActionButtonManager*  ActionButtonManager::CreateInstance( void )
 {
 	rAssertMsg( spActionButtonManager == 0, "ActionButtonManager already created.\n" );
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PushHeap( GMA_PERSISTENT );
 
 	spActionButtonManager = new ActionButtonManager;
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PopHeap( GMA_PERSISTENT );
 
     return( spActionButtonManager );
 }
@@ -304,11 +296,7 @@ void ActionButtonManager::DestroyInstance( void )
 {
     rAssert( spActionButtonManager != NULL );
 
-    #ifdef RAD_GAMECUBE
-        delete( GMA_GC_VMM, spActionButtonManager );
-    #else
-        delete( GMA_PERSISTENT, spActionButtonManager );
-    #endif
+    delete( GMA_PERSISTENT, spActionButtonManager );
 
     spActionButtonManager = NULL;
 }

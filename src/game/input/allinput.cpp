@@ -5,7 +5,7 @@
 #include <input/usercontroller.cpp>
 #include <input/rumbleeffect.cpp>
 
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2)
+#if defined(RAD_PS2)
 #include <input/steeringspring.cpp>
 #include <input/basedamper.cpp>
 #include <input/forceeffect.cpp>
@@ -15,6 +15,4 @@
 
 #ifdef RAD_PS2
 #include <input/rumbleps2.cpp>
-#elif defined( RAD_GAMECUBE )
-#include <input/rumblegc.cpp>
 #endif

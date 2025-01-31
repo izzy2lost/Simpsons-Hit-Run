@@ -21,12 +21,6 @@
 #include <presentation/gui/guisystem.h>
 #include <presentation/gui/ingame/guiscreenhud.h>
 
-#ifdef RAD_GAMECUBE
-#include <main/gamecube_extras/gcmanager.h>
-#include <main/gcplatform.h>
-
-#endif
-
 //===========================================================================
 // Local Constants, Typedefs, and Macros
 //===========================================================================
@@ -207,10 +201,6 @@ SurveillanceCam::SetPosition( const rmt::Vector& position )
 //=============================================================================
 void SurveillanceCam::OnRegisterDebugControls()
 {
-#ifdef RAD_GAMECUBE
-    GCManager::GetInstance()->ChangeResolution( WindowSizeX / 8, WindowSizeY / 8, WindowBPP );
-#endif
-
     // Hide the HUD Map.
     //
     GetGuiSystem()->HandleMessage( GUI_MSG_HIDE_HUD_OVERLAY, HUD_MAP );
@@ -228,10 +218,6 @@ void SurveillanceCam::OnRegisterDebugControls()
 //=============================================================================
 void SurveillanceCam::OnUnregisterDebugControls()
 {
-#ifdef RAD_GAMECUBE
-    GCManager::GetInstance()->ChangeResolution( WindowSizeX, WindowSizeY, WindowBPP );
-#endif
-
     // Show the HUD Map.
     //
     GetGuiSystem()->HandleMessage( GUI_MSG_SHOW_HUD_OVERLAY, HUD_MAP );

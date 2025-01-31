@@ -1015,7 +1015,6 @@ January 24, 2002
       makefile and Project Settings.  The changes are as follows:-
 
        - PS2EE -> RAD_PS2
-       - GCN -> RAD_GAMECUBE
        - WIN32 -> RAD_WIN32
        - _XBOX -> RAD_XBOX
        - RELEASE -> RAD_RELEASE

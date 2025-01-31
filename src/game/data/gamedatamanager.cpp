@@ -529,15 +529,6 @@ GameDataManager::SaveGame( unsigned int slot, GameDataSaveCallback* callback )
 
     // update saved game title in memcard info before saving
     //
-#ifdef RAD_GAMECUBE
-    char levelMissionInfo[ 32 ];
-    m_saveGameInfoHandler->FormatLevelMissionInfo( levelMissionInfo );
-
-    char savedGameTitle[ 32 ];
-    sprintf( savedGameTitle, "Slot %d %s", slot + 1, levelMissionInfo );
-
-    GetMemoryCardManager()->UpdateMemcardInfo( savedGameTitle );
-#endif
 #ifdef RAD_PS2
     char levelMissionInfo[ 32 ];
     m_saveGameInfoHandler->FormatLevelMissionInfo( levelMissionInfo );

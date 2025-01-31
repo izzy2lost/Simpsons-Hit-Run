@@ -120,11 +120,7 @@ tEntity* LocatorLoader::LoadObject(tChunkFile* f, tEntityStore* store)
 {
 MEMTRACK_PUSH_GROUP( "Locator Loading" );
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap (GMA_GC_VMM);
-    #else
-        HeapMgr()->PushHeap (GMA_LEVEL_OTHER);
-    #endif
+    HeapMgr()->PushHeap (GMA_LEVEL_OTHER);
 
     char name[256];
     f->GetPString( name );
@@ -225,10 +221,6 @@ MEMTRACK_PUSH_GROUP( "Locator Loading" );
             memcpy( zone, elements, numElements * 4 );
             zone[numElements * 4] = '\0';
 
-#ifdef RAD_GAMECUBE
-            Swap( zone, zone, numElements * 4 + 4);
-#endif
-
             eventloc->SetZone( zone );
 
             delete[] zone;
@@ -266,9 +258,6 @@ MEMTRACK_PUSH_GROUP( "Locator Loading" );
                     char* carName = new char[(numElements - 2) * 4 + 4];
                     memcpy( carName, &elements[2], (numElements - 2) * 4 );
                     carName[(numElements - 2) * 4] = '\0'; 
-#ifdef RAD_GAMECUBE
-                    Swap( carName, carName, (numElements - 2) * 4 + 4 );
-#endif
                     
                     //Do something with the name
                     GetPCM().AddFreeCar( carName, carStartloc );
@@ -339,9 +328,6 @@ MEMTRACK_PUSH_GROUP( "Locator Loading" );
             char charData[256];
             memcpy( charData, elements, numElements * 4 );
 
-            #ifdef RAD_GAMECUBE
-                Swap( charData, charData, numElements * 4 );
-            #endif
             unsigned int chari = 0;
             for ( chari = 0; chari < length; ++chari )
             {
@@ -420,10 +406,6 @@ MEMTRACK_PUSH_GROUP( "Locator Loading" );
 
             char charData[256];
             memcpy( charData, elements, (numElements - 2) * 4 );
-
-#ifdef RAD_GAMECUBE
-            Swap( charData, charData, (numElements - 2) * 4 );
-#endif
 
             //Go through the charData until we find all 3 strings.
             const unsigned int numStrings = 3;
@@ -778,11 +760,7 @@ MEMTRACK_PUSH_GROUP( "Locator Loading" );
 
 MEMTRACK_POP_GROUP("Locator Loading");
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap (GMA_GC_VMM);
-    #else
-        HeapMgr()->PopHeap (GMA_LEVEL_OTHER);
-    #endif
+    HeapMgr()->PopHeap (GMA_LEVEL_OTHER);
 
     //
     // Some locators should not be added to the inventory
@@ -893,13 +871,8 @@ bool LocatorLoader::LoadTriggerVolume( tChunkFile* f,
     bool good = true;
 
     MEMTRACK_PUSH_GROUP("Trigger Volume Loading");
-
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap (GMA_LEVEL_OTHER);
-    #endif
-
+    
+    HeapMgr()->PushHeap (GMA_LEVEL_OTHER);
 
     if( f->GetCurrentID() == SRR2::ChunkID::TRIGGER_VOLUME )
     {
@@ -991,11 +964,7 @@ bool LocatorLoader::LoadTriggerVolume( tChunkFile* f,
 
     MEMTRACK_POP_GROUP("Trigger Volume Loading");
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap (GMA_LEVEL_OTHER);
-    #endif
+    HeapMgr()->PopHeap (GMA_LEVEL_OTHER);
     return good;
 }
 

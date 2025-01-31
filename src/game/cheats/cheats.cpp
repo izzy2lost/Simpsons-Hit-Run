@@ -30,7 +30,6 @@
 
 [PLATFORM] [CHEAT_INPUT_0] [CHEAT_INPUT_1] [CHEAT_INPUT_2] [CHEAT_INPUT_3]
 
-GameCube    A               B               X               Y 
 PS2         X               Circle          Square          Triangle
 Xbox        A               B               X               Y
 

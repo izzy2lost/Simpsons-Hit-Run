@@ -32,9 +32,6 @@
 #ifdef RAD_PS2
     #include <eekernel.h>
 #endif
-#ifdef RAD_GAMECUBE
-    #include <os.h>
-#endif 
 
 #include <raddebug.hpp>
 #include <radthread.hpp>
@@ -62,9 +59,6 @@ static bool g_SystemInitialized = false;
 #endif
 #ifdef RAD_PS2
     static int              g_ExclusionObject;        
-#endif
-#ifdef RAD_GAMECUBE
-    static OSMutex          g_ExclusionObject;
 #endif
 
 //=============================================================================
@@ -102,10 +96,6 @@ void radThreadInitialize( unsigned int milliseconds )
     semaphoreParam.initCount = 1;
     g_ExclusionObject = CreateSema( &semaphoreParam );
 #endif
-
-#ifdef RAD_GAMECUBE
-    OSInitMutex( &g_ExclusionObject );
-#endif    
 
     g_SystemInitialized = true;
 
@@ -149,10 +139,6 @@ void radThreadTerminate( void )
     DeleteSema( g_ExclusionObject );
 #endif
 
-#ifdef RAD_GAMECUBE
-    // Nothing to do on the gamecube.
-#endif    
-
     g_SystemInitialized = false;
 }
 
@@ -183,10 +169,6 @@ void radThreadInternalLock( void )
     WaitSema( g_ExclusionObject );
 #endif
 
-#ifdef RAD_GAMECUBE
-    OSLockMutex( &g_ExclusionObject );
-#endif
-
 }
 
 //=============================================================================
@@ -214,10 +196,6 @@ void radThreadInternalUnlock( void )
 
 #ifdef RAD_PS2   
     SignalSema( g_ExclusionObject );
-#endif
-
-#ifdef RAD_GAMECUBE
-    OSUnlockMutex( &g_ExclusionObject );
 #endif
 
 }

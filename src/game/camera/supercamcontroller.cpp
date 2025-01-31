@@ -132,32 +132,6 @@ void SuperCamController::LoadControllerMappings( unsigned int controllerId )
     }
     #endif
 
-    #ifdef RAD_GAMECUBE
-    ClearMap(0);
-    Map( "AnalogTriggerL", zToggle, 0, controllerId );
-    Map( "A", A, 0, controllerId );
-    Map( "TriggerZ", toggleFirstPerson, 0, controllerId );
-
-    if ( Map( "Wheel", stickX, 0, controllerId ) )
-    {
-        //This is a wheel.  No right stickY
-        mIsWheel = true;
-
-        Map( "Gas", in, 0, controllerId );
-        Map( "Brake", out, 0, controllerId );
-        Map( "AnalogTriggerR", lookToggle, 0, controllerId );
-        Map( "DPadDown", altLookBack, 0, controllerId );
-    }
-    else
-    {
-        Map( "RightStickX", stickX, 0, controllerId );
-        Map( "RightStickY", stickY, 0, controllerId );
-        Map( "AnalogTriggerR", lookToggle, 0, controllerId );
-
-        Map( "LeftStickY", leftStickY, 0, controllerId );
-    }
-    #endif
-
     #ifdef RAD_WIN32
     ClearMap(0);
     Map( "CameraLeft", stickXdown, 0, controllerId );

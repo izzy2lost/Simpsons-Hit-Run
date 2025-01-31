@@ -10,7 +10,7 @@
 
 #include <main/commandlineoptions.h>
 
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2) || defined(RAD_WIN32)
+#if defined(RAD_PS2) || defined(RAD_WIN32)
 #include <input/basedamper.h>
 #include <input/steeringspring.h>
 #include <input/constanteffect.h>
@@ -64,15 +64,11 @@ const unsigned short gConstantDirection = 0;
 
 #endif
 
-#ifdef RAD_GAMECUBE
-const float GC_STEERING_FUDGE = 1.25f;
-#endif
-
 HumanVehicleController::HumanVehicleController( void )
 :
 mpMappable( 0 ),
 mControllerId( -1 ),
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2) || defined(RAD_WIN32)
+#if defined(RAD_PS2) || defined(RAD_WIN32)
 mSpring( NULL ),
 mDamper( NULL ),
 mConstantEffect( NULL ),
@@ -231,16 +227,10 @@ float HumanVehicleController::GetSteering( bool& isWheel ) const
     return value;
 #else
     //How do I tell if this is from a wheel or a stick?
-#ifdef RAD_GAMECUBE
-    //This is cheating.
-    isWheel = mpMappable->IsWheel();
-    return rmt::Clamp( mpMappable->GetButton( VehicleMappable::Steer )->GetValue() * GC_STEERING_FUDGE, -1.0f, 1.0f );
-#else
 #ifdef RAD_WIN32
     isWheel = GetInputManager()->GetController(mControllerId)->IsWheel();
 #endif
 	return mpMappable->GetButton( VehicleMappable::Steer )->GetValue();
-#endif
 
 #endif
 }
@@ -367,7 +357,7 @@ void HumanVehicleController::Update( float timeins )
     Vehicle* vehicle = GetVehicle();
     float speed = vehicle->GetSpeedKmh();
 
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2) || defined(RAD_WIN32)
+#if defined(RAD_PS2) || defined(RAD_WIN32)
     UserController* uc = NULL;
 
     //Set up the output points to default settings.
@@ -385,7 +375,7 @@ void HumanVehicleController::Update( float timeins )
     {
         uc = GetInputManager()->GetController( mControllerId );
     }
-#elif defined RAD_GAMECUBE || defined(RAD_WIN32)
+#elif defined(RAD_WIN32)
     uc = GetInputManager()->GetController( mControllerId );
 #endif
 
@@ -474,7 +464,7 @@ void HumanVehicleController::Update( float timeins )
             {
                 GetInputManager()->GetController( mControllerId )->ApplyEffect( RumbleEffect::GROUND2, 250 );
 
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2) || defined(RAD_WIN32)
+#if defined(RAD_PS2) || defined(RAD_WIN32)
                 if ( mWheelRumble )
                 {
 //                    mWheelRumble->SetMagDir( 200, 90 );
@@ -490,7 +480,7 @@ void HumanVehicleController::Update( float timeins )
             {
                 GetInputManager()->GetController( mControllerId )->ApplyEffect( RumbleEffect::GROUND4, 250 );
 
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2) || defined(RAD_WIN32)
+#if defined(RAD_PS2) || defined(RAD_WIN32)
                 if ( mWheelRumble )
                 {
 //                    mWheelRumble->SetMagDir( 200, 90 );
@@ -511,7 +501,7 @@ void HumanVehicleController::Update( float timeins )
             if ( speed > 40.0f ) //Hmmmm...  TODO: allow this to be modified
             {
                 GetInputManager()->GetController( mControllerId )->ApplyEffect( RumbleEffect::GROUND2, 250 );
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2) || defined(RAD_WIN32)
+#if defined(RAD_PS2) || defined(RAD_WIN32)
                 if ( mWheelRumble )
                 {
 //                    mWheelRumble->SetMagDir( 255, 90 );
@@ -524,7 +514,7 @@ void HumanVehicleController::Update( float timeins )
     case TT_Wood:
     default:
         {
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2) //|| defined(RAD_WIN32)
+#if defined(RAD_PS2) //|| defined(RAD_WIN32)
             if ( mWheelRumble )
             {
                 mWheelRumble->SetMagDir( 0, 0 );
@@ -560,7 +550,7 @@ void HumanVehicleController::Init()
 
     UserController* uc = NULL;
 
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2) || defined(RAD_WIN32)
+#if defined(RAD_PS2) || defined(RAD_WIN32)
     //Set up the output points to default settings.
 #ifdef RAD_PS2
     //TODO: Make this only set up the active wheel.
@@ -576,7 +566,7 @@ void HumanVehicleController::Init()
     {
         uc = GetInputManager()->GetController( mControllerId );
     }
-#elif defined RAD_GAMECUBE || defined(RAD_WIN32)
+#elif defined(RAD_WIN32)
     uc = GetInputManager()->GetController( mControllerId );
 #endif
 
@@ -605,7 +595,7 @@ void HumanVehicleController::Init()
 //=============================================================================
 void HumanVehicleController::Shutdown()
 {
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2) || defined(RAD_WIN32)
+#if defined(RAD_PS2) || defined(RAD_WIN32)
     //Stop the vehicle output point settings
 
     if ( mSpring )
@@ -647,7 +637,7 @@ void HumanVehicleController::HandleEvent( EventEnum id, void* pEventData )
     case EVENT_BIG_CRASH:
     case EVENT_BIG_VEHICLE_CRASH:
         {
-#if defined(RAD_PS2) || defined(RAD_GAMECUBE) || defined(RAD_WIN32)
+#if defined(RAD_PS2) || defined(RAD_WIN32)
             if ( mHeavyWheelRumble )
             {
 #ifdef RAD_WIN32
@@ -690,7 +680,7 @@ void HumanVehicleController::HandleEvent( EventEnum id, void* pEventData )
                 GetInputManager()->GetController( mControllerId )->ApplyDynaEffect( RumbleEffect::COLLISION1, 333, rc->normalizedForce );
                 GetInputManager()->GetController( mControllerId )->ApplyDynaEffect( RumbleEffect::COLLISION2, 333, rc->normalizedForce );
 
-#if defined(RAD_PS2) || defined(RAD_GAMECUBE) || defined(RAD_WIN32)
+#if defined(RAD_PS2) || defined(RAD_WIN32)
                 if ( mConstantEffect )
                 {
                     if ( mWheelRumble && rc->normalizedForce > 0.02f )
@@ -736,7 +726,7 @@ void HumanVehicleController::HandleEvent( EventEnum id, void* pEventData )
 }
 
 
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2) || defined(RAD_WIN32)
+#if defined(RAD_PS2) || defined(RAD_WIN32)
 //=============================================================================
 // HumanVehicleController::SetupRumbleFeatures
 //=============================================================================

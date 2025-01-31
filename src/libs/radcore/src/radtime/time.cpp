@@ -36,11 +36,6 @@
 #include <libscf.h>
 #endif
 
-#ifdef RAD_GAMECUBE
-#include <dolphin/os.h>
-#include <dolphin.h>
-#endif // RAD_GAMECUBE
-
 #include <radtime.hpp>
 #include <radobject.hpp>
 #include <radmemory.hpp>
@@ -82,14 +77,6 @@ static volatile unsigned long s_Milliseconds;
 static unsigned long s_MilliCount;   // This stays between 0 and 1000
 static unsigned long s_Seconds;
 static int           s_HandlerId;
-#endif
-
-// 
-// Under RAD_GAMECUBE, retreives time base registers from clcok
-#ifdef RAD_GAMECUBE
-static unsigned int s_Microseconds;
-static unsigned int s_Milliseconds;
-static unsigned int s_Seconds;
 #endif
 
 //=============================================================================
@@ -172,15 +159,6 @@ void radTimeInitialize(  )
         EnableIntc( INTC_TIM0 );
 
         #endif 
-
-		//
-		// On the RAD_GAMECUBE, we get the timer from OS_TIMER_CLOCK
-		//
-		#ifdef RAD_GAMECUBE
-			s_Microseconds = 0;
-			s_Milliseconds = 0;
-			s_Seconds = 0;
-		#endif // RAD_GAMECUBE
     }
 }
 
@@ -252,25 +230,6 @@ unsigned int radTimeGetMicroseconds( void )
     return( (unsigned int) PS2_Microseconds( ) );
    	
     #endif
-
-	//
-	// On the RAD_GAMECUBE, return value of timer in seconds
-	//
-	#ifdef RAD_GAMECUBE
-
-		//
-		// Retrieves 32-bit value of lower of time base register
-		//
-		OSTime time = OSGetTime();
-
-		//
-		// Converts ticks to microseconds
-		//
-		s_Microseconds = OSTicksToMicroseconds(time);
-		
-		return (s_Microseconds);
-	
-	#endif // RAD_GAMECUBE
 }
 
 
@@ -307,23 +266,6 @@ radTime64 radTimeGetMicroseconds64( void )
     return( PS2_Microseconds( ) );
 	
     #endif
-
-	//
-	// On the RAD_GAMECUBE, return value of timer in seconds
-	//
-    #ifdef RAD_GAMECUBE
-
-		//
-		// Retrieves 64-bit value of lower of time base register
-		//
-		OSTime time = OSGetTime();
-
-		//
-		// Converts ticks to microseconds
-		//
-		return( OSTicksToMicroseconds(time) );
-	
-    #endif // RAD_GAMECUBE
 }
 
 
@@ -360,24 +302,6 @@ unsigned int radTimeGetMilliseconds( void )
     return( (unsigned int) s_Milliseconds );
     
     #endif
-
-	//
-	// On the RAD_GAMECUBE, simply returns value of timer in seconds
-	//
-	#ifdef RAD_GAMECUBE
-		//
-		// Retrieves 32-bit value of lower  of time base register
-		//
-		OSTime time = OSGetTime();
-
-		//
-		// Converts ticks to milliseconds
-		//
-		s_Milliseconds = OSTicksToMilliseconds(time);   
-
-		return (s_Milliseconds);
-	
-	#endif // RAD_GAMECUBE
 }
 
 //=============================================================================
@@ -413,24 +337,6 @@ unsigned int radTimeGetSeconds( void )
     return( (unsigned int) s_Seconds );
     
     #endif
-
-	//
-	// On the RAD_GAMECUBE, simply returns value of timer in seconds
-	//
-	#ifdef RAD_GAMECUBE
-		//
-		// Retrieves 32-bit value of lower of time base register
-		//
-		OSTime time = OSGetTime();
-
-		//
-		// Converts ticks to seconds
-		//	
-		s_Seconds = OSTicksToSeconds(time);   
-		
-		return (s_Seconds);
-	
-	#endif // RAD_GAMECUBE
 }
 
 //=============================================================================
@@ -482,24 +388,8 @@ void radTimeGetDate( radDate* pDate )
     pDate->m_Hour = PS2BCDtoBin( time.hour );
     pDate->m_Minute = PS2BCDtoBin( time.minute );
     pDate->m_Second = PS2BCDtoBin( time.second );
-
-#elif defined ( RAD_GAMECUBE )
-    OSTime time = ::OSGetTime( );
-    OSCalendarTime calendar;
-    ::OSTicksToCalendarTime( time, &calendar );
-
-    //
-    // Convert GCN time to our structure.
-    //
-    pDate->m_Year = calendar.year;
-    pDate->m_Month = calendar.mon + 1;
-    pDate->m_Day = calendar.mday;
-    pDate->m_Hour = calendar.hour;
-    pDate->m_Minute = calendar.min;
-    pDate->m_Second = calendar.sec;
-
 #else
-    #error 'FTech requires definition of RAD_GAMECUBE, RAD_PS2, RAD_XBOX, or RAD_WIN32'
+    #error 'FTech requires definition of RAD_PS2, RAD_XBOX, or RAD_WIN32'
 #endif
 
 

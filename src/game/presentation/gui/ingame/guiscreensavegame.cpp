@@ -439,23 +439,13 @@ void CGuiScreenSaveGame::HandleMessage
                     if (GetMemoryCardManager()->GetCurrentDriveIndex()==0)
                         plat_index++;
 #endif
-#ifdef RAD_GAMECUBE
-                    int errorMessage = GetErrorMessageIndex( DataCorrupt, ERROR_DURING_SAVING );
-                    m_guiManager->DisplayErrorPrompt( errorMessage, this,
-                                                      ERROR_RESPONSE_CONTINUE_WITHOUT_SAVE | ERROR_RESPONSE_RETRY | ERROR_RESPONSE_DELETE );
-                    m_operation = SAVE;
-#else
                     m_guiManager->DisplayPrompt( PROMPT_LOAD_DELETE_CORRUPT_GC + plat_index, this );
-#endif
                 }
                 else if( (m_nonEmptySlots & (1 << m_currentSlot)) > 0 )
                 {
                     // saved game exists in current slot; prompt w/ overwrite
                     // confirmation message
                     //
-#ifdef RAD_GAMECUBE
-                    m_guiManager->DisplayPrompt( PROMPT_SAVE_CONFIRM_OVERWRITE_GC, this );
-#endif
 
 #ifdef RAD_PS2
                     m_guiManager->DisplayPrompt( PROMPT_SAVE_CONFIRM_OVERWRITE_PS2, this );
@@ -471,10 +461,6 @@ void CGuiScreenSaveGame::HandleMessage
                 }
                 else
                 {
-#ifdef RAD_GAMECUBE
-                    m_guiManager->DisplayPrompt( PROMPT_SAVE_CONFIRM_GC, this, PROMPT_TYPE_SAVE );
-#endif
-
 #ifdef RAD_PS2
                     m_guiManager->DisplayPrompt( PROMPT_SAVE_CONFIRM_PS2, this );
 #endif
@@ -531,37 +517,6 @@ CGuiScreenSaveGame::OnSaveGameComplete( radFileError errorCode )
     else
     {
         int errorMessage = GetErrorMessageIndex( errorCode, ERROR_DURING_SAVING );
-
-#ifdef RAD_GAMECUBE
-        switch( errorCode )
-        {
-            case Success:
-            {
-                rAssert( false );
-                break;
-            }
-            case MediaCorrupt:
-            {
-				m_guiManager->DisplayErrorPrompt( errorMessage, this, ERROR_RESPONSE_CONTINUE );
-
-                break;
-            }
-            case MediaEncodingErr:
-            case MediaNotFormatted:
-            {
-                m_guiManager->DisplayErrorPrompt( errorMessage, this,
-                                                  ERROR_RESPONSE_CONTINUE | ERROR_RESPONSE_RETRY | ERROR_RESPONSE_FORMAT );
-
-            }
-            default:
-            {
-				m_guiManager->DisplayErrorPrompt( errorMessage, this,
-                                                  ERROR_RESPONSE_CONTINUE | ERROR_RESPONSE_RETRY );
-
-                break;
-            }
-        }
-#endif // RAD_GAMECUBE
 
 #ifdef RAD_PS2
         switch( errorCode )
@@ -665,22 +620,7 @@ CGuiScreenSaveGame::HandleErrorResponse( CGuiMenuPrompt::ePromptResponse respons
         {
             if( m_operation == SAVE )
             {
-#ifdef RAD_GAMECUBE
-                SaveGameInfo saveGameInfo;
-                bool corrupt = false;
-                IRadDrive* currentDrive = GetMemoryCardManager()->GetCurrentDrive();
-                GetGameDataManager()->GetSaveGameInfo( currentDrive, m_currentSlot, &saveGameInfo, &corrupt );
-                if( corrupt )
-                {
-                    int errorMessage = GetErrorMessageIndex( DataCorrupt, ERROR_DURING_SAVING );
-                    m_guiManager->DisplayErrorPrompt( errorMessage, this,
-                                                      ERROR_RESPONSE_CONTINUE_WITHOUT_SAVE | ERROR_RESPONSE_RETRY | ERROR_RESPONSE_DELETE );
-                }
-                else
-#endif
-                {
-                    this->SaveGame();
-                }
+                this->SaveGame();
             }
             else if( m_operation == FORMAT )
             {
@@ -693,15 +633,6 @@ CGuiScreenSaveGame::HandleErrorResponse( CGuiMenuPrompt::ePromptResponse respons
 
             break;
         }
-
-#ifdef RAD_GAMECUBE
-        case (CGuiMenuPrompt::RESPONSE_DELETE):
-        {
-            m_guiManager->DisplayPrompt( PROMPT_LOAD_DELETE_CORRUPT_GC, this );
-
-            break;
-        }
-#endif // RAD_GAMECUBE
 
         case (CGuiMenuPrompt::RESPONSE_FORMAT_GC):
         case (CGuiMenuPrompt::RESPONSE_FORMAT_XBOX):
@@ -750,16 +681,7 @@ void CGuiScreenSaveGame::InitIntro()
     {
 		if (unformatted && !s_forceGotoMemoryCardScreen)
 		{
-#ifdef RAD_GAMECUBE 
-            int errorMessage;
-
-            errorMessage = GetErrorMessageIndex( mediaState );
-            m_guiManager->DisplayErrorPrompt( errorMessage,
-                                              this,
-                                              ERROR_RESPONSE_CONTINUE_WITHOUT_SAVE | ERROR_RESPONSE_RETRY | ERROR_RESPONSE_FORMAT );
-#else
 			m_guiManager->DisplayPrompt(PROMPT_FORMAT_CONFIRM_GC+PLATFORM_TEXT_INDEX,this);
-#endif
 			m_numTransitionsPending = -1; // disable all transitions
 		}
 		else
@@ -814,9 +736,6 @@ void CGuiScreenSaveGame::InitIntro()
 #endif
 #ifdef RAD_PS2
                 corruptSlot.ReadUnicode( GetTextBibleString( "CORRUPT_SLOT_(PS2)" ) );
-#endif
-#ifdef RAD_GAMECUBE
-                corruptSlot.ReadUnicode( GetTextBibleString( "CORRUPT_SLOT_(GC)" ) );
 #endif
                 slotText->SetString(0,corruptSlot);
 #ifdef RAD_XBOX
@@ -892,26 +811,6 @@ void CGuiScreenSaveGame::InitIntro()
 #endif
 		m_pFullText->SetIndex(message_index);
 		m_pFullText->SetVisible(true);
-
-#ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_LEVEL_HUD );
-
-        // append "Use Memory Card Screen" text to message; this is done in
-        // code because the text bible compiler can't handle strings with
-        // more than 255 characters
-        //
-        UnicodeString useMemCardScreen;
-        useMemCardScreen.ReadUnicode( GetTextBibleString( "USE_MEMORY_CARD_SCREEN" ) );
-
-        UnicodeString newString;
-        newString.ReadUnicode( GetTextBibleString( "MEMCARD_FULL_HAS_EXISTING_(GC)" ) );
-        newString.Append( ' ' );
-        newString += useMemCardScreen;
-
-        m_pFullText->SetString( message_index, newString );
-
-        HeapMgr()->PopHeap( GMA_LEVEL_HUD );
-#endif // RAD_GAMECUBE
 	}
 	else
 	{
@@ -984,10 +883,6 @@ void
 CGuiScreenSaveGame::SaveGame()
 {
 	m_operation = SAVE;
-
-#ifdef RAD_GAMECUBE
-    m_guiManager->DisplayMessage( CGuiScreenMessage::MSG_ID_SAVING_GAME_GC, this );
-#endif
 
 #ifdef RAD_PS2
     m_guiManager->DisplayMessage( CGuiScreenMessage::MSG_ID_SAVING_GAME_PS2, this );

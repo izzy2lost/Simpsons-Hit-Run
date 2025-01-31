@@ -66,20 +66,12 @@ EventManager* EventManager::CreateInstance()
 MEMTRACK_PUSH_GROUP( "EventManager" );
     rAssert( spInstance == NULL );
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PushHeap( GMA_PERSISTENT );
 
     spInstance = new EventManager;
     rAssert( spInstance );
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PopHeap( GMA_PERSISTENT );
 
 MEMTRACK_POP_GROUP( "EventManager" );
     
@@ -144,11 +136,7 @@ void EventManager::AddListener( EventListener* pListener, EventEnum id )
     rAssert( NULL != pListener );
 
 MEMTRACK_PUSH_GROUP( "EventManager" );
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PushHeap( GMA_PERSISTENT );
 
 
     ListenerVector& listeners = mListenerMap[id];
@@ -161,11 +149,7 @@ MEMTRACK_PUSH_GROUP( "EventManager" );
     {
         listeners.push_back( pListener );
     }
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PopHeap( GMA_PERSISTENT );
 
 #ifdef TRACK_LISTENERS
         mStats[id].numListening += 1;
@@ -300,21 +284,13 @@ int EventManager::TriggerEvent( EventEnum id, void* pEventData ) const
 EventManager::EventManager()
 {
     //TODO:  When we're leak free, make this smaller and see where we get.
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PushHeap( GMA_PERSISTENT );
     unsigned int i;
     for ( i = 0; i < NUM_EVENTS; ++i )
     {
         mListenerMap[i].reserve( 32 );
     }
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PopHeap( GMA_PERSISTENT );
 #ifdef DEBUGWATCH
     radDbgWatchAddUnsignedInt( &g_simulatedEventID,
                                "Simulated Event ID",

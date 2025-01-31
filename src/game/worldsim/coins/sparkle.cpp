@@ -178,11 +178,8 @@ Sparkle::~Sparkle()
 
 void Sparkle::Init( void )
 {
-    #ifdef RAD_GAMECUBE
-        HeapManager::GetInstance()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapManager::GetInstance()->PushHeap( GMA_LEVEL_ZONE );
-    #endif
+
+    HeapManager::GetInstance()->PushHeap( GMA_LEVEL_ZONE );
     mActiveSparkles = new ActiveSparkle[ mNumSparkles ];
     rAssert( mActiveSparkles );
     mpTextures = new tTexture*[ mNumTextures ];
@@ -191,11 +188,7 @@ void Sparkle::Init( void )
     rAssert( mNumActiveSparkles );
     mNumHUDSparkles = new unsigned short[ mNumTextures ];
     rAssert( mNumHUDSparkles );
-    #ifdef RAD_GAMECUBE
-        HeapManager::GetInstance()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapManager::GetInstance()->PopHeap( GMA_LEVEL_ZONE );
-    #endif
+    HeapManager::GetInstance()->PopHeap( GMA_LEVEL_ZONE );
 
     for( int i = 0; i < mNumTextures; ++i )
     {

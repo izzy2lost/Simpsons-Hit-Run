@@ -142,7 +142,7 @@ CGuiScreenLoadSave::HandleMessage( eGuiMessage message,
         }
         case GUI_MSG_CONTROLLER_AUX_X:
         {
-#if defined( RAD_GAMECUBE ) || defined( RAD_PS2 )
+#if defined( RAD_PS2 )
             this->GotoMemoryCardScreen();
 
             GetEventManager()->TriggerEvent( EVENT_FE_MENU_SELECT );
@@ -182,9 +182,6 @@ CGuiScreenLoadSave::UpdateCurrentMemoryDevice()
     if( currentDrive != NULL )
     {
         char textBibleEntry[ 32 ];
-#ifdef RAD_GAMECUBE
-        sprintf( textBibleEntry, "GC_%s", currentDrive->GetDriveName() );
-#endif
 #ifdef RAD_PS2
         sprintf( textBibleEntry, "PS2_MEMCARD1A:" );
 #endif
@@ -637,9 +634,6 @@ CGuiScreenMemoryCard::UpdateDeviceList( bool forceUpdate )
         rAssert( m_mediaInfos[ i ] );
 
         char textBibleEntry[ 32 ];
-#ifdef RAD_GAMECUBE
-        sprintf( textBibleEntry, "GC_%s", m_availableDrives[ i ]->GetDriveName() );
-#endif
 #ifdef RAD_PS2
         sprintf( textBibleEntry, "PS2_MEMCARD1A:" );
 #endif
@@ -826,19 +820,6 @@ CGuiScreenMemoryCard::UpdateFreeSpace( unsigned int currentDriveIndex )
 			+ PLATFORM_TEXT_INDEX);
 		bool disable = true;
 
-#ifdef RAD_GAMECUBE
-        // on GameCube, if memory card is unformatted or formatted for another market, allow it to be
-        // selected so that if can be formatted
-        //
-        if( m_mediaInfos[ currentDriveIndex ]->m_MediaState == IRadDrive::MediaInfo::MediaNotFormatted ||
-            m_mediaInfos[ currentDriveIndex ]->m_MediaState == IRadDrive::MediaInfo::MediaEncodingErr )
-        {
-            disable = false;
-
-            m_memStatusText->SetVisible( false ); // no need to display status text
-        }
-#endif // RAD_GAMECUBE
-
 #ifdef RAD_PS2
         // on PS2, if memory card is unformatted, allow it to be selected so that it can be formatted
         //
@@ -876,22 +857,6 @@ CGuiScreenMemoryCard::UpdateFreeSpace( unsigned int currentDriveIndex )
     #endif 
                 m_memStatusText->SetVisible(true);
                 m_memStatusText->SetIndex( message_index );
-
-#ifdef RAD_GAMECUBE
-                // append "Use Memory Card Screen" text to message; this is done in
-                // code because the text bible compiler can't handle strings with
-                // more than 255 characters
-                //
-                UnicodeString useMemCardScreen;
-                useMemCardScreen.ReadUnicode( GetTextBibleString( "USE_MEMORY_CARD_SCREEN" ) );
-
-                UnicodeString newString;
-                newString.ReadUnicode( GetTextBibleString( "MU_FULL_STATUS_(GC)" ) );
-                newString.Append( ' ' );
-                newString += useMemCardScreen;
-
-                m_memStatusText->SetString( message_index, newString );
-#endif // RAD_GAMECUBE
 
                 bool disable = true;
 #ifdef RAD_XBOX

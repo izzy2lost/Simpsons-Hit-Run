@@ -362,11 +362,6 @@ void FePolygon::Display()
         SetAlpha( polygonAlpha / 255.0f );
     }
 
-#ifdef RAD_GAMECUBE
-    pddiCullMode oldCullMode = p3d::pddi->GetCullMode();
-    p3d::pddi->SetCullMode( PDDI_CULL_NONE );
-#endif
-
     pddiPrimStream* stream = p3d::pddi->BeginPrims( mShader->GetShader(), PDDI_PRIM_TRIANGLES, PDDI_V_C, mNumVertex > 3 ? mNumVertex+2 : mNumVertex );   
 
     // MIKE IMPROVE : this should be reorganized to allow for Tri-Stripping.  Currently does a manual tri-fan.
@@ -386,10 +381,6 @@ void FePolygon::Display()
     {
         SetAlpha( polygonAlpha / 255.0f );
     }
-
-#ifdef RAD_GAMECUBE
-    p3d::pddi->SetCullMode( oldCullMode );
-#endif
 }
 
 void FePolygon::RecalculateDisplayColour( int which )

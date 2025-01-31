@@ -44,11 +44,6 @@
         #include <libscf.h>
     #endif
 
-    #ifdef RAD_GAMECUBE
-        #include <dolphin/os.h>
-        #include <dolphin.h>
-    #endif
-
     #ifdef RAD_WIN32
         #define WIN32_EXTRA_LEAN
         #define WIN32_LEAN_AND_MEAN

@@ -62,13 +62,8 @@ static char* gConsoleMsgBuffer[2] = {0};
 static char* gConsoleMsgBufferPtr = 0;
 static int gConsoleBufferIndex = 0;
 
-#ifdef RAD_GAMECUBE
-FBMemoryPool Console::FunctionTableEntry::sMemoryPool( sizeof(Console::FunctionTableEntry), Console::MAX_FUNCTIONS, GMA_GC_VMM );
-FBMemoryPool Console::AliasTableEntry::sMemoryPool( sizeof(Console::AliasTableEntry), Console::MAX_ALIASES, GMA_GC_VMM );
-#else
 FBMemoryPool Console::FunctionTableEntry::sMemoryPool( sizeof(Console::FunctionTableEntry), Console::MAX_FUNCTIONS, GMA_PERSISTENT );
 FBMemoryPool Console::AliasTableEntry::sMemoryPool( sizeof(Console::AliasTableEntry), Console::MAX_ALIASES, GMA_PERSISTENT );
-#endif
 
 //=============================================================================
 // static bool cConsoleTrue
@@ -191,20 +186,12 @@ Console* Console::CreateInstance()
 MEMTRACK_PUSH_GROUP( "Console" );
     rTuneAssert( spInstance == 0 );
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PushHeap( GMA_PERSISTENT );
 
     spInstance = new Console;
     rTuneAssert( spInstance );
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PopHeap( GMA_PERSISTENT );
    
     Console::Initialize();
 MEMTRACK_POP_GROUP( "Console" );
@@ -356,11 +343,7 @@ mpCallback( 0 )
 
 
     //create the argv array
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PushHeap( GMA_PERSISTENT );
 
     mArgv = new char*[MAX_ARGS];
     mPrevArgv = new char*[MAX_ARGS];
@@ -371,11 +354,7 @@ mpCallback( 0 )
         mPrevArgv[i] = new char[MAX_ARG_LENGTH];
     }
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PopHeap( GMA_PERSISTENT );
     //set the log file mode
     mLogFile = 0;
     mLogMode = LOGMODE_OFF;
@@ -1196,11 +1175,7 @@ bool Console::AddFunc
         return (false);
     }
     
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PushHeap( GMA_GC_VMM );
-#else
     HeapMgr()->PushHeap( GMA_PERSISTENT );
-#endif
    
     //create the new function
     FunctionTableEntry* newFunction;
@@ -1220,11 +1195,7 @@ bool Console::AddFunc
     //increment the function count
     mFunctionCount++;
 
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PopHeap( GMA_GC_VMM );
-#else
     HeapMgr()->PopHeap( GMA_PERSISTENT );
-#endif
 
     // return success condition
     return (true);
@@ -1294,11 +1265,7 @@ bool Console::AddFunctionAlias
         return (false);
     }
     
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PushHeap( GMA_GC_VMM );
-#else
     HeapMgr()->PushHeap( GMA_PERSISTENT );
-#endif
 
     //create the new alias
     AliasTableEntry* newAlias = new AliasTableEntry(name, functionName, argc, argv);
@@ -1323,11 +1290,7 @@ bool Console::AddFunctionAlias
     //increment the alias count
     mAliasCount++;
 
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PopHeap( GMA_GC_VMM );
-#else
     HeapMgr()->PopHeap( GMA_PERSISTENT );
-#endif
 
     // return success condition
     return (true);

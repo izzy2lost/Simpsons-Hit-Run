@@ -23,12 +23,6 @@
 // Include Files
 //=============================================================================
 
-#ifdef RAD_GAMECUBE
-
-#include <hvqm4dec.h>
-
-#endif // RAD_GAMECUBE
-
 #include <radobject.hpp>
 #include <radfile.hpp>
 
@@ -51,12 +45,6 @@ void radMovieVideoDecoderTerminate( void );
 // Creation factory for the platform dependent video decoder
 
 IRadMovieVideoDecoder * radMovieVideoDecoderCreate( radMemoryAllocator allocator );
-
-#ifdef RAD_GAMECUBE 
-
-radMovieVideoFrame * radMovieVideoFrameCreate( radMemoryAllocator allocator, const HVQM4SeqObj * pHVQM4SeqObj );
-
-#endif // RAD_GAMECUBE
 
 //=============================================================================
 // Interface IRadMovieVideoDecoder
@@ -102,52 +90,6 @@ struct IRadMovieVideoDecoder : IRefCount
 struct radMovieVideoFrame : radObject
 {
     IMPLEMENT_BASEOBJECT( "radMovieVideoFrame" )
-
-    #ifdef RAD_GAMECUBE
-
-    inline radMovieVideoFrame( const HVQM4SeqObj * pHVQM4SeqObj );
-    inline virtual ~radMovieVideoFrame( void );
-
-    void * m_pFrameBuffer;
-    unsigned int m_SizeInBytes;
-
-    #endif // RAD_GAMECUBE
 };
-
-//=============================================================================
-// Gamecube implementations
-//=============================================================================
-
-#ifdef RAD_GAMECUBE
-
-//=============================================================================
-// radMovieVideoFrame::radMovieVideoFrame
-//=============================================================================
-
-radMovieVideoFrame::radMovieVideoFrame( const HVQM4SeqObj * pHVQM4SeqObj )
-    :
-    m_pFrameBuffer( NULL )
-{
-    rAssert( pHVQM4SeqObj != NULL );
-
-    // Allocate enough memory for a decompressed video
-    // frame using a magical formula
-
-    m_pFrameBuffer = ::radMemoryAlloc( GetThisAllocator( ), 
-        ::radMemoryRoundUp( ( pHVQM4SeqObj->frame_width * pHVQM4SeqObj->frame_height * 
-            ( pHVQM4SeqObj->h_samp * pHVQM4SeqObj->v_samp + 2 ) ) / ( pHVQM4SeqObj->h_samp * pHVQM4SeqObj->v_samp), 32 ) );
-}
-
-//=============================================================================
-// radMovieVideoFrame::~radMovieVideoFrame
-//=============================================================================
-
-radMovieVideoFrame::~radMovieVideoFrame( void )
-{
-    ::radMemoryFree( m_pFrameBuffer );
-    m_pFrameBuffer = NULL;
-}
-
-#endif // RAD_GAMECUBE
 
 #endif // RADMOVIEINTERFACES_HPP

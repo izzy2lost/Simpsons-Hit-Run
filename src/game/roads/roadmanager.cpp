@@ -205,11 +205,7 @@ void RoadManager::InitializeRoadMemory( unsigned int numRoads )
 {
 
 #ifndef TOOLS
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PushHeap( GMA_GC_VMM );
-#else
     HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
-#endif
 #endif
 
     if( mRoads )
@@ -222,11 +218,7 @@ void RoadManager::InitializeRoadMemory( unsigned int numRoads )
     mNumRoadsUsed = 0;
 
 #ifndef TOOLS
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
-    #endif
+    HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
 #endif
 }
 
@@ -234,11 +226,7 @@ void RoadManager::InitializeRoadMemory( unsigned int numRoads )
 void RoadManager::InitializeIntersectionMemory( unsigned int numIntersections )
 {
 #ifndef TOOLS
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PushHeap( GMA_GC_VMM );
-#else
     HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
-#endif
 #endif
 
     if( mIntersections )
@@ -251,11 +239,7 @@ void RoadManager::InitializeIntersectionMemory( unsigned int numIntersections )
     mNumIntersectionsUsed = 0;
 
 #ifndef TOOLS
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
-    #endif
+    HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
 #endif
 }
 
@@ -263,11 +247,7 @@ void RoadManager::InitializeIntersectionMemory( unsigned int numIntersections )
 void RoadManager::InitializeRoadSegmentDataMemory( unsigned int numSegments )
 {
 #ifndef TOOLS
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_TEMP );
-    #endif
+    HeapMgr()->PushHeap( GMA_TEMP );
 #endif
 
     if( mRoadSegmentData )
@@ -280,11 +260,7 @@ void RoadManager::InitializeRoadSegmentDataMemory( unsigned int numSegments )
     mNumRoadSegmentDataUsed = 0;
 
 #ifndef TOOLS
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_TEMP );
-    #endif
+    HeapMgr()->PopHeap( GMA_GC_VMM );
 #endif
 }
 
@@ -303,11 +279,7 @@ void RoadManager::DumpRoadSegmentDataMemory()
 void RoadManager::InitializeRoadSegmentMemory( unsigned int numRoadSegments )
 {
 #ifndef TOOLS
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PushHeap( GMA_GC_VMM );
-#else
     HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
-#endif
 #endif
 
     if( mRoadSegments )
@@ -327,11 +299,7 @@ void RoadManager::InitializeRoadSegmentMemory( unsigned int numRoadSegments )
     mNumRoadSegmentsUsed = 0;
 
 #ifndef TOOLS
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
-    #endif
+    HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
 #endif
 }
 

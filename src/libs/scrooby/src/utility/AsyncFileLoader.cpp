@@ -43,8 +43,6 @@ const char MyDrive[ ] = "D:";               //xbox
 static char MyDrive[ ] = "C:";               //windows
 #elif defined( PS2EE )
 const char MyDrive[ ] = "HOSTDRIVE:";       //ps2
-#else
-const char MyDrive[ ] = "DVD:";             //gamecube
 #endif
 
 //===========================================================================

@@ -273,19 +273,7 @@ SaveGameInfo::FormatDisplay( char* displayBuffer,
     char levelMissionInfo[ 32 ];
     FormatLevelMissionInfo( levelMissionInfo );
 
-#ifdef RAD_GAMECUBE
-    // add number of blocks to display
-    //
-    P3D_UNICODE* unicodeString = GetTextBibleString( "BLOCKS" );
-    rAssert( unicodeString != NULL );
-
-    char numBlocksBuffer[ 32 ];
-    p3d::UnicodeToAscii( unicodeString, numBlocksBuffer, sizeof( numBlocksBuffer ) );
-
-    sprintf( displayBuffer, "%s %s (2 %s)", levelMissionInfo, dateBuffer, numBlocksBuffer );
-#else
     sprintf( displayBuffer, "%s %s", levelMissionInfo, dateBuffer );
-#endif
 
     // sanity check
     //

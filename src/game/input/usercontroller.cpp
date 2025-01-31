@@ -7,7 +7,7 @@
 #include <raddebug.hpp>
 #include <radmath/radmath.hpp>
 
-#if defined(RAD_PS2) || defined(RAD_GAMECUBE)
+#if defined(RAD_PS2)
 #include <input/wheeldefines.h>
 #endif
 
@@ -141,7 +141,7 @@ mbIsRumbleOn( false )
         this->mMappable[ i ] = 0;
     }
 
-#if defined(RAD_PS2) || defined(RAD_GAMECUBE)
+#if defined(RAD_PS2)
     mHeavyWheelRumble.SetRumbleType( LG_TYPE_SQUARE );
 #endif
 }
@@ -313,7 +313,7 @@ void UserController::Initialize( IRadController* pIController2 )
     
         mbInputPointsRegistered = true;
 
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2)
+#if defined(RAD_PS2)
         //Get the steering spring.
         IRadControllerOutputPoint* p_OutputPoint = m_xIController2->GetOutputPointByName( "CenterSpring" );
         if ( p_OutputPoint )
@@ -346,13 +346,7 @@ void UserController::Initialize( IRadController* pIController2 )
         }
 #endif
 
-#ifdef RAD_GAMECUBE
-        p_OutputPoint = m_xIController2->GetOutputPointByName( "Motor" );
-        if ( p_OutputPoint )
-        {
-            mRumbleEffect.SetMotor( 0,  p_OutputPoint );
-        }
-#elif defined( RAD_PS2 )
+#if defined( RAD_PS2 )
         p_OutputPoint = m_xIController2->GetOutputPointByName( "SmallMotor" );
         if ( p_OutputPoint )
         {
@@ -439,7 +433,7 @@ void UserController::ReleaseRadController( void )
 
 void UserController::SetRumble( bool bRumbleOn, bool pulse )
 {
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2)
+#if defined(RAD_PS2)
     if ( bRumbleOn && !mbIsRumbleOn && !CommandLineOptions::Get( CLO_NO_HAPTIC ) )
     {
         mSteeringSpring.Start();
@@ -574,26 +568,6 @@ void UserController::Update( unsigned timeins )
             }
         }
     }
-
-#ifdef RAD_GAMECUBE
-    if ( mbIsRumbleOn )
-    {
-#endif
-
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2)
-        mSteeringSpring.Update();
-        mSteeringDamper.Update();
-        mConstantEffect.Update();
-        mWheelRumble.Update();
-        mHeavyWheelRumble.Update();
-#endif
-
-        //I leave this out so the FE can rumble me anyway.
-        mRumbleEffect.Update( timeins );
-
-#ifdef RAD_GAMECUBE
-    }
-#endif
 }
 
 // Returns the value stored by input point at index.

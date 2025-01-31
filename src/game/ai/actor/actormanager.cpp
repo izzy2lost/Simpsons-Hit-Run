@@ -625,11 +625,7 @@ ActorManager::CreateActor( tUID typeName, tUID instanceName, const rmt::Matrix& 
 void
 ActorManager::AddBehaviour( int argc, const char** argv )
 {
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PushHeap( GMA_GC_VMM );
-#else
     HeapMgr()->PushHeap( GMA_LEVEL_MISSION );
-#endif
 
     const char* targetObject = argv[1];
     const char* behaviourName = argv[2];
@@ -733,11 +729,7 @@ ActorManager::AddBehaviour( int argc, const char** argv )
     // Any remaining behaviours left in this stack are probably mem leaks
     rTuneAssert( behaviourList.empty() );
 
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PopHeap( GMA_GC_VMM );
-#else
     HeapMgr()->PopHeap( GMA_LEVEL_MISSION );
-#endif
 }
 
 void 

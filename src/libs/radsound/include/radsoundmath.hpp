@@ -10,8 +10,8 @@
 // Build Configuration Check
 //=============================================================================
 
-#if !defined(RAD_GAMECUBE) && !defined(RAD_PS2) && !defined(RAD_XBOX) && !defined(RAD_WIN32)
-    #error 'FTech requires definition of RAD_GAMECUBE, RAD_PS2, RAD_XBOX, or RAD_WIN32'
+#if !defined(RAD_PS2) && !defined(RAD_XBOX) && !defined(RAD_WIN32)
+    #error 'FTech requires definition of RAD_PS2, RAD_XBOX, or RAD_WIN32'
 #endif
 
 //============================================================================
@@ -23,10 +23,6 @@
 #include <stdlib.h>
 #include <raddebug.hpp>
 #include <float.h>
-
-#ifdef RAD_GAMECUBE
-    #include <dolphin/os.h>
-#endif
 
 //============================================================================
 // Casting functions (hardware accelerated on some platforms)
@@ -170,19 +166,7 @@ inline float radSoundPow( float base, float exponent )
 
 inline void radSoundZeroMemory( void * pMemory, unsigned int bytes )
 {
-    #ifdef RAD_GAMECUBE
-    
-        // GameCube has hardware zeroing instructions 
-        
-        // ::DCZeroRange( pMemory, bytes); // (this doesn't seem to work)    
-        
-        ::memset( pMemory, 0, bytes );
-    
-    #else
-    
-        ::memset( pMemory, 0, bytes );
-        
-    #endif
+    ::memset( pMemory, 0, bytes );
 }
 
 inline void radSoundMemCopy( void * pMemoryDest, const void * pMemorySrc, unsigned int bytes )

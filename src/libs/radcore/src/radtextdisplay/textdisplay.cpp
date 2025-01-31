@@ -33,10 +33,6 @@
 #include <libpkt.h>
 #include <sifcmd.h>
 #endif // RAD_PS2
-#ifdef RAD_GAMECUBE
-#include <dolphin.h>
-#include "font.hpp"
-#endif // RAD_GAMECUBE
 
 
 
@@ -64,25 +60,6 @@
 #define PS2_SCREEN_BORDER_RIGHT 2   // Unusable chars on right side - offscreen.
 
 #endif // RAD_PS2
-
-#ifdef RAD_GAMECUBE
-
-//
-// Border around text on RAD_GAMECUBE - defines screen area actually visible.
-//
-#define GCN_SCREEN_BORDER_LEFT 2
-#define GCN_SCREEN_BORDER_RIGHT 0
-#define GCN_SCREEN_BORDER_TOP 14
-#define GCN_SCREEN_BORDER_BOTTOM 24
-
-//
-// Font data
-//
-static char 
-    g_TextDisplayGcnFontData[ 128 ][ GCN_TEXTDISPLAY_FONT_HEIGHT ][ GCN_TEXTDISPLAY_FONT_WIDTH ] 
-        = GCN_TEXTDISPLAY_FONT;
-
-#endif // RAD_GAMECUBE
 
 //
 // The display singleton
@@ -164,20 +141,6 @@ void radTextDisplay::Initialize( radMemoryAllocator alloc )
     m_Width = PS2_CONSOLE_WIDTH - PS2_SCREEN_BORDER_RIGHT;
     m_Height = PS2_CONSOLE_HEIGHT;
     #endif // RAD_PS2
-    #ifdef RAD_GAMECUBE
-    m_First = true;
-    m_FrameBufferSize = 0;
-    m_FrameBuffer1 = NULL;
-    m_FrameBuffer2 = NULL;
-    m_CurBuffer = NULL;
-    m_ScreenMode = &GXNtsc480Int;
-    m_BackgroundColorYUV = RGBtoYUV( m_BackgroundColorRGB );
-    m_TextColorYUV = RGBtoYUV( m_TextColorRGB );
-    m_Width = ( ( m_ScreenMode->fbWidth - GCN_SCREEN_BORDER_LEFT - GCN_SCREEN_BORDER_RIGHT ) / 2 ) 
-              / GCN_TEXTDISPLAY_FONT_WIDTH;
-    m_Height = ( ( m_ScreenMode->xfbHeight - GCN_SCREEN_BORDER_TOP - GCN_SCREEN_BORDER_BOTTOM ) / 2 ) 
-              / GCN_TEXTDISPLAY_FONT_HEIGHT;
-    #endif // RAD_GAMECUBE
 
 	#ifdef RAD_XBOX
 	m_pD3D = NULL;
@@ -201,10 +164,10 @@ void radTextDisplay::Initialize( radMemoryAllocator alloc )
     //
     // If this platform is unsupported, print a warning.
     //
-    #if !defined RAD_PS2 && !defined RAD_GAMECUBE && !defined RAD_XBOX
+    #if !defined RAD_PS2 && !defined RAD_XBOX
     rDebugString( "WARNING: radTextDisplay is not supported on this platform.\n" );
     rDebugString( "         Screen output will be redirected to the debug channel.\n" );
-    #endif // !RAD_PS2 & !RAD_GAMECUBE
+    #endif // !RAD_PS2 && !RAD_XBOX
 
 }
 
@@ -240,19 +203,6 @@ void radTextDisplay::Terminate( void )
         radMemoryFree( m_Alloc, m_TextBuffer );
         m_TextBuffer = NULL;
     }
-
-    #ifdef RAD_GAMECUBE
-    if( m_FrameBuffer1 != NULL )
-    {
-        radMemoryFreeAligned( m_Alloc, m_FrameBuffer1 );
-        m_FrameBuffer1 = NULL;
-    }
-    if( m_FrameBuffer2 != NULL )
-    {
-        radMemoryFreeAligned( m_Alloc, m_FrameBuffer2 );
-        m_FrameBuffer2 = NULL;
-    }
-    #endif // RAD_GAMECUBE
 
     //
     // Close down other state stuff.
@@ -344,10 +294,6 @@ void radTextDisplay::SetBackgroundColor( unsigned int color )
 	m_DoubleBufferInfo.clear1.rgbaq.B = color & 0xff;
     #endif // RAD_PS2
 
-    #ifdef RAD_GAMECUBE
-    m_BackgroundColorYUV = RGBtoYUV( color );
-    #endif // RAD_GAMECUBE
-
     PaintIfAutoSwapOn( );
 }
 
@@ -370,10 +316,6 @@ void radTextDisplay::SetTextColor( unsigned int color )
     #ifdef RAD_PS2
     sceDevConsSetColor( m_Console, 7, ( color >> 16 ) & 0xff, ( color >> 8 ) & 0xff, color & 0xff );
     #endif // RAD_PS2
-
-    #ifdef RAD_GAMECUBE
-    m_TextColorYUV = RGBtoYUV( color );
-    #endif // RAD_GAMECUBE
 
 	#ifdef RAD_XBOX
     m_pXFont->SetTextColor( D3DCOLOR_XRGB( ( color >> 16 )& 0xff, ( color >> 8 ) & 0xff, color & 0xff ) );
@@ -517,9 +459,9 @@ void radTextDisplay::TextOut( const char*  pText )
     //
     // If this platform is unsupported, just echo the input to the debug channel.
     //
-    #if !defined RAD_PS2 && !defined RAD_GAMECUBE && !defined RAD_XBOX
+    #if !defined RAD_PS2 && !defined RAD_XBOX
     rDebugString( pText );
-    #endif // !RAD_PS2 & !RAD_GAMECUBE
+    #endif // !RAD_PS2 && !RAD_XBOX
 
     //
     // Loop over input characters.
@@ -720,47 +662,6 @@ void radTextDisplay::ScrollUp( void )
     }
 }
 
-
-//=============================================================================
-// Function:    radTextDisplay::RGBtoYUV
-//=============================================================================
-// Description: Converts from RGB color space to YUV color space for GameCube.
-//
-// Parameters:  color - RGB color in 24-bit format.
-//              
-// Returns:     Equivalent color in RAD_GAMECUBE 32-bit format (YUV color stored as YUYV).
-//
-//------------------------------------------------------------------------------
-#ifdef RAD_GAMECUBE
-    
-unsigned int radTextDisplay::RGBtoYUV( unsigned int color ) const
-{
-    int red, green, blue;
-    int lum, chrom, var;
-
-    red = ( color >> 16 ) & 0xff;
-    green = ( color >> 8 ) & 0xff;
-    blue = color & 0xff;
-
-    lum = 299 * green + 587 * red + 114 * blue;
-    chrom = -147 * green - 289 * red + 437 * blue;
-    var = 615 * green - 515 * red - 100 * blue;
-
-    lum /= 1000;
-    chrom /= 1000;
-    chrom += 128;
-    var /= 1000;
-    var += 128;
-
-    unsigned int yuv = ( lum & 0xff ) << 24;
-    yuv += ( chrom & 0xff ) << 16;
-    yuv += ( lum & 0xff ) << 8;
-    yuv += ( var & 0xff );
-
-    return( yuv );
-}
-#endif // RAD_GAMECUBE
-
 //=============================================================================
 // Function:    radTextDisplay::ReDrawScreenIfAutoPaintOn
 //=============================================================================
@@ -842,43 +743,6 @@ void radTextDisplay::Paint( void )
 
     #endif // RAD_PS2
 
-    //
-    // GameCube version.
-    //
-    #ifdef RAD_GAMECUBE
-
-    //
-    // Clear the screen.
-    //
-    VIWaitForRetrace( );
-    GcnFillFrameBuffer( m_BackgroundColorYUV );
-
-    //
-    // Loop over entire text buffer; draw characters individually.
-    //
-    for( int y = 0; y < m_Height; y++ )
-    {
-        for( int x = 0; x < m_Width; x++ )
-        {
-            char c = m_TextBuffer[ x + m_Width * y ];
-            if( ( c & 128 ) != 0 )
-            {
-                c = 0;
-            }
-            if( c != 0 )
-            {
-                PaintChar( x, y, c );
-            }
-        }
-    }
-
-    //
-    // Show the updated frame buffer.
-    //
-    GcnSwapBuffers( );
-
-    #endif // RAD_GAMECUBE
-
 	#ifdef RAD_XBOX
     IDirect3DSurface8 * pD3DSurface = NULL;
 	m_pd3dDevice->GetRenderTarget( & pD3DSurface );
@@ -924,51 +788,6 @@ void radTextDisplay::Paint( void )
 	#endif
 }
 
-
-//=============================================================================
-// Function:    radTextDisplay::PaintChar
-//=============================================================================
-// Description: Paints a character one pixel at a time on the screen.
-//
-// Parameters:  cx, cy - character coordinates to paint at.
-//              c - letter th draw.
-//              
-// Returns:     None
-//
-//------------------------------------------------------------------------------
-#ifdef RAD_GAMECUBE
-    
-void radTextDisplay::PaintChar( int cx, int cy, char c )
-{
-    //
-    // Calculate character origin in pixel coordinates.
-    //
-    int left = GCN_SCREEN_BORDER_LEFT + cx * GCN_TEXTDISPLAY_FONT_WIDTH;
-    int top = GCN_SCREEN_BORDER_TOP + cy * GCN_TEXTDISPLAY_FONT_HEIGHT;
-    int index = ( int )( unsigned char ) c;
-    u8*         ptr;
-
-    //
-    // Loop over font mask for this character.
-    //
-    for( int y = 0; y < GCN_TEXTDISPLAY_FONT_HEIGHT; y++ )
-    {
-        for( int x = 0; x < GCN_TEXTDISPLAY_FONT_WIDTH; x++ )
-        { 
-            //
-            // If the font mask is a 1, plot a pixel in the text color.
-            //
-            if( g_TextDisplayGcnFontData[ index ][ y ][ x ] != 0 )
-            {
-                ptr = m_CurBuffer + ( left + x + ( y + top ) * m_ScreenMode->fbWidth ) * VI_DISPLAY_PIX_SZ * 2;
-                * (u32*) ptr = m_TextColorYUV;
-            }
-        }
-    }
-}
-#endif // RAD_GAMECUBE
-
-
 //=============================================================================
 // Function:    radTextDisplay::InitDisplay
 //=============================================================================
@@ -1013,19 +832,6 @@ void radTextDisplay::InitDisplay( void )
 
 
     #endif // RAD_PS2
-
-    //
-    // GameCube version.
-    //
-    #ifdef RAD_GAMECUBE
-
-    //
-    // Call another function to set everything up.
-    //
-    GcnInitConsole( );
-
-    #endif // RAD_GAMECUBE
-
 
 	//------------------------------------------------------------------------
 	// Initialize XBox D3D
@@ -1099,17 +905,6 @@ void radTextDisplay::CloseDisplay( void )
     //FlushCache( 2 );
 
     #endif // RAD_PS2
-
-    //
-    // GameCube version.
-    //
-    #ifdef RAD_GAMECUBE
-
-    //
-    // Don't need to do anything special here.
-    //
-
-    #endif // RAD_GAMECUBE
 
 	#ifdef RAD_XBOX
 	m_pd3dDevice->Release( );
@@ -1251,160 +1046,3 @@ void radTextDisplay::Ps2SwapBuffers( void )
 	sceGsSyncPath( 0, 0 );
 }
 #endif // RAD_PS2
-
-
-
-
-//=============================================================================
-// Function:    radTextDisplay::GcnAllocateFrameBuffers
-//=============================================================================
-// Description: Allocates two graphical frame buffers.
-// 
-// Parameters:  None.
-//
-// Returns:     None.
-//
-//------------------------------------------------------------------------------
-#ifdef RAD_GAMECUBE
-
-void radTextDisplay::GcnAllocateFrameBuffer( void )
-{
-    void*       arenaLo;
-
-    //
-    // Allocate two 32-byte aligned frame buffers.
-    //
-    m_FrameBuffer1 = ( u8* ) radMemoryAllocAligned( RADMEMORY_ALLOC_DEFAULT, 
-                                      m_FrameBufferSize*VI_DISPLAY_PIX_SZ * 2, 32 );
-    rAssert( m_FrameBuffer1 != NULL );
-
-    m_FrameBuffer2 = ( u8* ) radMemoryAllocAligned( RADMEMORY_ALLOC_DEFAULT, 
-                                      m_FrameBufferSize*VI_DISPLAY_PIX_SZ * 2, 32 );
-    rAssert( m_FrameBuffer2 != NULL );
-
-    //
-    // Init double-buffering pointer.
-    //
-    m_CurBuffer = m_FrameBuffer1;
-}
-#endif // RAD_GAMECUBE
-
-
-//=============================================================================
-// Function:    radTextDisplay::GcnFillFrameBuffer
-//=============================================================================
-// Description: Fill a frame buffer with a solid color.
-// 
-// Parameters:  color - YUYV color to use.
-//
-// Returns:     None.
-//
-//------------------------------------------------------------------------------
-#ifdef RAD_GAMECUBE
-
-void radTextDisplay::GcnFillFrameBuffer( u32 color )
-{
-    u8*         ptr;
-
-    for (ptr = m_CurBuffer; ptr < m_CurBuffer + m_FrameBufferSize; ptr += VI_DISPLAY_PIX_SZ * 2)
-    {
-        *( u32* ) ptr = color;
-    }
-}
-#endif // RAD_GAMECUBE
-
-
-//=============================================================================
-// Function:    radTextDisplay::GcnInitConsole
-//=============================================================================
-// Description: Initializes the GameCube display system for displaying text.
-// 
-// Parameters:  None.
-//
-// Returns:     None.
-//
-//------------------------------------------------------------------------------
-#ifdef RAD_GAMECUBE
-
-void radTextDisplay::GcnInitConsole( void )
-{
-    //
-    // Init the video system.
-    // We don't call OSInit here because that is done in radplatform.
-    //
-    VIInit( );
-
-    //
-    // Calculate frame buffer size.
-    // Note that each line width should be a multiple of 16.
-    m_FrameBufferSize = ( u32 )( VIPadFrameBufferWidth( m_ScreenMode->fbWidth )
-                      * m_ScreenMode->xfbHeight * VI_DISPLAY_PIX_SZ );
-
-    //
-    // Allocate us a coupla frame buffers.
-    //
-    GcnAllocateFrameBuffer( );
-
-    //
-    // Configure the video system for 640x480 non-interlaced mode.
-    //
-    VIConfigure( m_ScreenMode );
-
-    //
-    // Need to "flush" so that the VI changes so far takes effect
-    // from the following field.
-    //
-    VIFlush( );
-    VIWaitForRetrace( );
-
-    //
-    // Since the tv mode is not interlaced after VIInit,
-    // we don't need to wait for one more frame to make sure
-    // that the mode is switched from interlace to non-interlace
-    //
-    //VIWaitForRetrace( );
-}
-#endif // RAD_GAMECUBE
-
-
-//=============================================================================
-// Function:    radTextDisplay::GcnSwapBuffers
-//=============================================================================
-// Description: Swap display buffers on the GameCube.
-// 
-// Parameters:  None.
-//
-// Returns:     None.
-//
-//------------------------------------------------------------------------------
-#ifdef RAD_GAMECUBE
-
-void radTextDisplay::GcnSwapBuffers( void )
-{
-    // 
-    // Copy the newly drawn frame buffer to the graphics hardware.
-    //
-    DCStoreRange( ( void* ) m_CurBuffer, m_FrameBufferSize );
-    VISetNextFrameBuffer( ( void* ) m_CurBuffer);
-
-    //
-    // If this is the first time, we need to kick the hardware.
-    //
-    if( m_First )
-    {                
-        VISetBlack( FALSE );
-        m_First = false;
-    }
-
-    //
-    // Flush video commands.
-    //
-    VIFlush( );
-
-    //
-    // Draw into the other frame buffer now.
-    //
-    m_CurFrame++;
-    m_CurBuffer = ( m_CurFrame & 0x1 ) ? m_FrameBuffer2 : m_FrameBuffer1;
-}
-#endif // RAD_GAMECUBE

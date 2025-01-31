@@ -71,9 +71,6 @@
     <Filter Include="Source Files\main\ps2">
       <UniqueIdentifier>{186e6622-6ee7-4634-915a-fe3f89329ab8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\main\gc">
-      <UniqueIdentifier>{f2b1314a-dab0-406c-83f3-45d84d879a02}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\main\xbox">
       <UniqueIdentifier>{00f50b69-2d09-4913-88af-f8eedaf6628e}</UniqueIdentifier>
     </Filter>
@@ -586,9 +583,6 @@
     <ClCompile Include="input\rumbleeffect.cpp">
       <Filter>Source Files\input</Filter>
     </ClCompile>
-    <ClCompile Include="input\rumblegc.cpp">
-      <Filter>Source Files\input</Filter>
-    </ClCompile>
     <ClCompile Include="input\rumbleps2.cpp">
       <Filter>Source Files\input</Filter>
     </ClCompile>
@@ -684,18 +678,6 @@
     </ClCompile>
     <ClCompile Include="main\ps2platform.cpp">
       <Filter>Source Files\main\ps2</Filter>
-    </ClCompile>
-    <ClCompile Include="main\gcmain.cpp">
-      <Filter>Source Files\main\gc</Filter>
-    </ClCompile>
-    <ClCompile Include="main\gamecube_extras\gcmanager.cpp">
-      <Filter>Source Files\main\gc</Filter>
-    </ClCompile>
-    <ClCompile Include="main\gcplatform.cpp">
-      <Filter>Source Files\main\gc</Filter>
-    </ClCompile>
-    <ClCompile Include="main\gamecube_extras\screenshot.c">
-      <Filter>Source Files\main\gc</Filter>
     </ClCompile>
     <ClCompile Include="main\xboxmain.cpp">
       <Filter>Source Files\main\xbox</Filter>
@@ -1524,9 +1506,6 @@
     </ClCompile>
     <ClCompile Include="sound\music\musicplayer.cpp">
       <Filter>Source Files\sound\music</Filter>
-    </ClCompile>
-    <ClCompile Include="sound\soundfx\gcreverbcontroller.cpp">
-      <Filter>Source Files\sound\soundfx</Filter>
     </ClCompile>
     <ClCompile Include="sound\soundfx\positionalsoundsettings.cpp">
       <Filter>Source Files\sound\soundfx</Filter>
@@ -2396,21 +2375,6 @@
     </ClInclude>
     <ClInclude Include="main\ps2platform.h">
       <Filter>Source Files\main\ps2</Filter>
-    </ClInclude>
-    <ClInclude Include="main\errorsGC.h">
-      <Filter>Source Files\main\gc</Filter>
-    </ClInclude>
-    <ClInclude Include="main\gamecube_extras\gcmanager.h">
-      <Filter>Source Files\main\gc</Filter>
-    </ClInclude>
-    <ClInclude Include="main\gcplatform.h">
-      <Filter>Source Files\main\gc</Filter>
-    </ClInclude>
-    <ClInclude Include="main\gamecube_extras\license.h">
-      <Filter>Source Files\main\gc</Filter>
-    </ClInclude>
-    <ClInclude Include="main\gamecube_extras\screenshot.h">
-      <Filter>Source Files\main\gc</Filter>
     </ClInclude>
     <ClInclude Include="main\errorsXBOX.h">
       <Filter>Source Files\main\xbox</Filter>
@@ -3359,9 +3323,6 @@
     </ClInclude>
     <ClInclude Include="sound\music\musicplayer.h">
       <Filter>Source Files\sound\music</Filter>
-    </ClInclude>
-    <ClInclude Include="sound\soundfx\gcreverbcontroller.h">
-      <Filter>Source Files\sound\soundfx</Filter>
     </ClInclude>
     <ClInclude Include="sound\soundfx\ipositionalsoundsettings.h">
       <Filter>Source Files\sound\soundfx</Filter>

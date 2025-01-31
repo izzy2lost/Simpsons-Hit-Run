@@ -18,37 +18,8 @@ static const char dc[] = "radTypeInfoLoader";
 
 static inline unsigned int radEndianLittleToPlat( unsigned int in )
 {
-	#ifdef RAD_GAMECUBE
-		unsigned int out;
-	
-		((char*)&out)[ 0 ] = ((char*)&in)[ 3 ];
-		((char*)&out)[ 1 ] = ((char*)&in)[ 2 ];
-		((char*)&out)[ 2 ] = ((char*)&in)[ 1 ];
-		((char*)&out)[ 3 ] = ((char*)&in)[ 0 ];
-	
-		return out;
-	#else
-		
-		return in;
-		
-	#endif
+	return in;	
 }
-/*
-struct MemoryImageParam
-{
-    char szName[ ParserConst::MAX_ID_STRING_SIZE ];
-    char szType[ ParserConst::MAX_ID_STRING_SIZE ];
-    int  nIndLvl;
-};
-
-struct MemoryImageIntLiteral
-{
-    char szName[ ParserConst::MAX_ID_STRING_SIZE ];
-    int  nValue;
-};
-*/
-
-
 
 //========================================================================
 // Compoenent::radTypeInfoLoader

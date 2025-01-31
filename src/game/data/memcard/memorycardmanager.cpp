@@ -64,11 +64,6 @@ char DEFAULT_GAME_DRIVE[radFileDrivenameMax+1]; // for win32, need to store the 
 
 const char* SAVE_GAME_DRIVE[] =
 {
-#ifdef RAD_GAMECUBE
-    "MEMCARDCHANNELA:",
-    "MEMCARDCHANNELB:",
-#endif
-
 #ifdef RAD_PS2
     "MEMCARD1A:",
     "MEMCARD1B:",
@@ -102,11 +97,6 @@ const char* SAVE_GAME_DRIVE[] =
 
 const unsigned int NUM_SAVE_GAME_DRIVES =
     sizeof( SAVE_GAME_DRIVE ) / sizeof( SAVE_GAME_DRIVE[ 0 ] ) - 1;
-
-#ifdef RAD_GAMECUBE
-    const char* GC_BANNER_FILE = "opening.bnr";
-    const char* GC_TPL_FILE = "icon.tpl";
-#endif
 
 #ifdef RAD_PS2
     const char* PS2_LIST_ICON_FILE = "list.ico";
@@ -429,10 +419,6 @@ MEMTRACK_PUSH_GROUP( "MemcardInfo" );
 
         m_elapsedMemcardInfoLoadTime = radTimeGetMilliseconds();
 
-#ifdef RAD_GAMECUBE
-        this->LoadMemcardInfo_GC( heap );
-#endif
-
 #ifdef RAD_PS2
         this->LoadMemcardInfo_PS2( heap );
 #endif
@@ -462,10 +448,6 @@ MemoryCardManager::UnloadMemcardInfo()
 {
     if( m_memcardInfoLoadState == MEMCARD_INFO_LOAD_COMPLETED )
     {
-#ifdef RAD_GAMECUBE
-        this->UnloadMemcardInfo_GC();
-#endif
-
 #ifdef RAD_PS2
         this->UnloadMemcardInfo_PS2();
 #endif
@@ -505,91 +487,6 @@ MemoryCardManager::SetMemcardIconData( char* dataBuffer,
 
     switch( m_memcardInfoLoadState )
     {
-#ifdef RAD_GAMECUBE
-        case MEMCARD_INFO_LOADING_BANNER:
-        {
-            m_dvdBanner = reinterpret_cast<DVDBanner*>( dataBuffer );
-
-            // This banner is in RGB format
-            //
-            m_memcardInfo->m_Banner = m_dvdBanner->image;
-            m_memcardInfo->m_BannerFormat = radMemcardInfo::RGB5A3;
-
-            // Take the comment from the disk too.
-            //
-            memcpy( m_memcardInfo->m_CommentLine1, m_dvdBanner->shortTitle, 32 );
-            strcpy( m_memcardInfo->m_CommentLine2, "" );
-
-            break;
-        }
-        case MEMCARD_INFO_LOADING_TEXPALETTE:
-        {
-            m_texPalette = reinterpret_cast<TEXPalette*>( dataBuffer );
-
-            // We have a TEXPalette, we need to parse it.
-            //
-            UnpackTexPalette( m_texPalette );
-
-            //
-            // Set the animation to loop at find number of frames
-            //
-            m_memcardInfo->m_AnimType = radMemcardInfo::Loop;
-
-            m_memcardInfo->m_NumFrames = m_texPalette->numDescriptors > 8 ? 8 : m_texPalette->numDescriptors;
-
-            //
-            // Set the info for all frames
-            //
-            for( unsigned int i = 0; i < m_memcardInfo->m_NumFrames; i++ )
-            {
-                TEXDescriptorPtr tdp = TEXGet( m_texPalette, (u32) i );
-
-                rAssertMsg( tdp->textureHeader->height == 32 && tdp->textureHeader->width == 32,
-                            "Icon is the wrong dimension. Should be 32 by 32." );
-
-                //
-                // Set format and data
-                //
-                m_memcardInfo->m_pIcon[ i ].m_CLUT = NULL;
-
-                switch( (GXTexFmt)(tdp->textureHeader->format) )
-                {
-                    case GX_TF_RGB5A3:
-                    {
-                        m_memcardInfo->m_pIcon[ i ].m_Format = radMemcardIconData::RGB5A3;
-                        m_memcardInfo->m_pIcon[ i ].m_Data = (void*) tdp->textureHeader->data;
-
-                        break;
-                    }
-                    case GX_TF_C8:
-                    {
-                        m_memcardInfo->m_pIcon[ i ].m_Format = radMemcardIconData::C8;
-                        m_memcardInfo->m_pIcon[ i ].m_Data = (void*) tdp->textureHeader->data;
-
-                        rAssert( tdp->CLUTHeader );
-                        rAssert( (GXTlutFmt) tdp->CLUTHeader->format == GX_TL_RGB5A3 );
-                        rAssert( tdp->CLUTHeader->numEntries == 256 );
-
-                        m_memcardInfo->m_pIcon[ i ].m_CLUT = (void*) tdp->CLUTHeader->data;
-
-                        break;
-                    }
-                    default:
-                    {
-                        rAssertMsg( false, "Unsupported icon texture format." );
-                        break;
-                    }
-                }
-
-                // Set speed
-                //
-                m_memcardInfo->m_pIcon[ i ].m_Speed = radMemcardIconData::Slow;
-            }
-
-            break;
-        }
-#endif // RAD_GAMECUBE
-
 #ifdef RAD_PS2
         case MEMCARD_INFO_LOADING_ICON_LIST:
         {
@@ -735,10 +632,6 @@ MemoryCardManager::IsCurrentDriveReady( bool forceSyncUpdate, bool *unformatted 
         {
             card_unformatted = true;
         }
-#ifdef RAD_GAMECUBE
-        if (  m_mediaInfos[ currentDriveIndex ].m_MediaState==IRadDrive::MediaInfo::MediaEncodingErr )
-            card_unformatted = true;
-#endif
         isReady = (m_mediaInfos[ currentDriveIndex ].m_MediaState == IRadDrive::MediaInfo::MediaPresent);
 		if (unformatted)
 			*unformatted = card_unformatted;
@@ -832,13 +725,6 @@ MemoryCardManager::UpdateMemcardInfo( const char* savedGameTitle, int lineBreak 
 {
     rAssert( m_memcardInfo != NULL );
 
-#ifdef RAD_GAMECUBE
-    rAssert( savedGameTitle != NULL );
-    strncpy( m_memcardInfo->m_CommentLine2,
-             savedGameTitle,
-             MAX_SAVED_GAME_TITLE_LENGTH );
-#endif
-
 #ifdef RAD_PS2
     rAssert( savedGameTitle != NULL );
     rAssert( lineBreak != -1 );
@@ -889,7 +775,7 @@ MemoryCardManager::OnDriveOperationsComplete( void* pUserData )
         {
             if( m_nextMediaInfo == 0 )
             {
-#if defined( RAD_GAMECUBE) || defined( RAD_PS2 )
+#if defined( RAD_PS2 )
                 // continue to poll for media info from all drives
                 // during the entire minimum checking time
                 //
@@ -1034,12 +920,6 @@ MemoryCardManager::OnMemoryCardCheckCompleted()
             }
             else
             {
-#ifdef RAD_GAMECUBE
-                // Nintendo TRC: if there is a full memory card, we need to check later to see if
-                // all game slots are taken up; if not, then we must display a "full memory card" error message
-                //
-                fullCardExists = true;
-#endif
                 if( saveGameExists )
                 {
                     goodCardExists = true; // we found good card, continue looping to find the latest save game
@@ -1067,7 +947,7 @@ MemoryCardManager::OnMemoryCardCheckCompleted()
                 "ERROR: Default hard drive didn't mount." );
 #endif // RAD_WIN32
 
-#if defined( RAD_GAMECUBE ) || defined( RAD_PS2 )
+#if defined( RAD_PS2 )
     if( !goodCardExists || fullCardExists )
     {
         // no good card exists; now search for first card w/ an error
@@ -1077,11 +957,7 @@ MemoryCardManager::OnMemoryCardCheckCompleted()
         {
             if( m_mediaInfos[ i ].m_MediaState == IRadDrive::MediaInfo::MediaPresent )
             {
-#ifdef RAD_GAMECUBE
-                bool saveGameExists = GetGameDataManager()->DoesSaveGameExist( m_pDrives[ i ], true, true );
-#else
                 bool saveGameExists = GetGameDataManager()->DoesSaveGameExist( m_pDrives[ i ] );
-#endif
                 if( !saveGameExists && !this->EnoughFreeSpace( i ) )
                 {
                     errorExists = true;
@@ -1121,7 +997,7 @@ MemoryCardManager::OnMemoryCardCheckCompleted()
 #endif
         }
     }
-#endif // RAD_GAMECUBE || RAD_PS2
+#endif // RAD_PS2
 
     if( m_memcardCheckCallback != NULL )
     {
@@ -1133,104 +1009,6 @@ MemoryCardManager::OnMemoryCardCheckCompleted()
         m_memcardCheckCallback = NULL;
     }
 }
-
-
-#ifdef RAD_GAMECUBE
-    //
-    // I have no idea what this does ...
-    //
-    void
-    MemoryCardManager::UnpackTexPalette( TEXPalettePtr pal )
-    {
-        u16 i;
-    
-        rAssertMsg( pal->versionNumber == 2142000, "Invalid version number for texture palette" );
-    
-        pal->descriptorArray = (TEXDescriptorPtr)(((u32)(pal->descriptorArray)) + ((u32)pal));
-
-        //
-        // Go through each of the palette descriptors
-        //
-        for ( i = 0; i < pal->numDescriptors; i++ )
-        {
-            if( pal->descriptorArray[ i ].textureHeader )
-            {
-                //
-                // Fill in the texture header
-                //
-                pal->descriptorArray[ i ].textureHeader =
-                    reinterpret_cast< TEXHeaderPtr >
-                    (
-                        ( (u32) pal->descriptorArray[i].textureHeader ) +
-                        ( (u32) pal )
-                    );
-            
-                //
-                // If it is not unpacked, unpack it
-                //
-                if
-                (
-                    !( pal->descriptorArray[i].textureHeader->unpacked )
-                )
-                {
-                    pal->descriptorArray[i].textureHeader->data =
-                        reinterpret_cast< Ptr >
-                        (
-                            ( (u32) pal->descriptorArray[ i ].textureHeader->data ) +
-                            ( (u32) pal )
-                        );
-                    pal->descriptorArray[i].textureHeader->unpacked = 1;
-                }
-            }
-
-            if(pal->descriptorArray[i].CLUTHeader)
-            {
-                pal->descriptorArray[i].CLUTHeader = (CLUTHeaderPtr)((u32)(pal->descriptorArray[i].CLUTHeader) + (u32)pal);     
-            
-                if(!(pal->descriptorArray[i].CLUTHeader->unpacked))
-                {
-                    pal->descriptorArray[i].CLUTHeader->data = (Ptr)((u32)(pal->descriptorArray[i].CLUTHeader->data) + (u32)pal);
-                    pal->descriptorArray[i].CLUTHeader->unpacked = 1;
-                }
-            }
-        }
-    }
-
-    void
-    MemoryCardManager::LoadMemcardInfo_GC( GameMemoryAllocator heap )
-    {
-        m_dvdBanner = NULL;
-        m_texPalette = NULL;
-
-        GetLoadingManager()->AddRequest( FILEHANDLER_ICON,
-                                         GC_BANNER_FILE,
-                                         heap,
-                                         this );
-
-        GetLoadingManager()->AddRequest( FILEHANDLER_ICON,
-                                         GC_TPL_FILE,
-                                         heap,
-                                         this );
-
-        m_memcardInfoLoadState = MEMCARD_INFO_LOADING_BANNER;
-    }
-
-    void
-    MemoryCardManager::UnloadMemcardInfo_GC()
-    {
-        if( m_dvdBanner != NULL )
-        {
-            delete m_dvdBanner;
-            m_dvdBanner = NULL;
-        }
-
-        if( m_texPalette != NULL )
-        {
-            delete [] m_texPalette;
-            m_texPalette = NULL;
-        }
-    }
-#endif // RAD_GAMECUBE
 
 #ifdef RAD_PS2
     void

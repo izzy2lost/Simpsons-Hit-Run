@@ -52,14 +52,6 @@
 void MemoryHackCallback() { INIT_MEM() };
 #endif // RAD_XBOX
 
-#ifdef RAD_GAMECUBE
-#include <main/gcplatform.h>
-#include <dolphin.h>
-#define INIT_MEM()  Memory::InitializeMemoryUtilities();GCPlatform::InitializeMemory();
-extern IRadMemoryHeap *vmmHeap;
-void MemoryHackCallback() { INIT_MEM() };
-#endif // RAD_GAMECUBE
-
 #ifdef RAD_PS2
     void MemoryHackCallback() { INIT_MEM() };
 #endif
@@ -91,7 +83,6 @@ const char* HeapNames[] =
 {
     "Default Heap",
         "Temp Heap",
-        "GameCube Virtual Memory Heap",
         "Persistent Heap",
         "Level Heap",
         "Movie Heap",
@@ -523,10 +514,6 @@ void PrintOutOfMemoryMessage( void* userData, radMemoryAllocator heap, const uns
     //Disable this while we're here...
     ::radMemorySetOutOfMemoryCallback( NULL, NULL );
 
-#ifdef RAD_GAMECUBE
-    ::radMemoryMonitorSuspend();
-#endif
-
     IRadTextDisplay* textDisplay;
     GameMemoryAllocator heapEnum = static_cast<GameMemoryAllocator>(heap);
 
@@ -615,10 +602,6 @@ void PrintOutOfMemoryMessage( void* userData, radMemoryAllocator heap, const uns
     }
 
     rReleaseBreak();
-
-#ifndef RAD_GAMECUBE
-    ::radMemoryMonitorSuspend();
-#endif
 
     //Re-enable now that we're through
     ::radMemorySetOutOfMemoryCallback( PrintOutOfMemoryMessage, NULL );
@@ -870,10 +853,6 @@ void HeapStack::Dump ()
 }
 */
 
-#ifdef RAD_GAMECUBE
-IRadMemoryHeap* s_pIRadMemoryHeapVMM             = 0;
-#endif
-
 HeapManager::HeapManager (GameMemoryAllocator defaultAllocator) :
     m_HeapStack (defaultAllocator)
 #ifndef FINAL
@@ -953,17 +932,6 @@ GameMemoryAllocator HeapManager::GetHeapID (const IRadMemoryHeap* heap)
     {
         return GMA_DEBUG;
     }
-#ifdef RAD_GAMECUBE
-    if (s_pIRadMemoryHeapVMM && (heap == s_pIRadMemoryHeapVMM))
-    {
-#ifdef NO_ARAM
-        return GMA_LEVEL_OTHER;
-#else
-        return GMA_GC_VMM;
-#endif
-    }
-#endif
-
     rAssert (false);
     */
     return GMA_DEFAULT;
@@ -981,7 +949,7 @@ float HeapManager::GetFudgeFactor ()
     }
     else
     {
-        #if defined( RAD_GAMECUBE ) && defined( RAD_TUNE )
+        #if defined( RAD_TUNE )
             FUDGE = 1.0f;
         #else
             #ifdef RAD_MW
@@ -1139,7 +1107,6 @@ radMemoryAllocator HeapManager::SetCurrentAllocator ( radMemoryAllocator allocat
 void HeapManager::DumpHeapStats ( bool text )
 {
 //#ifndef FINAL
-//#ifndef RAD_GAMECUBE
     struct HeapInfo
     {
         GameMemoryAllocator gma;
@@ -1147,16 +1114,6 @@ void HeapManager::DumpHeapStats ( bool text )
         IRadMemoryHeap** heap;
         unsigned int highwater;
     };
-
-#ifdef RAD_GAMECUBE
-    if ( vmmHeap && !s_pIRadMemoryHeapVMM )
-    {
-        //The virtual memory heap.
-        rReleaseString ("Creating Heap: VMM\n");
-        s_pIRadMemoryHeapVMM = vmmHeap;
-        s_pIRadMemoryHeapVMM->AddRef();
-    }
-#endif
 
 /*
 
@@ -1199,9 +1156,6 @@ void HeapManager::DumpHeapStats ( bool text )
         { GMA_LEVEL_FE,    "F/E",    GetHeapReference( GMA_LEVEL_FE ),   0 },
         { GMA_LEVEL_HUD,   "HUD",    GetHeapReference( GMA_LEVEL_HUD ),  0 }
 //        { GMA_LEVEL_OTHER, "Other", &s_pIRadMemoryHeapLevelOther, 0 }
-#ifdef RAD_GAMECUBE
-        ,{ GMA_GC_VMM, "VMM", &s_pIRadMemoryHeapVMM, 0 }
-#endif
     };
 
     if ( text )
@@ -1356,8 +1310,6 @@ void HeapManager::DumpHeapStats ( bool text )
             }
         }
     }
-
-//#endif // !RAD_GAMECUBE
 
 //#endif // !FINAL
 }
@@ -1568,44 +1520,6 @@ void HeapManager::DumpArtStats ()
     const float HS_SPECIAL = 10.0f;
     #endif
 
-#elif defined (RAD_GAMECUBE)
-    //NOTE:  The VMM is using 1 MEG - See VMM_MAIN_RAM in gcplatform.h
-    //NOTE2: GameCube libraries now allocate from GMA_AUDIO_PERSISTENT rather than OSAlloc,
-    //NOTE3: There is also a static heap defined in radCore/radmemory memorymanager.cpp of 
-    //       STATIC_HEAP_SIZE ( 1024 * 1024 * 2 ) + ( 600 * 1024 ) = 2.6 Megs This is replacing the
-    //       regular persistent heap.
-    //NOTE4: There is also an amount of emergency memory in radmemory (memorymanager) in the initializePlatform
-    //       for printfs and such.  It is 32 * 1024 bytes = 32K
-    const float HS_DEFAULT              = 0.08f; //0.13f // For only very core FTech stuff
-    const float HS_TEMP                 = 0.3f; //0.37f;
-
-    const float HS_PERSISTENT           = 2.56f; //Need extra 8K for PAL
-    const float HS_MUSIC                = 0.2f;
-    const float HS_AUDIO_PERSISTENT     = 0.65f;
-    const float HS_LEVEL                = 12.95f; // a little extra sub-heap creation overhead
-    //FE Only
-    const float HS_LEVEL_MOVIE          = 3.1f;
-    const float HS_LEVEL_AUDIO_FE       = 0.1f;
-    const float HS_LEVEL_FE             = 9.75f;
-    //In-game Only 
-    const float HS_LEVEL_ZONE           = 6.48f;
-    const float HS_LEVEL_OTHER          = 3.20f;
-    const float HS_LEVEL_HUD            = 2.50f;
-    //const float HS_LEVEL_MISSION        = 0.0f;
-    const float HS_LEVEL_AUDIO_INGAME   = 0.04f;
-    //Mnigame Only
-    const float HS_MINIGAME_ZONE        = 3.0f;
-    const float HS_MINIGAME_OTHER       = 7.5f;
-    const float HS_MINIGAME_HUD         = 1.7f;
-    const float HS_MINIGAME_MISSION     = 2.0f;
-    const float HS_MINIGAME_AUDIO       = 0.5f;
-
-    #ifndef RAD_RELEASE
-    const float HS_DEBUG                = 2.0f;
-    const float HS_DEBUG_FIREWIRE       = 99999.99f;
-    const float HS_SPECIAL              = 0.0f;
-    #endif
-
 #elif defined (RAD_XBOX)
     #ifdef RAD_RELEASE
     const float HS_DEFAULT = 0.1f;  // For only very core FTech stuff
@@ -1714,14 +1628,13 @@ void HeapManager::PrepareHeapsStartup ()
 
     CreateHeap( GMA_PERSISTENT, static_cast<unsigned int>(persistent_size * MB * FUDGE) );
 
-//#ifndef RAD_GAMECUBE
     //
     // The audio persistent heap.
     // This heap holds allocations that audio makes that are done once
     // and persist throughout the game.  They aren't necessarily done
     // at start up, hence its own heap
     //
-#if defined( RAD_GAMECUBE ) || defined( RAD_PS2 )
+#if defined( RAD_PS2 )
     CreateHeap( GMA_AUDIO_PERSISTENT, static_cast< int >( HS_AUDIO_PERSISTENT * FUDGE * MB ) );
     IRadMemoryAllocator* audioHeap = GetAllocator( GMA_AUDIO_PERSISTENT );
     radMemoryRegisterAllocator( GMA_MUSIC,            RADMEMORY_ALLOC_DEFAULT, audioHeap );
@@ -1735,28 +1648,6 @@ void HeapManager::PrepareHeapsStartup ()
 //    radMemoryRegisterAllocator( GMA_AUDIO_PERSISTENT, RADMEMORY_ALLOC_VMM, vmmHeap );
 //    radMemoryRegisterAllocator( GMA_MUSIC, RADMEMORY_ALLOC_VMM, vmmHeap );
 //#endif
-
-#ifdef RAD_GAMECUBE 
-    // The default heap.
-    // This heap holds everything we are otherwise unable to route to a heap.
-    // This includes objects initialized before the heaps are created.
-    //
-    unsigned int size = Memory::GetTotalMemoryFree() - 3 * 1024;
-    CreateHeap( GMA_DEFAULT, size );
-    IRadMemoryAllocator* defaultHeap = GetAllocator( GMA_DEFAULT );
-    //radMemoryRegisterAllocator( GMA_TEMP,             RADMEMORY_ALLOC_DEFAULT, defaultHeap );
-    radMemoryRegisterAllocator( GMA_LEVEL_MOVIE,      RADMEMORY_ALLOC_DEFAULT, defaultHeap );
-    radMemoryRegisterAllocator( GMA_LEVEL_FE,         RADMEMORY_ALLOC_DEFAULT, defaultHeap );
-    radMemoryRegisterAllocator( GMA_LEVEL_ZONE,       RADMEMORY_ALLOC_DEFAULT, defaultHeap );
-    radMemoryRegisterAllocator( GMA_LEVEL_OTHER,      RADMEMORY_ALLOC_DEFAULT, defaultHeap );
-//    radMemoryRegisterAllocator( GMA_LEVEL_HUD,        RADMEMORY_ALLOC_DEFAULT, defaultHeap );
-    radMemoryRegisterAllocator( GMA_LEVEL_MISSION,    RADMEMORY_ALLOC_DEFAULT, defaultHeap );
-    radMemoryRegisterAllocator( GMA_LEVEL_AUDIO,      RADMEMORY_ALLOC_DEFAULT, defaultHeap );
-    radMemoryRegisterAllocator( GMA_DEBUG,            RADMEMORY_ALLOC_DEFAULT, defaultHeap );
-    radMemoryRegisterAllocator( GMA_SPECIAL,          RADMEMORY_ALLOC_DEFAULT, defaultHeap );
-//    radMemoryRegisterAllocator( GMA_MUSIC,            RADMEMORY_ALLOC_DEFAULT, defaultHeap );
-//    radMemoryRegisterAllocator( GMA_AUDIO_PERSISTENT, RADMEMORY_ALLOC_DEFAULT, defaultHeap );
-#endif
 
 #if defined(RAD_PS2) && defined(ALL_DL_HEAPS) 
     unsigned int fudgeFactor;
@@ -1865,29 +1756,6 @@ void HeapManager::PrepareHeapsStartup ()
     //s_pIRadMemoryHeapDefault = radMemoryCreateDougLeaHeap( static_cast<unsigned int>(HS_DEFAULT * MB), RADMEMORY_ALLOC_DEFAULT, "Default" );
     //s_pIRadMemoryHeapDefault->AddRef();
     //radMemoryRegisterAllocator( GMA_DEFAULT, RADMEMORY_ALLOC_DEFAULT, s_pIRadMemoryHeapDefault );
-
-    /*
-#ifdef RAD_GAMECUBE
-    if ( vmmHeap )
-    {
-        //The virtual memory heap.
-        rReleaseString ("Creating Heap: VMM\n");
-        s_pIRadMemoryHeapVMM = vmmHeap;
-        s_pIRadMemoryHeapVMM->AddRef();
-    }
-
-    // The default heap.
-    // This heap holds everything we are otherwise unable to route to a heap.
-    // This includes objects initialized before the heaps are created.
-    //
-    unsigned int size = Memory::GetTotalMemoryFree();
-    rReleasePrintf ("Creating Heap: DEFAULT (%f)\n", HS_DEFAULT);
-    s_pIRadMemoryHeapDefault = radMemoryCreateDougLeaHeap( static_cast<unsigned int>(size), RADMEMORY_ALLOC_DEFAULT, "Default" );
-    s_pIRadMemoryHeapDefault->AddRef();
-    radMemoryRegisterAllocator( GMA_DEFAULT, RADMEMORY_ALLOC_DEFAULT, s_pIRadMemoryHeapDefault );
-
-#endif
-*/
 }
 //=============================================================================
 // HeapManager::PrepareHeapsFeCleanup

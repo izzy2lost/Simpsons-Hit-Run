@@ -33,9 +33,6 @@
 #ifdef RAD_PS2
     #include <eekernel.h>
 #endif
-#ifdef RAD_GAMECUBE
-    #include <os.h>
-#endif 
 
 #include <radthread.hpp>
 #include <radmemorymonitor.hpp>
@@ -127,17 +124,6 @@ radThreadSemaphore::radThreadSemaphore( unsigned int count )
 
 #endif
 
-#ifdef RAD_GAMECUBE
-    //
-    // Gamecube realizes the semaphore object using a condition adn
-    // a mutex. We manage the count ourselff.
-    //       
-    m_Count = count;
-    OSInitMutex( &m_Mutex );
-    OSInitCond( &m_Condition );   
-
-#endif
-
 }
 
 //=============================================================================
@@ -174,13 +160,6 @@ radThreadSemaphore::~radThreadSemaphore( void )
 
 #endif
 
-
-#ifdef RAD_GAMECUBE
-    //
-    // Under gamecube, we don't do anything.
-    //
-#endif
-
 }
 
 //=============================================================================
@@ -212,31 +191,6 @@ void radThreadSemaphore::Wait( void )
     WaitSema( m_Semaphore );
 
 #endif
-
-#ifdef RAD_GAMECUBE
-    
-    //
-    // Obtain mutex to protect our counter.
-    //
-    OSLockMutex( &m_Mutex );
-
-    m_Count--;
-
-    //
-    // Enter a while loop waiting for condition to be meet.
-    //
-    while( m_Count < 0 )
-    {
-        //
-        // This operation release mutex and suspends thread. When
-        // condition is singaled, mutex is reaquired.
-        //
-        OSWaitCond(&m_Condition, &m_Mutex);
-    }
-
-    OSUnlockMutex(&m_Mutex);      
-
-#endif
 }
 
 //=============================================================================
@@ -266,24 +220,6 @@ void radThreadSemaphore::Signal( void )
     // Under PS2, just signal semaphore
     //
     SignalSema( m_Semaphore );
-
-#endif
-
-#ifdef RAD_GAMECUBE
-
-    //
-    // Obtain mutex to protect our counter.
-    //
-    OSLockMutex( &m_Mutex );
-
-    m_Count++;
-
-    //
-    // Wake up any threads waiting on the condition.
-    //
-    OSSignalCond( &m_Condition );
-
-    OSUnlockMutex( &m_Mutex );
 
 #endif
 

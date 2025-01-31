@@ -318,11 +318,6 @@
     <ClCompile Include="input\MouseCursor.cpp" />
     <ClCompile Include="input\RealController.cpp" />
     <ClCompile Include="input\rumbleeffect.cpp" />
-    <ClCompile Include="input\rumblegc.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="input\rumbleps2.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -356,26 +351,7 @@
     <ClCompile Include="loading\soundfilehandler.cpp" />
     <ClCompile Include="main\commandlineoptions.cpp" />
     <ClCompile Include="main\game.cpp" />
-    <ClCompile Include="main\gamecube_extras\gcmanager.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="main\gamecube_extras\screenshot.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="main\gcmain.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="main\gcplatform.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+
     <ClCompile Include="main\pchsrr2.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -717,11 +693,6 @@
     <ClCompile Include="sound\soundcluster.cpp" />
     <ClCompile Include="sound\sounddebug\sounddebugdisplay.cpp" />
     <ClCompile Include="sound\sounddebug\sounddebugpage.cpp" />
-    <ClCompile Include="sound\soundfx\gcreverbcontroller.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="sound\soundfx\positionalsoundsettings.cpp" />
     <ClCompile Include="sound\soundfx\ps2reverbcontroller.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -988,15 +959,10 @@
     <ClInclude Include="loading\scroobyfilehandler.h" />
     <ClInclude Include="loading\soundfilehandler.h" />
     <ClInclude Include="main\commandlineoptions.h" />
-    <ClInclude Include="main\errorsGC.h" />
     <ClInclude Include="main\errorsPS2.h" />
     <ClInclude Include="main\errorsWIN32.h" />
     <ClInclude Include="main\errorsXBOX.h" />
     <ClInclude Include="main\game.h" />
-    <ClInclude Include="main\gamecube_extras\gcmanager.h" />
-    <ClInclude Include="main\gamecube_extras\license.h" />
-    <ClInclude Include="main\gamecube_extras\screenshot.h" />
-    <ClInclude Include="main\gcplatform.h" />
     <ClInclude Include="main\globaltypes.h" />
     <ClInclude Include="main\pchsrr2.h" />
     <ClInclude Include="main\platform.h" />
@@ -1347,7 +1313,6 @@
     <ClInclude Include="sound\soundcollisiondata.h" />
     <ClInclude Include="sound\sounddebug\sounddebugdisplay.h" />
     <ClInclude Include="sound\sounddebug\sounddebugpage.h" />
-    <ClInclude Include="sound\soundfx\gcreverbcontroller.h" />
     <ClInclude Include="sound\soundfx\ipositionalsoundsettings.h" />
     <ClInclude Include="sound\soundfx\ireverbsettings.h" />
     <ClInclude Include="sound\soundfx\positionalsoundsettings.h" />

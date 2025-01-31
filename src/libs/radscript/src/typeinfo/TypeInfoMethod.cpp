@@ -19,10 +19,6 @@
 #include "ps2\ps2typeinfovfcall.h"
 #endif
 
-#ifdef RAD_GAMECUBE
-#include "gcn\gcntypeinfovfcall.h"
-#endif
-
 //============================================================================
 // Component: IRadTypeInfoMethod
 //============================================================================
@@ -96,40 +92,7 @@ unsigned int IRadTypeInfoMethod::Invoke
             
                 return ret;
             
-            #endif
-                
-            //
-            //  ---- RAD_GAMECUBE ------------------------------------------------------
-            //                    
-            
-            #ifdef RAD_GAMECUBE            
-           
-                unsigned int pIntParams[ 7 ];
-                float        pFloatParams[ 8 ];
-
-                int          ip = 0;
-                int          fp = 0;
-
-                for( unsigned int i = 0; i < numParams; i ++ )
-                {
-                    if ( GetParamInfoAt( i )->GetIndLvl( ) > 0 || GetParamInfoAt( i )->GetHashedType( ) != ParserConst::TOK_FLOAT )
-                    {
-                        rAssert( ip < 7 );
-
-                        pIntParams[ ip++ ] = ((unsigned int*)pParams)[ i ];
-                    }
-                    else
-                    {
-                        rAssert( fp < 8 );
-                        pFloatParams[ fp++ ] = ((float*)pParams)[ i ];
-                    }
-                }
-            
-                int ret = InvokeVf( pI, m_VTableOffset + 1, pIntParams, pFloatParams );
-
-                return ret;
-            
-            #endif          
+            #endif      
        }
    }
    

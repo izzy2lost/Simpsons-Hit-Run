@@ -34,9 +34,6 @@
 #ifdef RAD_PS2
     #include <eekernel.h>
 #endif
-#ifdef RAD_GAMECUBE
-    #include <os.h>
-#endif 
 
 #include <radthread.hpp>
 #include <radmemorymonitor.hpp>
@@ -70,30 +67,6 @@
 
 #endif
 
-#ifdef RAD_GAMECUBE
-    //
-    // On the GameCube, they screwed up with there alarm functions in that there
-    // is no user data. Hence I have to perform a hack by enclosing their
-    // alarm object in a container object and performing a cast.
-    //
-    struct GCNSleepInfo
-    {
-        OSAlarm         m_Alarm;            // Alarm. Not required, used to get to thread queue.
-        OSThreadQueue   m_ThreadQueue;      // Thread is sleeping on this.
-    };
-
-    static void GCNSleepAlarm( OSAlarm *pAlarm, OSContext* pContext );   
-
-    //
-    // This thread object is used to perform round robin scheduling.
-    //
-    static void* RescheduleThreadEntry( void* param );
-    static unsigned int  s_RescheduleSleepTime;
-    static OSThread      s_RescheduleThread;
-    static unsigned char s_RescheculeStack[ 4096 ];
-
-#endif
-
 //=============================================================================
 // Statics
 //=============================================================================
@@ -121,13 +94,6 @@ radThread* radThread::s_ThreadTable[ MAX_RADTHREADS ];
 #endif 
 #ifdef RAD_PS2
     int radThread::s_PriorityMap[ PriorityHigh + 1 ] = { 63, 47, 31, 15, 1 };
-#endif
-#ifdef RAD_GAMECUBE
-    //  
-    // Please not that priority 0 is reserved by our internal thread used to 
-    // perform round robin scheduling.
-    //
-    OSPriority radThread::s_PriorityMap[ PriorityHigh + 1 ] = { 31, 23, 15, 7, 1 };
 #endif
 
 //
@@ -297,42 +263,6 @@ void radThreadSleep
 
 
 #endif        
-
-#ifdef RAD_GAMECUBE
-    //
-    // The Game cube uses a technique similar to that of the PS2. We use
-    // an alarm to wake us up.
-    //
-    if( milliseconds == 0 )
-    {
-        //
-        // Just allow threads at this priority to run.
-        //
-        OSYieldThread( );
-    }
-    else
-    {
-        //
-        // Create an alarm and thread queue to sleep on. The alarm wakes the
-        // thread.
-        //
-        GCNSleepInfo SleepInfo;
-
-        OSInitAlarm( );
-    
-        OSCreateAlarm( &SleepInfo.m_Alarm );
-        OSInitThreadQueue( &SleepInfo.m_ThreadQueue );
-    
-        OSSetAlarm( &SleepInfo.m_Alarm, OSMillisecondsToTicks( milliseconds ), GCNSleepAlarm );
-
-        //
-        // Now sleep on the thread queue. Alarm will wake us up.
-        //
-        OSSleepThread( &SleepInfo.m_ThreadQueue );
-    }
-    
-#endif
-
 }
 
 //=============================================================================
@@ -381,35 +311,6 @@ void PS2SleepAlarm( int id, unsigned short time, PS2SleepInfo* pInfo )
     }
 }
 
-#endif
-
-//=============================================================================
-// Function:    GCNSleepAlarm
-//=============================================================================
-// Description: This function is invoked by the game cube os after a specified
-//              duration has expired. We wake up the thread.
-//
-// Parameters:  alarm
-//              context - not used
-//              
-// Returns:     N/A
-//
-// Note:        We must perform a hack as the GameCube libs provide no used
-//              data. We need to get the thread queue to wake up.
-//
-//------------------------------------------------------------------------------
-
-#ifdef RAD_GAMECUBE
-
-void GCNSleepAlarm( OSAlarm *pAlarm, OSContext* pContext )
-{   
-    (void) pContext;
-    
-    GCNSleepInfo* pSleepInfo = (GCNSleepInfo*) pAlarm;
-    
-    OSWakeupThread( &pSleepInfo->m_ThreadQueue );
-
-}
 #endif
 
 //=============================================================================
@@ -553,67 +454,7 @@ void radThread::Initialize( unsigned int milliseconds )
         }
 
     #endif
-
-    #ifdef RAD_GAMECUBE
-    
-        // 
-        // On the game cube we need to do something more complex to get round
-        // robin scheduling running. We must create a very high priority thread
-        // that always sleeps for . We then use an alarm to wake it up. When is goes
-        // back to sleep, the OS will reschedule other threads. This info was
-        // obtain by directly taking to Nintendo as there stuff does not work
-        // as advertized.
-        //
-        if( milliseconds == 0 )
-        {
-            s_RescheduleSleepTime = 0;
-        }
-        else
-        {
-            //
-            // Use static data so no allocations occur.
-            //
-            s_RescheduleSleepTime = milliseconds;
-
-            OSCreateThread( &s_RescheduleThread, RescheduleThreadEntry, NULL, 
-                            (char*) s_RescheculeStack + sizeof( s_RescheculeStack ),
-                             sizeof( s_RescheculeStack ), 0, 0 );
-
-            OSResumeThread( &s_RescheduleThread );
-        }
-
-    #endif
 }
-
-//=============================================================================
-// Function:    RescheduleThreadEntry
-//=============================================================================
-// Description: On the Gamecube, round robin scheduling of equal priority 
-//              threads does not work as advertized. To get it to work
-//              we create a high priority thread that sleeps. When in awakes,
-//              lower priory threads are rescheduled when this thread goes
-//              back to sleep.
-//
-// Parameters:  usedData - not used.
-//              
-// Returns:     N/A
-//
-// Notes:
-//------------------------------------------------------------------------------
-
-#ifdef RAD_GAMECUBE
-
-void* RescheduleThreadEntry( void* param )
-{
-    while( true )
-    {
-        radThreadSleep( s_RescheduleSleepTime );
-    }
-
-    return( NULL );
-}
-
-#endif
 
 //=============================================================================
 // Function:    radThread::Terminate
@@ -645,19 +486,6 @@ void radThread::Terminate( void )
     }
 
     EI( );
-
-#endif
-
-#ifdef RAD_GAMECUBE
-
-    if( s_RescheduleSleepTime != 0 )
-    {
-        //
-        // Must cancel high priority thread which is causing round
-        // robin scheduling.
-        //
-        OSCancelThread( &s_RescheduleThread );
-    }
 
 #endif
 
@@ -754,10 +582,6 @@ radThread::radThread( void )
     m_ThreadId = GetThreadId( );
     m_SuspendCount = 0;
 #endif           
-
-#ifdef RAD_GAMECUBE
-    m_ThreadId = OSGetCurrentThread( );
-#endif
 
     //
     // Add ourself as the first entry in the thread table. No protection
@@ -868,24 +692,6 @@ radThread::radThread
     m_SuspendCount = 0;
 
     StartThread( m_ThreadId,  (void*) this );
-
-#endif
-
-#ifdef RAD_GAMECUBE
-    //
-    // Thread is initially created in a suspended state. Alter priority once then resume. 
-    // Set up the thread id as GameCube uses a very strange method. Allocate memory for 
-    // the stack.
-    //      
-    m_ThreadId = &m_ThreadObject;
-
-    m_Stack = radMemoryAlloc( GetThisAllocator( ), stackSize );
-
-    OSCreateThread( &m_ThreadObject, InternalThreadEntry, this, (char*) m_Stack + stackSize, stackSize, 15, 0 );
-
-    SetPriority( priority );             
-
-    OSResumeThread( m_ThreadId );
 
 #endif
 
@@ -1001,12 +807,6 @@ radThread::~radThread( void )
             ExitDeleteThread( );               
 #endif
 
-#ifdef GAMECUBE
-            //
-            // On Gamecube we also leak the stack memory.
-            //
-            OSExitThread( NULL );  
-#endif 
         }
         else
         {
@@ -1028,11 +828,6 @@ radThread::~radThread( void )
             TerminateThread( m_ThreadId );
             DeleteThread( m_ThreadId );
             radMemoryFreeAligned( GetThisAllocator( ), m_Stack );
-#endif
-
-#ifdef RAD_GAMECUBE
-            OSCancelThread( m_ThreadId );
-            radMemoryFree( GetThisAllocator( ), m_Stack );
 #endif
             
             //
@@ -1063,12 +858,6 @@ radThread::~radThread( void )
         DeleteThread( m_ThreadId );
         radMemoryFreeAligned( GetThisAllocator( ), m_Stack );
 #endif
-
-#ifdef RAD_GAMECUBE
-        void* rcode;
-        OSJoinThread( m_ThreadId, &rcode );
-        radMemoryFree( GetThisAllocator( ), m_Stack );
-#endif
     }
 }
 
@@ -1091,9 +880,6 @@ radThread::~radThread( void )
 #endif 
 #ifdef RAD_PS2
     void radThread::InternalThreadEntry( void* param )
-#endif
-#ifdef RAD_GAMECUBE
-    void* radThread::InternalThreadEntry( void* param )
 #endif
 {
     //
@@ -1122,14 +908,7 @@ radThread::~radThread( void )
     //
 #if defined(RAD_WIN32) || defined(RAD_XBOX)
     return( 0 );
-#endif 
-#ifdef RAD_PS2
-    // Nothing for the PS2
 #endif
-#ifdef RAD_GAMECUBE
-    return( NULL );
-#endif
-
 }
 
 //=============================================================================
@@ -1160,10 +939,6 @@ void radThread::SetPriority( Priority priority )
     int oldPriority = ChangeThreadPriority( m_ThreadId, s_PriorityMap[ priority ] );
     rAssert( oldPriority >= 0 );
 #endif           
-
-#ifdef RAD_GAMECUBE
-    OSSetThreadPriority( m_ThreadId, s_PriorityMap[ priority ] );
-#endif
 
 }
 
@@ -1261,11 +1036,7 @@ void radThread::Suspend( void )
         }
     }
 
-#endif           
-
-#ifdef RAD_GAMECUBE
-    OSSuspendThread( m_ThreadId );
-#endif    
+#endif             
 
 }
 
@@ -1329,11 +1100,7 @@ void radThread::Resume( void )
    
     radThreadInternalUnlock( );   
 
-#endif           
-
-#ifdef RAD_GAMECUBE
-    OSResumeThread( m_ThreadId );
-#endif    
+#endif
 
 }
 
@@ -1424,10 +1191,6 @@ bool radThread::IsActive( void )
 #ifdef RAD_PS2
     return( m_ThreadId == GetThreadId( ) );
 #endif           
-
-#ifdef RAD_GAMECUBE
-    return( m_ThreadId == OSGetCurrentThread( ) );
-#endif
 
 }
 
@@ -1947,19 +1710,6 @@ radThreadFiber::radThreadFiber
 
 #endif
 
-#ifdef RAD_GAMECUBE
-
-    //
-    // One the gamecube, allocate a stack and set up the entry 
-    // point for this fiber.
-    //
-    m_Stack = radMemoryAllocAligned( GetThisAllocator( ), stackSize + 16, 16 );
-
-    m_CurrentStackPointer = (unsigned int) ((char*) m_Stack + stackSize );
-    m_CurrentProgramCounter = (unsigned int) FiberEntry;
-
-#endif
-
 }
 
 //=============================================================================
@@ -1991,10 +1741,6 @@ radThreadFiber::~radThreadFiber( void )
 #endif    
 
 #ifdef RAD_PS2
-        radMemoryFreeAligned( GetThisAllocator( ), m_Stack );
-#endif
-
-#ifdef RAD_GAMECUBE
         radMemoryFreeAligned( GetThisAllocator( ), m_Stack );
 #endif
 
@@ -2046,21 +1792,6 @@ void radThreadFiber::SwitchTo( void )
     PS2SwitchToFiber( &(oldFiber->m_CurrentStackPointer), &(oldFiber->m_CurrentProgramCounter),
                       m_CurrentStackPointer, m_CurrentProgramCounter );
 
-#endif
-
-
-#ifdef RAD_GAMECUBE
-
-    //
-    // Get the active fiber. Sets its program counter and stack to where we 
-    // are. Then switch to need one.
-    //
-    radThreadFiber* oldFiber = (radThreadFiber*) radThreadGetActiveFiber( );
-    ((radThread*) radThread::GetActiveThread( ))->m_pActiveFiber = this;
-
-    GCNSwitchToFiber( &(oldFiber->m_CurrentStackPointer), &(oldFiber->m_CurrentProgramCounter),
-                      m_CurrentStackPointer, m_CurrentProgramCounter );
-   
 #endif
 
 }
@@ -2189,10 +1920,6 @@ void CALLBACK radThreadFiber::FiberEntry( void* param )
 {
     (void) param;
 #endif
-#ifdef RAD_GAMECUBE
-void radThreadFiber::FiberEntry( void )
-{
-#endif
 #ifdef RAD_PS2
 void radThreadFiber::FiberEntry( void )
 {
@@ -2276,63 +2003,3 @@ next:
 #endif
 
 #endif
-
-
-//=============================================================================
-// Function:    radThreadFiber::GCNSwitchToFiber
-//=============================================================================
-// Description: This static is used on the GameCube to switch fibers.
-//
-// Parameters:  Where to copy old SP and old PC
-//              new values for SP and PC
-//
-// Returns:     n/a
-//
-// Notes:       Static function, no this pointer
-//------------------------------------------------------------------------------
-
-#ifdef RAD_GAMECUBE
-
-asm void radThreadFiber::GCNSwitchToFiber( unsigned int* oldSp, unsigned int* oldPc, unsigned int newSp, unsigned int newPc )
-{
-    nofralloc
-
-    mflr    r7          // save link reg ( return address ) in temp reg r7
-    stwu    r1,-8(r1)   // make space on stack and save sp
-    stw     r7,4(r1)    // store link register
-    stw     r1,0(r3)    // save sp in oldSp
-    bl      next        // load the link register with the address of next.    
-next:
-    mflr    r7          // Save link register in temporary register
-    addi    r7,r7,6 * 4 // Add 6 instruction to the temp register pointing us to the return point
-    stw     r7, 0(r4)   // save this as oldPc
-    mr      r1, r5      // load newSp into stack pointer
-    mtlr    r6          // load newPc into link register
-    blr                 // branch to link register
-returnpoint:
-    lwz     r7, 4(r1)   // get return address    
-    mtlr    r7          // move into link register
-    addi    r1, r1, 8   // balance stack
-    blr                 // return
-}
-
-#endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

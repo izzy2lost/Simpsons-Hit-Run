@@ -246,14 +246,6 @@ CheatInputSystem::SetActivated( int controllerId, bool activated )
     {
         m_activatedBitMask &= ~(1 << controllerId);
     }
-
-#ifndef RAD_GAMECUBE
-    // TC: *** temporary work-around to GC-specific problem w/ L and R
-    //         triggers constantly sending alternating UP/DOWN inputs
-    //
-    rAssert( m_cheatInputHandler );
-    m_cheatInputHandler->ResetInputSequence();
-#endif
 }
 
 //===========================================================================

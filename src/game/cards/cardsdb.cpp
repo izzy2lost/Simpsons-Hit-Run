@@ -52,11 +52,7 @@ CardsDB::CardsDB()
 {
 MEMTRACK_PUSH_GROUP( "CardsDB" );
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PushHeap( GMA_PERSISTENT );
 
     m_cards = new Card*[ MAX_NUM_CARDS ];
     rAssert( m_cards );
@@ -66,11 +62,7 @@ MEMTRACK_PUSH_GROUP( "CardsDB" );
         m_cards[ i ] = NULL;
     }
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PopHeap( GMA_PERSISTENT );
 MEMTRACK_POP_GROUP( "CardsDB" );
 }
 

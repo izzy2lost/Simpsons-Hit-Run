@@ -254,11 +254,7 @@ MEMTRACK_PUSH_GROUP( "SuperCamCentral" );
         mSuperCameras[ i ] = NULL;
     }
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PushHeap( GMA_PERSISTENT );
 
 #ifdef SUPERCAM_DEBUG
     mDebugCamera = new tPointCamera();
@@ -284,11 +280,7 @@ MEMTRACK_PUSH_GROUP( "SuperCamCentral" );
 
     GetGameDataManager()->RegisterGameData( this, 1, "Super Cam Central" );
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PopHeap( GMA_PERSISTENT );
 #ifdef DEBUGWATCH
     char player[256];
     sprintf( player, "SuperCamCentral\\Player%d", mMyNumber );
@@ -711,7 +703,7 @@ void SuperCamCentral::Update( unsigned int milliseconds, bool isFirstSubstep )
             //Test for lookback.
             float lookBack = mController->GetValue( SuperCamController::lookBack );
 
-#if defined(RAD_GAMECUBE) || defined(RAD_XBOX)  //Both now!
+#if defined(RAD_XBOX)  //Both now!
             float altLookBack = mController->GetValue( SuperCamController::altLookBack );
 
             lookBack = mController->GetAxisValue( SuperCamController::stickY );

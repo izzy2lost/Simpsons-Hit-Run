@@ -7,49 +7,12 @@
 #include <radsoundmath.hpp> // (Reverse Endian Function)
 #include <radsoundfile.hpp>
 
-#ifdef RAD_GAMECUBE
-    #include <radsound_gcn.hpp>
-#endif
-
 void radSoundHalFileHeader::ConvertToPlatformEndian
 (
 	void
 )
 {	
-	#ifdef RAD_GAMECUBE
-  
-		m_Channels      = radSoundReverseEndian( m_Channels );
-		m_BitResolution = radSoundReverseEndian( m_BitResolution );
-		m_SamplingRate  = radSoundReverseEndian( m_SamplingRate );
 
-        for ( int i = 0; i < GCN_ADPCM_MAX_CHANNELS; i ++ )
-        {
-            m_gcnAdpcmInfo[i].coef[0][0] = radSoundReverseEndian( m_gcnAdpcmInfo[i].coef[0][0] );
-            m_gcnAdpcmInfo[i].coef[1][0] = radSoundReverseEndian( m_gcnAdpcmInfo[i].coef[1][0] );
-            m_gcnAdpcmInfo[i].coef[2][0] = radSoundReverseEndian( m_gcnAdpcmInfo[i].coef[2][0] );
-            m_gcnAdpcmInfo[i].coef[3][0] = radSoundReverseEndian( m_gcnAdpcmInfo[i].coef[3][0] );
-            m_gcnAdpcmInfo[i].coef[4][0] = radSoundReverseEndian( m_gcnAdpcmInfo[i].coef[4][0] );
-            m_gcnAdpcmInfo[i].coef[5][0] = radSoundReverseEndian( m_gcnAdpcmInfo[i].coef[5][0] );
-            m_gcnAdpcmInfo[i].coef[6][0] = radSoundReverseEndian( m_gcnAdpcmInfo[i].coef[6][0] );
-            m_gcnAdpcmInfo[i].coef[7][0] = radSoundReverseEndian( m_gcnAdpcmInfo[i].coef[7][0] );
-            m_gcnAdpcmInfo[i].coef[0][1] = radSoundReverseEndian( m_gcnAdpcmInfo[i].coef[0][1] );
-            m_gcnAdpcmInfo[i].coef[1][1] = radSoundReverseEndian( m_gcnAdpcmInfo[i].coef[1][1] );
-            m_gcnAdpcmInfo[i].coef[2][1] = radSoundReverseEndian( m_gcnAdpcmInfo[i].coef[2][1] );
-            m_gcnAdpcmInfo[i].coef[3][1] = radSoundReverseEndian( m_gcnAdpcmInfo[i].coef[3][1] );
-            m_gcnAdpcmInfo[i].coef[4][1] = radSoundReverseEndian( m_gcnAdpcmInfo[i].coef[4][1] );
-            m_gcnAdpcmInfo[i].coef[5][1] = radSoundReverseEndian( m_gcnAdpcmInfo[i].coef[5][1] );
-            m_gcnAdpcmInfo[i].coef[6][1] = radSoundReverseEndian( m_gcnAdpcmInfo[i].coef[6][1] );
-            m_gcnAdpcmInfo[i].coef[7][1] = radSoundReverseEndian( m_gcnAdpcmInfo[i].coef[7][1] );
-
-            m_gcnAdpcmInfo[i].gain                    = radSoundReverseEndian( m_gcnAdpcmInfo[i].gain );
-            m_gcnAdpcmInfo[i].pred_scale              = radSoundReverseEndian( m_gcnAdpcmInfo[i].pred_scale );
-            m_gcnAdpcmInfo[i].yn1                     = radSoundReverseEndian( m_gcnAdpcmInfo[i].yn1 );
-            m_gcnAdpcmInfo[i].yn2                     = radSoundReverseEndian( m_gcnAdpcmInfo[i].yn2 );
-            m_gcnAdpcmInfo[i].loop_pred_scale         = radSoundReverseEndian( m_gcnAdpcmInfo[i].loop_pred_scale );
-            m_gcnAdpcmInfo[i].loop_yn1                = radSoundReverseEndian( m_gcnAdpcmInfo[i].loop_yn1 );
-            m_gcnAdpcmInfo[i].loop_yn2                = radSoundReverseEndian( m_gcnAdpcmInfo[i].loop_yn2 );
-    	}
-	#endif
 }
 
 IRadSoundHalAudioFormat::Encoding radSoundHalFileHeader::GetEncodingFromChars( char chars[ 4 ] )
@@ -96,19 +59,5 @@ void radSoundHalFileHeader::InitializeAudioFormat
 
     radRef< IRefCount > xIRefCount_CustomData = NULL;
 
-    #if defined RAD_GAMECUBE
-
-        radRef< IRadSoundHalAudioFormatGcn > xIRshaf = ::radSoundHalAudioFormatGcnCreate( allocator );
-
-        xIRefCount_CustomData = xIRshaf;
-  
-    #endif
-
 	pIRadSoundHalAudioFormat->Initialize( encoding, xIRefCount_CustomData, m_SamplingRate, m_Channels, m_BitResolution );
-	
-    #ifdef RAD_GAMECUBE
-    
-        xIRshaf->Initialize( m_gcnAdpcmInfo, pIRadSoundHalAudioFormat );	
-        
-    #endif
 }

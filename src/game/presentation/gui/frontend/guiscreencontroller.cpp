@@ -110,14 +110,6 @@ CGuiScreenController::CGuiScreenController
                               SELECTION_ENABLED | VALUES_WRAPPED | TEXT_OUTLINE_ENABLED );
     }
 
-#ifdef RAD_GAMECUBE
-    // change "Vibration" text to "Rumble"
-    //
-    Scrooby::Text* vibrationText = dynamic_cast<Scrooby::Text*>( m_pMenu->GetMenuItem( MENU_ITEM_VIBRATION )->GetItem() );
-    rAssert( vibrationText );
-    vibrationText->SetIndex( 1 );
-#endif // RAD_GAMECUBE
-
     // disable configuration until there are multiple configurations from
     // which to choose
     //
@@ -125,11 +117,6 @@ CGuiScreenController::CGuiScreenController
 
     // get the platform-specific Controller page
     //
-#ifdef RAD_GAMECUBE
-    pPage = m_pScroobyScreen->GetPage( "ControllerGC" );
-    rAssert( pPage );
-#endif // RAD_GAMECUBE
-
 #ifdef RAD_PS2
     pPage = m_pScroobyScreen->GetPage( "ControllerPS2" );
     rAssert( pPage );

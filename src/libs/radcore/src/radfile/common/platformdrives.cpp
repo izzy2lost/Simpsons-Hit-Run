@@ -24,11 +24,6 @@
 #include "../ps2/ps2memcarddrive.hpp"
 #endif
 
-#ifdef RAD_GAMECUBE
-#include "../gcn/gcndvddrive.hpp"
-#include "../gcn/gcnmemcarddrive.hpp"
-#endif
-
 //=============================================================================
 // Function:    PlatformDrivesGetDefaultDrive
 //=============================================================================
@@ -48,10 +43,6 @@ void PlatformDrivesGetDefaultDrive( char* driveSpec )
         strcpy( driveSpec, s_PS2HostDriveName );
 #   endif
 #endif // RAD_PS2
-
-#ifdef RAD_GAMECUBE
-    strcpy( driveSpec, s_GCNDVDDriveName );
-#endif // RAD_GAMECUBE
 
 #ifdef RAD_XBOX
     strcpy( driveSpec, "D:");
@@ -153,29 +144,6 @@ bool PlatformDrivesValidateDriveName( const char* driveSpec )
     }
 
 #endif // RAD_PS2
-
-#ifdef RAD_GAMECUBE
-    if ( strcmp( driveSpec, s_GCNDVDDriveName ) == 0 )
-    {
-        return true;
-    }
-    else if ( radStringMatchesWildCardPattern( driveSpec, s_GCNMemcardDrive ) )
-    {
-        int chan = ( int )( driveSpec[ GCNMEMCARDDRIVE_PORT_LOC ] - 'A' );
-        if ( chan < 0 || chan > 1 )
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-    else
-    {
-        return false;
-    }
-#endif // RAD_GAMECUBE
 }
 
 //=============================================================================
@@ -223,16 +191,5 @@ void PlatformDrivesFactory( radDrive** ppDrive, const char* driveSpec, radMemory
         radPs2MemcardDriveFactory( ppDrive, driveSpec, alloc );
     }
 #endif // RAD_PS2
-
-#ifdef RAD_GAMECUBE
-    if ( strcmp( driveSpec, s_GCNDVDDriveName ) == 0 )
-    {
-        radGcnDVDDriveFactory( ppDrive, driveSpec, alloc );
-    }
-    else
-    {
-        radGcnMemcardDriveFactory( ppDrive, driveSpec, alloc );
-    }
-#endif // RAD_GAMECUBE
 
 }

@@ -26,12 +26,8 @@
 #include <p3d/chunkfile.hpp>
 #include <constants/chunkids.hpp>
 
-#if defined (RAD_PS2) || defined (RAD_GAMECUBE)
+#if defined (RAD_PS2)
 #include <pddi/pddiext.hpp>
-#endif
-
-#ifdef RAD_GAMECUBE
-#include <pddi/gamecube/gcbufcopy.hpp>
 #endif
 
 #if defined (RAD_WIN32) || defined(RAD_XBOX)
@@ -39,7 +35,7 @@
 #define DRAW_CAPS // draw caps on volumes
 #endif
 
-#if defined (RAD_PS2) || defined (RAD_GAMECUBE)
+#if defined (RAD_PS2)
 //#define CARMACK_REVERSE // use inverted z-buffer mode 
 //#define DRAW_CAPS // draw caps on volumes
 #endif
@@ -47,11 +43,7 @@
 const unsigned short NO_NEIGHBOUR = 0xffff;
 
 #ifndef RAD_PS2
-#ifdef RAD_GAMECUBE
-    static const tColour s_VolumeColour(0, 0, 0, 4);
-#else
     static const tColour s_VolumeColour(255,0,0,0);
-#endif
 #else
     static const tColour s_VolumeColour(0x8,0x8,0x8,0 );
 #endif
@@ -118,12 +110,6 @@ static inline void SetupPass(ShadowVolPass pass, tShader* shader)
     p3d::pddi->SetCullMode( (pass == PASS_FRONT) ? PDDI_CULL_SHADOW_BACKFACE : PDDI_CULL_SHADOW_FRONTFACE );
     shader->SetInt( PDDI_SP_BLENDMODE, (pass == PASS_FRONT) ? PDDI_BLEND_ADD : PDDI_BLEND_SUBTRACT);
 
-#elif defined RAD_GAMECUBE
-    
-    p3d::pddi->SetCullMode( (pass == PASS_FRONT) ? PDDI_CULL_NORMAL : PDDI_CULL_INVERTED );
-    shader->SetInt( PDDI_SP_BLENDMODE, (pass == PASS_FRONT) ? PDDI_BLEND_ADD : PDDI_BLEND_SUBTRACT);
-
-#else
     #ifdef CARMACK_REVERSE
     p3d::pddi->SetCullMode((pass == PASS_FRONT) ? PDDI_CULL_INVERTED :  PDDI_CULL_NORMAL);
     #else
@@ -131,8 +117,6 @@ static inline void SetupPass(ShadowVolPass pass, tShader* shader)
     #endif
 
     p3d::pddi->SetStencilOp(PDDI_STENCIL_KEEP, PDDI_STENCIL_KEEP, (pass == PASS_FRONT) ? PDDI_STENCIL_INCR : PDDI_STENCIL_DECR);
-#endif
-
 }
 
 tShadowGenerator::tShadowGenerator() :
@@ -143,34 +127,12 @@ tShadowGenerator::tShadowGenerator() :
     volumeShader->AddRef();
     volumeShader->SetInt(PDDI_SP_SHADEMODE, PDDI_SHADE_FLAT);
     volumeShader->SetInt(PDDI_SP_ALPHATEST , false);
-
-#ifndef RAD_GAMECUBE
     volumeShader->SetInt(PDDI_SP_BLENDMODE , PDDI_BLEND_ALPHA);
-#else
-    volumeShader->SetInt(PDDI_SP_BLENDMODE, PDDI_BLEND_NONE);
-#endif
 
-
-#ifndef RAD_GAMECUBE
     washShader = new tShader();
     washShader->AddRef();
-#endif
-
-#ifdef RAD_GAMECUBE
-    // create the GC wash shader
-    bufferCopier       = (gcExtBufferCopy *)p3d::pddi->GetExtension(PDDI_EXT_BUFCOPY);
-    shadowColourBuffer = bufferCopier->CreateAlphaTexture(640, 480, 8);
-
-    bufferCopier->CopyAlphaBuf(shadowColourBuffer, false, 8, 8);
-
-    washShader = new tShader("shadow");
-    washShader->AddRef();
-    washShader->GetShader()->SetTexture(PDDI_SP_SHADOWTEXTURE, shadowColourBuffer);
-    washShader->SetColour(PDDI_SP_SHADOWCOLOUR, tColour(0, 0, 0, 64));
-    washColour.Set(0, 0, 0, 127); 
-
-#elif !defined RAD_PS2
-
+   
+#if !defined(RAD_PS2)
     //Create the shadow wash shader
     washShader->SetInt(PDDI_SP_ISLIT, 0);
     washShader->SetInt(PDDI_SP_SHADEMODE, PDDI_SHADE_FLAT);
@@ -205,11 +167,6 @@ void tShadowGenerator::Begin()
     // clear alpha buffer
     ps2->BeginStencilPass(0);
 
-#elif RAD_GAMECUBE
-    pddi->Clear(PDDI_BUFFER_STENCIL);
-    
-    // disable writes to colour buffer
-    pddi->SetColourWrite(false, false, false, true); 
 #else
     #ifdef CARMACK_REVERSE
         pddi->SetZCompare(PDDI_COMPARE_GREATEREQUAL);
@@ -244,46 +201,6 @@ void tShadowGenerator::End()
     ps2->EndStencilPass(0);
     pddi->SetZWrite(true);
     pddi->EnableStencilBuffer(false);
-
-#elif RAD_GAMECUBE
-
-    washShader->SetColour(PDDI_SP_SHADOWCOLOUR, washColour);
-
-    bufferCopier->CopyAlphaBuf(shadowColourBuffer, false, 8, 8);
-    pddi->SetColourWrite(true, true, true, true); // enable writes to colour buffer
-
-    pddi->SetProjectionMode(PDDI_PROJECTION_DEVICE);
-
-    p3d::stack->PushIdentity();
-    pddiPrimStream *stream = pddi->BeginPrims(washShader->GetShader(), PDDI_PRIM_TRIANGLES, PDDI_V_T, 6);
-
-    float near, far, fov, aspect;
-    pddi->GetCamera(&near, &far, &fov, &aspect);
-    near += 0.01F;
-    
-    float width, height;
-    width = (float)p3d::display->GetWidth();
-    height = (float)p3d::display->GetHeight();
-    
-    // tri 1
-    stream->UV(0.0F, 1.0F);    stream->Coord(0.0F,  height, near);
-    stream->UV(0.0F, 0.0F);    stream->Coord(0.0F,  0.0F,   near);
-    stream->UV(1.0F, 0.0F);    stream->Coord(width, 0.0F,   near);
-
-    // tri 2
-    stream->UV(0.0F, 1.0F);    stream->Coord(0.0F,  height, near);
-    stream->UV(1.0F, 0.0F);    stream->Coord(width, 0.0F,   near);
-    stream->UV(1.0F, 1.0F);    stream->Coord(width, height, near);
-
-    pddi->EndPrims(stream);
-
-    p3d::stack->Pop();
-
-    // Restore the render state
-     pddi->SetProjectionMode(PDDI_PROJECTION_PERSPECTIVE);
-//    pddi->EnableZBuffer(true);
-    pddi->SetZWrite(true);
-//    pddi->SetZCompare(PDDI_COMPARE_LESSEQUAL);
 
 #else
     pddi->SetColourWrite(true, true, true, true); // enable writes to colour buffer
@@ -338,11 +255,6 @@ void tShadowGenerator::End()
 
 void tShadowGenerator::PreRender()
 {
-
-#ifdef RAD_GAMECUBE
-    // disable alpha writes
-   p3d::pddi->SetColourWrite(true, true, true, false);
-#endif
 
 }
 
