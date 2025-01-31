@@ -32,29 +32,6 @@
 #define strcmpi strcasecmp
 #endif // RAD_LINUX
 
-#ifdef RAD_GAMECUBE
-#include <ctype.h>
-int strcmpi(const char *a, const char *b)
-{
-     if ((a == NULL) && (b == NULL)) return 0;
-     if ((a != NULL) && (b == NULL)) return -1;
-     if ((a == NULL) && (b != NULL)) return 1;
-
-     while ((*a != 0) && (*b != 0))
-     {
-          if (tolower(*a) < tolower(*b)) return -1;
-          else if (tolower(*a) > tolower(*b)) return 1;
-          ++a;
-          ++b;
-     }
-
-     if (*a == *b) return 0;
-     if (*a == 0) return -1;
-
-     return 1;
-}
-#endif // RAD_GAMECUBE
-
 #endif // CHOREO_USE_FILE_P3D
 
 
@@ -452,29 +429,6 @@ bool WriteToScriptPath(const char* scriptPath, tInventory* store)
 
     scriptFile->Release();
     return rc;
-
-#elif !defined(RAD_GAMECUBE)
-
-	// by default use C streams, since I can't seem to get the ftt file stuff working
-
-	// temporarily allocate file writer
-    radMemoryAllocator oldAlloc = ::radMemorySetCurrentAllocator(RADMEMORY_ALLOC_TEMP);
-
-	FILE* f = fopen(scriptPath, "wb");
-	if (f == 0)
-		return false;
-	CStreamFileWriter* fileWriter = new CStreamFileWriter(f);
-	fileWriter->AddRef();
-
-	bool rc = WriteToScriptFile(fileWriter, store);
-
-	fileWriter->Release();
-	fclose(f);
-
-	// restore memory allocator
-    ::radMemorySetCurrentAllocator(oldAlloc);
-
-	return rc;
 
 #else
 

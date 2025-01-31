@@ -29,9 +29,6 @@
 	#define NULL 0
 #endif
 
-#ifdef RAD_GAMECUBE
-    const int PLATFORM_TEXT_INDEX = 0;
-#endif
 #ifdef RAD_PS2
     const int PLATFORM_TEXT_INDEX = 1;
 #endif

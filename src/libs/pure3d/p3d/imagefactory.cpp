@@ -306,13 +306,6 @@ bool TextureBuilder::BeginImage(int width, int height, int bpp, tImageHandler::B
         {
             texture->Create(width, height, bpp, 8, nMip, type, usage);
         }
-        else
-        // gamecube memory image formats
-        if( (type == PDDI_TEXTYPE_GC_4BIT) ||  (type == PDDI_TEXTYPE_GC_8BIT) ||  (type == PDDI_TEXTYPE_GC_DXT1) ||
-             (type == PDDI_TEXTYPE_GC_16BIT) || (type == PDDI_TEXTYPE_GC_32BIT) )
-        {
-            texture->Create(width, height, bpp, 8, nMip, type, usage);
-        }
     }
 
     if(!texture->GetTexture())

@@ -21,13 +21,6 @@
 
 const int MB = 1024 * 1024; // bytes
 
-#ifdef RAD_GAMECUBE
-    const float TOTAL_INGAME_MEMORY_USAGE = 9.6f * MB;
-    const float TOTAL_FE_MEMORY_USAGE = 8.8f * MB;
-    const float TOTAL_SUPERSPRINT_MEMORY_USAGE = 3.0f * MB;
-    const float TOTAL_DEMO_MEMORY_USAGE = TOTAL_INGAME_MEMORY_USAGE;
-#endif
-
 #ifdef RAD_PS2
     const float TOTAL_INGAME_MEMORY_USAGE = 15.2f * MB;
     const float TOTAL_FE_MEMORY_USAGE = 13.0f * MB;

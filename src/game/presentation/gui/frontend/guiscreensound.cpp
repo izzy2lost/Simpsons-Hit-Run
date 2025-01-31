@@ -119,29 +119,6 @@ MEMTRACK_PUSH_GROUP( "CGUIScreenSound" );
 #ifdef INCLUDE_SOUND_MODE
         if( i == MENU_ITEM_SURROUND_SOUND )
         {
-/*
-            // get "dolby prologic #" text and set: # = 1 for GC
-            //                                      # = 2 for PS2
-            //
-            P3D_UNICODE* unicodeString = static_cast<P3D_UNICODE*>( pTextValue->GetStringBuffer( SURROUND_SOUND ) );
-            if( unicodeString != NULL )
-            {
-                int stringLength = p3d::UnicodeStrLen( unicodeString );
-                for( int j = 0; j < stringLength; j++ )
-                {
-                    if( unicodeString[ j ] == '#' )
-                    {
-#ifdef RAD_GAMECUBE
-                        unicodeString[ j ] = '1';
-#endif
-#ifdef RAD_PS2
-                        unicodeString[ j ] = '2';
-#endif
-                    }
-                }
-            }
-*/
-
             // add menu item for sound mode setting
             //
             pText = pTextValue;

@@ -64,9 +64,6 @@ CGuiScreenLicense::CGuiScreenLicense
 
     // set platform-specific license screen image
     //
-#ifdef RAD_GAMECUBE
-    tSprite* pSprite = p3d::find<tSprite>( "licenseG.png" );
-#endif
 #ifdef RAD_PS2
     tSprite* pSprite = p3d::find<tSprite>( "licenseP.png" );
 #endif
@@ -85,12 +82,6 @@ CGuiScreenLicense::CGuiScreenLicense
     // set fade time for license screen (in milliseconds)
     //
     this->SetFadeTime( LICENSE_SCREEN_FADE_TIME );
-
-#ifdef RAD_GAMECUBE
-    // skip screen fade in (on Gamecube only)
-    //
-    this->SetFadeTime( 0.0f );
-#endif
 }
 
 
@@ -170,11 +161,6 @@ void CGuiScreenLicense::InitIntro()
 //===========================================================================
 void CGuiScreenLicense::InitRunning()
 {
-#ifdef RAD_GAMECUBE
-    // allow screen fade out (on Gamecube only)
-    this->SetFadeTime( LICENSE_SCREEN_FADE_TIME );
-#endif
-
     GetBootupContext()->ResetLicenseScreenDisplayTime();
 }
 

@@ -51,11 +51,6 @@ void tBMPHandler::CreateImage(tFile* file, tImageHandler::Builder* builder)
     char buf[256];
     char id[2];
 
-#ifdef RAD_GAMECUBE
-    bool origswap = file->GetEndianSwap();
-    file->SetEndianSwap(true);
-#endif
-
     file->GetData(id, 2, tFile::BYTE);
 
 
@@ -95,10 +90,6 @@ void tBMPHandler::CreateImage(tFile* file, tImageHandler::Builder* builder)
     {
         LoadBMP24(file, header, builder);
     }
-
-#ifdef RAD_GAMECUBE
-    file->SetEndianSwap(origswap);
-#endif
 }
 
 bool tBMPHandler::SaveImage(tImage*, char*)
@@ -117,20 +108,11 @@ void LoadBMP4(tFile* file, BMPHeader& header, tImageHandler::Builder* builder)
     file->GetData(pal, nColour, tFile::DWORD);
     for(int i=0; i < nColour; i++)
     {
-#ifdef RAD_GAMECUBE   
-        // Munge the palette for the auto up-convert to 32 bit
-        int r = pal[i].Red();
-        int g = pal[i].Green();
-        int b = pal[i].Blue();
-        int a = pal[i].Alpha();
-        pal[i] = pddiColour(g, r, 255, b);
-#else
         // alpha is zero in palette, make it 255
         int* oldpal = (int*)pal;
         oldpal[i] = oldpal[i] | 0xff000000;
         // convert from platform independant to (possibly) platform dependant colour, does nothing on PC
         pal[i] = pddiColour(oldpal[i]);
-#endif
     }
     tImage* image = NULL;
 
@@ -182,22 +164,11 @@ void LoadBMP8(tFile* file, BMPHeader& header, tImageHandler::Builder* builder)
     file->GetData(pal, nColour, tFile::DWORD);
     for(int i=0; i < nColour; i++)
     {
-        
-#ifdef RAD_GAMECUBE   
-        // Munge the palette for the auto up-convert to 32 bit
-        int r = pal[i].Red();
-        int g = pal[i].Green();
-        int b = pal[i].Blue();
-        int a = pal[i].Alpha();
-        pal[i] = pddiColour(g, r, 255, b);
-#else
         // alpha is zero in palette, make it 255
         int* oldpal = (int*)pal;
         oldpal[i] = oldpal[i] | 0xff000000;
         // convert from platform independant to (possibly) platform dependant colour, does nothing on PC
         pal[i] = pddiColour(oldpal[i]);
-#endif
-
     }
     tImage* image = NULL;
 
@@ -242,17 +213,10 @@ void LoadBMP24(tFile* file, BMPHeader& header, tImageHandler::Builder* builder)
         unsigned char* c = (unsigned char*)scanline;
         for(int x=0; x < width; x++)
         {
-#ifdef RAD_GAMECUBE
-            c[0] = 0xFF;
-            c[3] = file->GetByte();
-            c[2] = file->GetByte();
-            c[1] = file->GetByte();
-#else
             c[0] = file->GetByte();
             c[1] = file->GetByte();
             c[2] = file->GetByte();
             c[3] = 0xff;
-#endif
             c += 4;
         }
         file->Advance(pad);

@@ -74,8 +74,6 @@ private:
 };
 
 
-// gamecube does not support fopen(), etc.
-#ifndef RAD_GAMECUBE
 //---------------------------------------------------------------------------
 // class CStreamFileWriter
 //   - file writer interface to ANSI C file streams
@@ -97,7 +95,6 @@ private:
 
     FILE* m_File;
 };
-#endif // !RAD_GAMECUBE
 
 
 #ifdef CHOREO_USE_FILE_FTT

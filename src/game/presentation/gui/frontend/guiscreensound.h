@@ -16,7 +16,7 @@
 #ifndef GUISCREENSOUND_H
 #define GUISCREENSOUND_H
 
-#if defined( RAD_GAMECUBE ) || defined( RAD_PS2 )
+#if defined( RAD_PS2 )
     #define INCLUDE_SOUND_MODE
 #endif
 

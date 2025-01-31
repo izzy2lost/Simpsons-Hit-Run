@@ -1635,18 +1635,6 @@ tPrimGroup*  tPrimGroupLoader::Load(tChunkFile *f, tEntityStore *store, rmt::Mat
         f->BeginChunk();
         switch (f->GetCurrentID())
         {
-#ifdef RAD_GAMECUBE
-            case Pure3D::Mesh::MEMORYIMAGEVERTEXDESCRIPTIONLIST:
-                memoryImaged = true;
-                primBufferInitialized = true;
-                pddiPrimBufferDesc desc(mPrimType, mVertexFormat, mVertexCount, mIndexCount);
-                desc.SetMemoryImaged(true);
-                desc.SetMatrixCount(mMatrixCount);
-                primBuffer = p3d::device->NewPrimBuffer(&desc);
-                primGroup->SetBuffer(primBuffer);
-            break;
-    
-#else
             case Pure3D::Mesh::MEMORYIMAGEVERTEXLIST:
                 {
                     P3DASSERT(!primBufferInitialized);
@@ -1676,7 +1664,6 @@ tPrimGroup*  tPrimGroupLoader::Load(tChunkFile *f, tEntityStore *store, rmt::Mat
                     #endif
                 }
             break;
-#endif
             case Pure3D::Mesh::POSITIONLIST:
             case Pure3D::Mesh::NORMALLIST:
             case Pure3D::Mesh::PACKEDNORMALLIST:
@@ -1936,9 +1923,6 @@ tPrimGroup*  tPrimGroupLoader::Load(tChunkFile *f, tEntityStore *store, rmt::Mat
                 void *ptr = primBuffer->LockMemImage(bufferSize);
                 f->GetData(ptr, bufferSize, tFile::BYTE);
                 primBuffer->UnlockMemImage();
-#ifdef RAD_GAMECUBE
-                DCFlushRange(ptr, bufferSize);
-#endif
             }
             break;
 

@@ -350,7 +350,7 @@ void FMVPlayer::Initialize( radMemoryAllocator Allocator )
     m_refIRadMoviePlayer = ::radMoviePlayerCreate2( Allocator );
     rAssert( m_refIRadMoviePlayer != NULL );
 
-#if defined(RAD_XBOX) || defined(RAD_GAMECUBE) || defined(RAD_WIN32)
+#if defined(RAD_XBOX) || defined(RAD_WIN32)
     m_refIRadMoviePlayer->Initialize(
         refIRadMovieRenderLoop,
         refIRadMovieRenderStrategy );

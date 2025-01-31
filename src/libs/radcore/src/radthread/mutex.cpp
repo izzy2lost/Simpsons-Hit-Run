@@ -32,9 +32,6 @@
 #ifdef RAD_PS2
     #include <eekernel.h>
 #endif
-#ifdef RAD_GAMECUBE
-    #include <os.h>
-#endif 
 
 #include <radthread.hpp>
 #include <radmemorymonitor.hpp>
@@ -126,14 +123,6 @@ radThreadMutex::radThreadMutex( void )
 
 #endif
 
-#ifdef RAD_GAMECUBE
-    //
-    // Simply initialize the OS mutex object.
-    //
-    OSInitMutex( &m_Mutex );
-
-#endif
-
 }
 
 //=============================================================================
@@ -169,10 +158,6 @@ radThreadMutex::~radThreadMutex( void )
     DeleteSema( m_Semaphore );
 
 #endif
-
-    //
-    // Under gamecube, we don't do anything.
-    //
 }
 
 //=============================================================================
@@ -226,15 +211,6 @@ void radThreadMutex::Lock( void )
     }
 
 #endif
-
-#ifdef RAD_GAMECUBE
-    //
-    // Simply lock OS mutex object.
-    //
-    OSLockMutex( &m_Mutex );
-
-#endif
-
 }
 
 //=============================================================================
@@ -278,15 +254,6 @@ void radThreadMutex::Unlock( void )
     }
 
 #endif
-
-#ifdef RAD_GAMECUBE
-    //
-    // Simply unlock OS mutex object.
-    //
-    OSUnlockMutex( &m_Mutex );
-
-#endif
-
 }
 
 //=============================================================================

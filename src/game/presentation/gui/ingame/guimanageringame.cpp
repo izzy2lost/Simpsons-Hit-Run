@@ -1004,7 +1004,6 @@ void CGuiManagerInGame::HandleMessage
         }
         case GUI_MSG_CONTROLLER_CONNECT:
         {
-#ifndef RAD_GAMECUBE
             if( m_oldControllerState == Input::ACTIVE_ANIM_CAM )
             {
                 // deactivate anim cam state first, since the input manager
@@ -1014,8 +1013,6 @@ void CGuiManagerInGame::HandleMessage
                 GetInputManager()->SetGameState( Input::DEACTIVE_ANIM_CAM );
             }
             GetInputManager()->SetGameState( Input::ACTIVE_FRONTEND );
-#endif // !RAD_GAMECUBE
-
             break;
         }
         case GUI_MSG_START_IRIS_WIPE_OPEN:
@@ -1071,8 +1068,6 @@ void CGuiManagerInGame::HandleMessage
 
                 pScreen->HandleMessage( message, param1, param2 );
             }
-
-#ifndef RAD_GAMECUBE
             // poll controller connection status
             //
             if( message == GUI_MSG_UPDATE )
@@ -1089,8 +1084,6 @@ void CGuiManagerInGame::HandleMessage
                     }
                 }
             }
-#endif // !RAD_GAMECUBE
-
             break;      
         }
     }

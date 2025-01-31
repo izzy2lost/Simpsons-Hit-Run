@@ -475,11 +475,7 @@ void PresentationManager::PlayFMV( const char* FileName,
         pEvent->SetAudioIndex( FMVEvent::AUDIO_INDEX_ENGLISH );
     }
 
-#ifdef RAD_GAMECUBE
-    pEvent->SetAllocator( GMA_ANYWHERE_IN_LEVEL );
-#else
     pEvent->SetAllocator( GMA_LEVEL_HUD );
-#endif
     pEvent->SetClearWhenDone( true );
     pEvent->SetKeepLayersFrozen( true );
 	pEvent->SetSkippable(IsSkippable);

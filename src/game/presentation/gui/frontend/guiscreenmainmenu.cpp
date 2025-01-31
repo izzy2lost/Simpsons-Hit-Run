@@ -323,15 +323,9 @@ MEMTRACK_PUSH_GROUP( "CGUIScreenMainMenu" );
     if( tvFrame != NULL )
     {
         tvFrame->ResetTransformation();
-
-#ifdef RAD_GAMECUBE
-        tvFrame->ScaleAboutCenter( 1.1f, 1.0f, 1.0f );
-#endif
-
 #ifdef RAD_PS2
         tvFrame->ScaleAboutCenter( 1.07f );
 #endif
-
 #ifdef RAD_WIN32
         tvFrame->ScaleAboutCenter( 1.03f );
 #endif

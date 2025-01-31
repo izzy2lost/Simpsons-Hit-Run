@@ -61,14 +61,7 @@ void VehicleMappable::OnButtonDown( int controllerId, int buttonId, const IButto
     {
     case Reset:
         {
-#ifdef RAD_GAMECUBE
-            if ( pButton->GetValue() > 0.5f )
-            {
-                GetController( )->Reset();
-            }
-#else
             GetController( )->Reset();
-#endif
             break;
         }
     case Horn:

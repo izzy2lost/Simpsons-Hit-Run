@@ -160,18 +160,10 @@ static void LoadTargaTRUECOLOUR(TargaHeader& header, tFile* file, tImageHandler:
             unsigned char* scan = (unsigned char*)scanline;
             do
             {
-#ifdef RAD_GAMECUBE
-                scan[3] = file->GetByte();
-                scan[2] = file->GetByte();
-                scan[1] = file->GetByte();
-                scan[0] = 0xff;
-#else
                 scan[0] = file->GetByte();
                 scan[1] = file->GetByte();
                 scan[2] = file->GetByte();
                 scan[3] = 0xff;
-#endif
-
                 scan += 4;
             } while(--count);
             builder->ProcessScanline32(scanline);
@@ -190,11 +182,6 @@ bool tTargaHandler::CheckFormat(Format f)
 
 void tTargaHandler::CreateImage(tFile* file, tImageHandler::Builder* builder)
 {
-
-#ifdef RAD_GAMECUBE
-    file->SetEndianSwap(!file->GetEndianSwap());
-#endif
-
     TargaHeader header;
     GetTGAHeader(file, &header);
 
@@ -251,7 +238,6 @@ void tTargaHandler::CreateImage(tFile* file, tImageHandler::Builder* builder)
 
 bool tTargaHandler::SaveImage(tImage* image, char* filename)
 {
-#ifndef RAD_GAMECUBE
     FILE* file = fopen(filename, "wb");
     if(!file)
     {
@@ -288,9 +274,4 @@ bool tTargaHandler::SaveImage(tImage* image, char* filename)
     image->Invert();
         
     return nWritten == 1;
-#else
-    return false;
-#endif
 }
-
-

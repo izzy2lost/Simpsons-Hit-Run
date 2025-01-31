@@ -38,24 +38,6 @@ struct ControlMap
 
 const ControlMap GUI_CONTROL_MAP[] =
 {
-#ifdef RAD_GAMECUBE
-    { "LeftStickX",     GuiInput::XAxis },
-    { "LeftStickY",     GuiInput::YAxis },
-    { "RightStickX",    GuiInput::XAxisRight },
-    { "RightStickY",    GuiInput::YAxisRight },
-    { "DPadLeft",       GuiInput::Left },
-    { "DPadRight",      GuiInput::Right },
-    { "DPadUp",         GuiInput::Up },
-    { "DPadDown",       GuiInput::Down },
-    { "Menu",           GuiInput::Start },
-    { "A",              GuiInput::Select },
-    { "B",              GuiInput::Back },
-    { "X",              GuiInput::AuxX },
-    { "Y",              GuiInput::AuxY },
-    { "TriggerL",       GuiInput::L1 },
-    { "TriggerR",       GuiInput::R1 },
-#endif
-
 #ifdef RAD_PS2
     { "LeftStickX",     GuiInput::XAxis },
     { "LeftStickY",     GuiInput::YAxis },

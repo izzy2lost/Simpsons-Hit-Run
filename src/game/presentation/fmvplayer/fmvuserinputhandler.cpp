@@ -176,7 +176,6 @@ void FMVUserInputHandler::OnButtonUp( int controllerId, int buttonId, const IBut
 
 void FMVUserInputHandler::OnControllerDisconnect( int id )
 {
-#ifndef RAD_GAMECUBE
     int controllerID = GetInputManager()->GetControllerIDforPlayer( 0 );
     if (GetGameFlow()->GetCurrentContext() == CONTEXT_GAMEPLAY
         && controllerID == id )
@@ -186,16 +185,13 @@ void FMVUserInputHandler::OnControllerDisconnect( int id )
         CGuiScreenMessage::GetControllerDisconnectedMessage(controllerID, str_buffer,  255);
         GetGame()->GetPlatform()->OnControllerError(str_buffer);
     }
-#endif
 }
 void FMVUserInputHandler::OnControllerConnect( int id )
 {
-#ifndef RAD_GAMECUBE
     if (m_controllerPromptShown && id==GetInputManager()->GetControllerIDforPlayer( 0 ))
     {
         m_controllerReconnect = true;
     }
-#endif
 }
 
 

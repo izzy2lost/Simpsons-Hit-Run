@@ -111,8 +111,7 @@ CGuiScreenViewCredits::CGuiScreenViewCredits
             }
 #endif // !PAL
 
-#ifndef RAD_GAMECUBE
-    #ifndef RAD_PS2
+#ifndef RAD_PS2
             // hide logitech line from credits for non-GC and non-PS2 platforms
             //
             if( i == CREDITS_PARTITION_FOR_LOGITECH )
@@ -121,8 +120,7 @@ CGuiScreenViewCredits::CGuiScreenViewCredits
 
                 continue;
             }
-    #endif // !RAD_PS2
-#endif // !RAD_GAMECUBE
+#endif // !RAD_PS2
 
             if( isFirstTime )
             {

@@ -27,8 +27,8 @@
 // Build Configuration Check
 //=============================================================================
 
-#if !defined(RAD_GAMECUBE) && !defined(RAD_PS2) && !defined(RAD_XBOX) && !defined(RAD_WIN32)
-    #error 'FTech requires definition of RAD_GAMECUBE, RAD_PS2, RAD_XBOX, or RAD_WIN32'
+#if !defined(RAD_PS2) && !defined(RAD_XBOX) && !defined(RAD_WIN32)
+    #error 'FTech requires definition of RAD_PS2, RAD_XBOX, or RAD_WIN32'
 #endif
 #if !defined(RAD_DEBUG) && !defined(RAD_TUNE) && !defined(RAD_RELEASE) 
     #error 'FTech requires definition of RAD_DEBUG, RAD_TUNE, or RAD_RELEASE'
@@ -72,7 +72,7 @@ typedef void (radDebugOutputHandler)(const char * pString );
 #endif
 #endif
 
-#if defined( RAD_PS2 ) || defined( RAD_GAMECUBE )
+#if defined( RAD_PS2 )
 bool rDebugAssertFail_Implementation( const char* condition, const char* filename, unsigned int linenum);
 #endif
 
@@ -109,10 +109,6 @@ void rDebugSetOutputHandler     ( radDebugOutputHandler * pOutputProc );
 
 #ifdef RAD_PS2
     #define rReleaseBreak() { asm( ".word 0x0000004d"); }
-#endif
-
-#ifdef RAD_GAMECUBE
-    #define rReleaseBreak(){ asm(trap); }
 #endif
 
 //#define rReleaseString( x )( rDebugString_Implementation( x ) )
@@ -165,10 +161,6 @@ void rReleasePrintf( const char *fmt, ... );
 
     #if defined (RAD_WIN32) || defined (RAD_XBOX)
         inline void rTunePrintf( const char *fmt, ... ) { }
-    #endif
-
-    #ifdef RAD_GAMECUBE
-        #define rTunePrintf( ... ) ((void)0)
     #endif
 
 #endif
@@ -230,11 +222,6 @@ void rReleasePrintf( const char *fmt, ... );
     #if defined (RAD_WIN32) || defined (RAD_XBOX)
         inline void rDebugPrintf( const char *fmt, ... ) { }
         inline void rDebugChannelPrintf( const char *fmt, ... ) { }
-    #endif
-
-    #ifdef RAD_GAMECUBE
-        #define rDebugPrintf( ... ) ((void)0)
-        #define rDebugChannelPrintf( ... ) ((void)0)
     #endif
 
 #endif

@@ -517,9 +517,6 @@ void CGuiManager::DisplayErrorPrompt
 #ifdef RAD_WIN32
         responses[ numResponses++ ] = CGuiMenuPrompt::RESPONSE_FORMAT_XBOX;
 #endif
-#ifdef RAD_GAMECUBE
-        responses[ numResponses++ ] = CGuiMenuPrompt::RESPONSE_FORMAT_GC;
-#endif
 #ifdef RAD_PS2
         responses[ numResponses++ ] = CGuiMenuPrompt::RESPONSE_FORMAT_PS2;
 #endif

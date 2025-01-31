@@ -48,10 +48,6 @@
 
 #include <string.h>
 
-#ifdef RAD_GAMECUBE
-#include <dolphin/os.h>
-#endif
-
 #ifdef RAD_WIN32
 #include <data/config/gameconfigmanager.h>
 #endif
@@ -1623,32 +1619,6 @@ void SoundManager::LoadData( const GameDataByte* dataBuffer, unsigned int numByt
         }
     }
 
-#ifdef RAD_GAMECUBE
-    //
-    // GameCube's IPL needs to override the loaded settings, sadly
-    //
-    u32 GCSoundMode = OSGetSoundMode();
-    if( GCSoundMode == OS_SOUND_MODE_MONO )
-    {
-        //
-        // IPL says mono, we go mono
-        //
-        loadedSoundMode = SOUND_MONO;
-    }
-    else
-    {
-        if( loadedSoundMode == SOUND_MONO )
-        {
-            //
-            // IPL says stereo, we go stereo.  Since the saved game had said
-            // mono, we need to choose a sub-sound mode.  We'll go with ProLogic.
-            //
-            loadedSoundMode = SOUND_SURROUND;
-        }
-    }
-
-#endif
-
     this->SetSoundMode( loadedSoundMode );
 }
 
@@ -1731,25 +1701,11 @@ void SoundManager::ResetData()
     SetCarVolume( settings->GetCarVolume() );
 
     //
-    // Sound mode.  For GameCube, get it from the IPL (Initial Program
-    // Loader, the thingy you get when you start up a GameCube without
-    // a disc).  For PS2 and Xbox, default to stereo (RadSound ignores
+    // Sound mode.  For PS2 and Xbox, default to stereo (RadSound ignores
     // this stuff for Xbox anyway, since these settings are supposed
     // to be changed from the dashboard).
     //
-#ifdef RAD_GAMECUBE
-    u32 GCSoundMode = OSGetSoundMode();
-    if( GCSoundMode == OS_SOUND_MODE_MONO )
-    {
-        SetSoundMode( SOUND_MONO );
-    }
-    else
-    {
-        SetSoundMode( SOUND_SURROUND );
-    }
-#else
     SetSoundMode( SOUND_SURROUND );
-#endif
 }
 
 #ifdef RAD_WIN32

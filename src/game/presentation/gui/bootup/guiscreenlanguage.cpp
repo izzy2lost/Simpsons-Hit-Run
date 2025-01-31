@@ -76,10 +76,6 @@ CGuiScreenLanguage::CGuiScreenLanguage
         m_pMenu->AddMenuItem( menu->GetText( name ) );
     }
 
-#ifdef RAD_GAMECUBE
-    m_pMenu->SetMenuItemEnabled( 3, false, true ); // no Spanish on GC PAL
-#endif // RAD_GAMECUBE
-
     Scrooby::Page* messageBoxPage = m_pScroobyScreen->GetPage( "MessageBox" );
     if( messageBoxPage != NULL )
     {

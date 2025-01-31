@@ -23,29 +23,7 @@ const unsigned int MUSIC_SAMPLING_RATE = 24000;
 
 const unsigned int TOTAL_PS2_FREE_UNCOMPRESSED_CLIP_BYTES = ( 1624 * 1024 * 7 ) / 2;
 
-#if defined RAD_GAMECUBE
-
-    const int ARAM_SILENT_BUFFER_SIZE = 1280;
-    const int ARAM_USER_START = 0x4000;
-    const int GAMECUBE_SOUND_MEMORY_AVAILABLE =
-        ( 1024 * 1024 * 10 ) - ARAM_SILENT_BUFFER_SIZE - ARAM_USER_START;
-
-    const int PLAYBACK_RATE = 32000;
-    
-    AudioFormat gCompressedStreamAudioFormat =   { 1, & gGcAdpcmEncoding, 24000 };
-    AudioFormat gUnCompressedStreamAudioFormat = { 1, & gPcmBEncoding, 24000 };
-    AudioFormat gClipFileAudioFormat =     { 1, & gPcmBEncoding, 24000 };
-    AudioFormat gMusicAudioFormat =        { 2, & gPcmBEncoding, 24000 };
-        
-    const unsigned int STREAM_BUFFER_SIZE_MS = 6000;      
-    const bool STREAM_USE_BUFFERED_DATA_SOURCES = false;
-    const unsigned int STREAM_BUFFERED_DATA_SOURCE_SIZE_MS = 0;   
-    const radMemorySpace STREAM_BUFFERED_DATA_SOURCE_MEMORY_SPACE = radMemorySpace_Local;
-    
-    const unsigned int CLIP_BUFFERED_DATA_SOURCE_SIZE_MS = 0;
-    const radMemorySpace CLIP_BUFFERED_DATA_SOURCE_MEMORY_SPACE = radMemorySpace_Local; 
-    
-#elif defined RAD_XBOX || defined RAD_WIN32
+#if defined RAD_XBOX || defined RAD_WIN32
     
     const int PLAYBACK_RATE = 0;
 
@@ -220,7 +198,7 @@ unsigned int CalculateStreamerSize( unsigned int ms, AudioFormat * pAf )
 void SoundNucleusInitialize( radMemoryAllocator alloc )
 {
     
-#if defined( RAD_PS2 ) || defined( RAD_GAMECUBE ) || defined( RAD_WIN32 )
+#if defined( RAD_PS2 ) || defined( RAD_WIN32 )
     ::radSoundHalSystemInitialize( alloc );
 #else
     ::radSoundHalSystemInitialize( GMA_XBOX_SOUND_MEMORY );
@@ -314,12 +292,6 @@ void SoundNucleusInitialize( radMemoryAllocator alloc )
         totalClipMemoryNeeded,
         totalStreamSoundMemoryNeeded + totalClipMemoryNeeded );
 
-    #ifdef RAD_GAMECUBE
-        rAssert(
-            ( totalStreamSoundMemoryNeeded + totalClipMemoryNeeded ) <=
-                GAMECUBE_SOUND_MEMORY_AVAILABLE );
-    #endif
-
     rTunePrintf(
         "AUDIO: Sound Buffered Stream Memory Stream: [0x%x], Clip: [0x%x] Total:\n",
         totalStreamBufferMemoryNeeded,
@@ -336,10 +308,6 @@ void SoundNucleusInitialize( radMemoryAllocator alloc )
     
 #ifndef RAD_PS2
     desc.m_ReservedSoundMemory = totalStreamSoundMemoryNeeded + totalClipMemoryNeeded;
-#endif
-
-#ifdef RAD_GAMECUBE
-    desc.m_EffectsAllocator = GMA_AUDIO_PERSISTENT;
 #endif
 
     ::radSoundHalSystemGet( )->Initialize( desc );    
@@ -396,7 +364,7 @@ void SoundNucleusTerminate( void )
 
 IRadSoundHalAudioFormat * SoundNucleusGetStreamFileAudioFormat( void )
 {
-#if defined( RAD_GAMECUBE ) || ( defined( RAD_XBOX ) && defined( PAL ) )
+#if ( defined( RAD_XBOX ) && defined( PAL ) )
         return NULL;
     #else
         return gUnCompressedStreamAudioFormat.m_pAudioFormat;

@@ -247,7 +247,6 @@ CGuiManagerLanguage::CheckLanguage()
 
             break;
         }
-/*
         case Language::ITALIAN:
         {
             CGuiTextBible::SetCurrentLanguage( Scrooby::XL_ITALIAN );
@@ -256,8 +255,6 @@ CGuiManagerLanguage::CheckLanguage()
 
             break;
         }
-*/
-#ifndef RAD_GAMECUBE
         case Language::SPANISH:
         {
             CGuiTextBible::SetCurrentLanguage( Scrooby::XL_SPANISH );
@@ -266,7 +263,6 @@ CGuiManagerLanguage::CheckLanguage()
 
             break;
         }
-#endif // !RAD_GAMECUBE
         default:
         {
 #ifdef RAD_XBOX

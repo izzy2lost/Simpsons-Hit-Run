@@ -33,9 +33,6 @@
 #ifdef RAD_PS2
     #include <eekernel.h>
 #endif
-#ifdef RAD_GAMECUBE
-    #include <os.h>
-#endif 
 
 #include <radobject.hpp>
 #include <radmemory.hpp>
@@ -130,15 +127,6 @@ public:
     LPVOID      m_Win32Fiber;
 private:
     static void CALLBACK FiberEntry( void* param );
-#endif
-
-#ifdef RAD_GAMECUBE
-    static void FiberEntry( void );
-    static void GCNSwitchToFiber( unsigned int* OldSp, unsigned int* OldPc, 
-                                  unsigned int NewSp, unsigned int NewPc );
-    void*        m_Stack;
-    unsigned int m_CurrentStackPointer;
-    unsigned int m_CurrentProgramCounter;
 #endif
 
 #ifdef RAD_PS2
@@ -238,9 +226,6 @@ class radThread : public IRadThread,
     #ifdef RAD_PS2
         static void InternalThreadEntry( void* param );
     #endif
-    #ifdef RAD_GAMECUBE
-        static void* InternalThreadEntry( void* param );
-    #endif
     
     //
     // This static is the alarm entry point used by the PS2 to cause
@@ -295,13 +280,6 @@ class radThread : public IRadThread,
         int             m_SuspendCount;
         bool            m_SuspendedSelf;
         static int      s_AlarmId;
-    #endif
-
-    #ifdef RAD_GAMECUBE
-        OSThread*           m_ThreadId;
-        OSThread            m_ThreadObject;
-        static OSPriority   s_PriorityMap[ PriorityHigh + 1 ];
-        void*               m_Stack;
     #endif
 
     //

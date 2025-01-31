@@ -24,13 +24,6 @@
 
 #define RAD_CRASH_RECORD_TITLE "RADCRASH"
 
-// Gamecube
-
-#define RAD_CRASH_RECORD_GCN_PLATFORM             "Gamecube"
-#define RAD_CRASH_RECORD_GCN_VERSION              "V1.0"
-#define RAD_CRASH_RECORD_GCN_STACK_DUMP_SIZE      1280
-#define RAD_CRASH_RECORD_GCN_STACK_DUMP_SP_OFFSET 255   // Where SP points to
-
 // XBox
 
 #define RAD_CRASH_RECORD_XBOX_PLATFORM                         "XBox"
@@ -76,81 +69,6 @@ struct radCrashRecordInfo
     unsigned int m_Hour;
     unsigned int m_Minute;
     unsigned int m_Second;
-};
-
-//=============================================================================
-// Gamecube Declarations
-//=============================================================================
-
-struct radCrashRecordGcn
-{
-    //
-    // Gamecube defined error number
-    //
-
-    enum radCrashOSErrorGcn
-    {
-        SYSTEM_RESET = 0,
-        MACHINE_CHECK,  
-        DSI,
-        ISI,
-        EXTERNAL_INTERRUPT,
-        ALIGNMENT,
-        PROGRAM,
-        FLOATING_POINT,
-        DECREMENTER,
-        SYSTEM_CALL,
-        TRACE,
-        PERFORMACE_MONITOR,
-        BREAKPOINT,
-        SYSTEM_INTERRUPT,
-        THERMAL_INTERRUPT,
-        PROTECTION,
-        MAX
-    };
-
-    //
-    // Gamecube defined context structure
-    //
-
-    struct OSContext
-    {
-        // General-purpose registers
-        unsigned int gpr[32];
-
-        unsigned int cr;
-        unsigned int lr;
-        unsigned int ctr;
-        unsigned int xer;
-
-        // Floating-point registers
-        double fpr[32];
-
-        unsigned int fpscr_pad;
-        unsigned int fpscr;
-
-        // Exception handling registers
-        unsigned int srr0;
-        unsigned int srr1;
-
-        // Context mode
-        unsigned short mode;           // since UIMM is 16 bits in PPC
-        unsigned short state;          // OR-ed OS_CONTEXT_STATE_*
-
-        // Place Gekko regs at the end so we have minimal changes to
-        // existing code
-        unsigned int gqr[8];
-        double psf[32];
-    };
-
-    //
-    // Member variables
-    //
-
-    radCrashRecordInfo m_RadCrashRecordInfo;
-    radCrashOSErrorGcn m_OSError;
-    OSContext m_OSContext;
-    unsigned int m_StackDump[ RAD_CRASH_RECORD_GCN_STACK_DUMP_SIZE ];
 };
 
 //=============================================================================

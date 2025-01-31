@@ -12,10 +12,6 @@
 #include <p3d/matrixstack.hpp>
 #include <p3d/effects/transitionmanager.hpp>
 
-#ifdef RAD_GAMECUBE
-#include <pddi/gamecube/gcbufcopy.hpp>
-#endif
-
 
 tTransitionManager::tTransitionManager()
 :
@@ -136,26 +132,16 @@ void tTransitionManager::Advance( float delta )
         if( !mTexture )
         {            
             mTexture = new tTexture();
-#ifdef RAD_GAMECUBE
-            gcExtBufferCopy* pBufferCopy = (gcExtBufferCopy *)p3d::pddi->GetExtension( PDDI_EXT_BUFCOPY );
-            mTexture->SetTexture( pBufferCopy->CreateBackTexture( p3d::display->GetWidth(), p3d::display->GetHeight(), 32, true ) );
-            pBufferCopy->CopyBackBuf( mTexture->GetTexture(), true, false );
-            mGrabbing = false;
-            mDrawing = true;
-#else
             mTexture->Create( 512, 256, 32, 8, 0, PDDI_TEXTYPE_RENDERTARGET );
             p3d::context->GetContext()->SetRenderTarget( mTexture->GetTexture() );
-#endif
             mTexture->AddRef();
             mColour.Set( 0xFF, 0xFF, 0xFF, 0xFF );
         }
         else
         {
-#ifndef RAD_GAMECUBE
             mGrabbing = false;
             p3d::context->GetContext()->SetRenderTarget( NULL );
             mDrawing = true;
-#endif
         }
     }
 

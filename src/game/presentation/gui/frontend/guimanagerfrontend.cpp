@@ -768,17 +768,15 @@ void CGuiManagerFrontEnd::HandleMessage
 
             if( message == GUI_MSG_UPDATE )
             {
-#ifndef RAD_GAMECUBE
-#ifdef RAD_PS2 
+                #ifdef RAD_PS2 
                 int controllerID = m_disconnectedController;
-#else
+                #else
                 int controllerID = GetGuiSystem()->GetPrimaryController();
-#endif
+                #endif
                 if( controllerID >=0 && !GetInputManager()->GetController( controllerID )->IsConnected() )
                 {
                     this->OnControllerDisconnected( controllerID );
                 }
-#endif
             }
 
             break;

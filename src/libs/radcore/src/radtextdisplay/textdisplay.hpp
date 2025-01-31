@@ -27,10 +27,6 @@
 #include <libpkt.h>
 #include <sifcmd.h>
 #endif // RAD_PS2
-#ifdef RAD_GAMECUBE
-#include <dolphin.h>
-#include "font.hpp"
-#endif // RAD_GAMECUBE
 #ifdef RAD_XBOX
 #include <xtl.h>
 #include <xfont.h>
@@ -131,45 +127,6 @@ class radTextDisplay : public IRadTextDisplay
 
     #endif // RAD_PS2
 
-
-    //
-    // ===========================================
-    // GameCube-specific functions.
-    //
-    #ifdef RAD_GAMECUBE
-    //
-    // Convert color spaces.
-    //
-    unsigned int RGBtoYUV( unsigned int color ) const;
-
-    //
-    // Paint one character on the screen.
-    //
-    void PaintChar( int cx, int cy, char c );
-
-    //
-    // Allocate storage for frame buffers.
-    //
-    void GcnAllocateFrameBuffer( void );
-
-    //
-    // Init the GameCube text display system.
-    //
-    void GcnInitConsole( void );
-
-    //
-    // Fill frame buffer with a color.
-    //
-    void GcnFillFrameBuffer( u32 code );
-
-    //
-    // Swap display buffers.
-    //
-    void GcnSwapBuffers( void );
-
-    #endif // RAD_GAMECUBE
-
-
     //
     // ===========================================
     // Data members.
@@ -217,32 +174,6 @@ class radTextDisplay : public IRadTextDisplay
     sceGsDBuff m_DoubleBufferInfo;
 
     #endif // RAD_PS2
-
-
-    //
-    // ===========================================
-    // GameCube-specific data members.
-    //
-    #ifdef RAD_GAMECUBE
-
-    unsigned int m_BackgroundColorYUV;  // Background color in GCN color space.
-    unsigned int m_TextColorYUV;        // Text color in GCN color space.
-
-    //
-    // Frame buffers and accounting data.
-    //
-    u8*  m_FrameBuffer1;
-    u8*  m_FrameBuffer2;
-    u8*  m_CurBuffer;
-    bool m_First;
-    u32  m_FrameBufferSize;
-
-    //
-    // Screen video mode description data.
-    //
-    GXRenderModeObj* m_ScreenMode;
-
-    #endif // RAD_GAMECUBE
 
     //
     // ===========================================

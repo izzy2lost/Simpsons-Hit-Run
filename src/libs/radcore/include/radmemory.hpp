@@ -26,8 +26,8 @@
 // Build Configuration Check
 //=============================================================================
 
-#if !defined(RAD_GAMECUBE) && !defined(RAD_PS2) && !defined(RAD_XBOX) && !defined(RAD_WIN32)
-    #error 'FTech requires definition of RAD_GAMECUBE, RAD_PS2, RAD_XBOX, or RAD_WIN32'
+#if !defined(RAD_PS2) && !defined(RAD_XBOX) && !defined(RAD_WIN32)
+    #error 'FTech requires definition of RAD_PS2, RAD_XBOX, or RAD_WIN32'
 #endif
 
 //=============================================================================
@@ -49,11 +49,6 @@ typedef int radMemoryAllocator;
 
 #define RADMEMORY_ALLOC_DEFAULT         ((radMemoryAllocator)0)
 #define RADMEMORY_ALLOC_TEMP            ((radMemoryAllocator)1)
-
-// Only the gamecube has VMM for now
-#ifdef RAD_GAMECUBE
-#define RADMEMORY_ALLOC_VMM             ((radMemoryAllocator)2)
-#endif
 #define RADMEMORY_ALLOC_PERSISTENT      ((radMemoryAllocator)3)
 
 #define ALLOCATOR_TABLE_SIZE 30
@@ -81,11 +76,6 @@ struct IRadMemoryAllocator;
 #define STANDARD_ALIGNMENT  16
 #define UNCACHE_BIT         0x20000000
 #endif //RAD_PS2
-
-#ifdef RAD_GAMECUBE
-#define STANDARD_ALIGNMENT  8
-#define UNCACHE_BIT         0x40000000
-#endif
 
 //=============================================================================
 // L O C A L  M E M O R Y  F U N C T I O N S
@@ -238,22 +228,6 @@ void  radMemoryFreeAligned( void * pMemory );
 typedef void (radMemoryOutOfMemoryCallback)( void * pUserData, radMemoryAllocator allocator, const unsigned int size );
 void radMemorySetOutOfMemoryCallback( radMemoryOutOfMemoryCallback * pCallback, void * pUserData );
 
-
-#ifdef RAD_GAMECUBE
-//-----------------------------------------------------------------------------
-// VMM Stats
-//-----------------------------------------------------------------------------
-struct gcnVMMStats
-{
-    unsigned pageMisses;        
-    unsigned pageWrites;
-    unsigned pageMissLatency; // in microsceonds
-};
-
-void radVMMClearStats( void );
-void radVMMGetStats( gcnVMMStats *stats );
-#endif
-
 //-----------------------------------------------------------------------------
 // Helper Functions
 //-----------------------------------------------------------------------------
@@ -295,10 +269,6 @@ enum radMemorySpace
     radMemorySpace_Ee,          // PS2 EE memory space.
     radMemorySpace_Iop,         // PS2 IOP memory space.
     radMemorySpace_Sound        // PS2 sound memory space.
-#endif
-#ifdef RAD_GAMECUBE
-    radMemorySpace_Main,        // Gamecube main memory.
-    radMemorySpace_Aram         // Gamecube sound memory space.
 #endif
 #if defined (RAD_WIN32) || defined (RAD_XBOX)
     radMemorySpace_Main         // Win/Xbox main memory.

@@ -524,16 +524,13 @@ void radMemoryMonitorClient::DeclarePlatform( )
 
     pPlatform->eventID  = radPlatformEndian32( m_uCurrEventID ); m_uCurrEventID ++;
     pPlatform->timeStamp = radPlatformEndian32( GetTimeFrame( ) );
-#if defined RAD_PS2
+#if defined(RAD_PS2)
 	pPlatform->platform = static_cast< MM_ClientPlatform >( radPlatformEndian32( MM_Platform_PS2 ) );
     pPlatform->userData = 0;
-#elif defined RAD_GAMECUBE
-	pPlatform->platform = static_cast< MM_ClientPlatform >( radPlatformEndian32( MM_Platform_GCN ) );
-    pPlatform->userData = 0;
-#elif defined RAD_XBOX
+#elif defined(RAD_XBOX)
 	pPlatform->platform = static_cast< MM_ClientPlatform >( radPlatformEndian32( MM_Platform_XBOX ) );
     pPlatform->userData = ( unsigned int )( ( void * )&s_TheMemoryMonitorClient );
-#elif defined RAD_WIN32
+#elif defined(RAD_WIN32)
 	pPlatform->platform = static_cast< MM_ClientPlatform >( radPlatformEndian32( MM_Platform_WIN ) );
     pPlatform->userData = 0;
 #else
@@ -610,10 +607,6 @@ void radMemoryMonitorClient::DeclareMemSpaceInfo( )
     DeclareMemSpaceInfo( radMemorySpace_Iop, 0, 8 * 1024 * 1024 );
 
 #endif
-#if RAD_GAMECUBE
-    DeclareMemSpaceInfo( radMemorySpace_Main, 0x00000000, 0xffffffff );
-    DeclareMemSpaceInfo( radMemorySpace_Aram, 0x00000000, 16 * 1024 * 1024 );
-#endif
 #ifdef RAD_WIN32
     DeclareMemSpaceInfo( radMemorySpace_Main, 0x00000000, 0xffffffff );
 #endif
@@ -676,35 +669,6 @@ void radMemoryMonitorClient::DeclarePreDefinedMemorySection( )
     DeclareSection( (void*)_stackstart, (unsigned int)&_stack_size, MemorySectionType_Stack, radMemorySpace_Ee, NULL );
     IdentifySection( (void*)_stackstart, ".STACK", radMemorySpace_Ee );
 
-#endif
-#ifdef RAD_GAMECUBE
-
-	unsigned int uCodeStart = (unsigned int)( &_f_init[ 0 ] );
-	unsigned int uCodeSize = (unsigned int)( &_f_rodata[ 0 ] ) - (unsigned int)( &_f_init[ 0 ] );
-
-	unsigned int uTextStart = (unsigned int)( &_f_rodata[ 0 ] );
-	unsigned int uTextSize = (unsigned int)( &_stack_addr[ 0 ] ) - (unsigned int)( &_f_rodata[ 0 ] );
-
-	unsigned int uStackStart = (unsigned int)( &_stack_end[ 0 ] );
-	unsigned int uStackSize = (unsigned int)( &_stack_addr[ 0 ] ) - (unsigned int)( &_stack_end[ 0 ] );
-
-    //
-    // hack the heap size, guess it is 48MB - CodeSize - TextSize ( stack is inside text )
-    //
-	unsigned int uHeapStart = (unsigned int)( &__ArenaLo[ 0 ] );
-	unsigned int uHeapSize = 48 * 1024 * 1024 - uCodeSize - uTextSize;
-	
-    DeclareSection( (void*)uCodeStart, uCodeSize, MemorySectionType_Code, radMemorySpace_Main, NULL );
-    IdentifySection( (void*)uCodeStart, ".CODE", radMemorySpace_Main );
-
-    DeclareSection( (void*)uTextStart, uTextSize, MemorySectionType_StaticData, radMemorySpace_Main, NULL );
-    IdentifySection( (void*)uTextStart, ".DATA", radMemorySpace_Main );
-
-    DeclareSection( (void*)uStackStart, uStackSize, MemorySectionType_Stack, radMemorySpace_Main, NULL );
-    IdentifySection( (void*)uStackStart, ".STACK", radMemorySpace_Main );
-
-    DeclareSection( (void*)uHeapStart, uHeapSize, MemorySectionType_DynamicData, radMemorySpace_Main, NULL );
-    IdentifySection( (void*)uHeapStart, ".HEAP", radMemorySpace_Main );
 #endif
 #ifdef RAD_WIN32
 
@@ -1195,9 +1159,6 @@ void radMemoryMonitorClient::ReportAddRef( void* pObject, void* pReference, radM
 #if defined RAD_PS2
         uObjectPtr  = _stackstart;
 #endif
-#if defined RAD_GAMECUBE
-		uObjectPtr  = (unsigned int)( &_stack_addr[ 0 ] );
-#endif
 #ifdef RAD_XBOX
         uObjectPtr = 0xd0000000;
 #endif
@@ -1283,10 +1244,6 @@ void radMemoryMonitorClient::ReportRelease( void* pObject, void* pReference, rad
     {
 #if defined RAD_PS2
         uObjectPtr  = _stackstart;
-#endif
-
-#if defined RAD_GAMECUBE
-		uObjectPtr  = (unsigned int)( &_stack_addr[ 0 ] );
 #endif
 #ifdef RAD_XBOX
         uObjectPtr = 0xd0000000;

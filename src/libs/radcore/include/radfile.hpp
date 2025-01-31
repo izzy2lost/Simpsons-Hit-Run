@@ -25,8 +25,8 @@
 // Build Configuration Check
 //=============================================================================
  
-#if !defined(RAD_GAMECUBE) && !defined(RAD_PS2) && !defined(RAD_XBOX) && !defined(RAD_WIN32)
-    #error 'FTech requires definition of RAD_GAMECUBE, RAD_PS2, RAD_XBOX, or RAD_WIN32'
+#if !defined(RAD_PS2) && !defined(RAD_XBOX) && !defined(RAD_WIN32)
+    #error 'FTech requires definition of RAD_PS2, RAD_XBOX, or RAD_WIN32'
 #endif
  
 //=============================================================================
@@ -99,15 +99,6 @@ struct IRadDrive;
 // MEMCARD4B:       XBox memory unit in controller 4 (bottom), always available
 // REMOTEDRIVE:     Radical File Server, only available if host communication is enabled
 //
-// GameCube Drive and filename considerations:
-// By default the GameCube uses the DVD drive. This is mapped to the host PC during debugging.
-//
-// Drive name       Details  
-// DVD:             Gamecube DVD drive (default)
-// MEMCARDCHANNELA: Gamecube Memcard channel A, always available
-// MEMCARDCHANNELB: Gamecube Memcard channel B, always available
-// REMOTEDRIVE:     Radical file server, only available if host communication is enabled 
-//
 
 //=============================================================================
 // Macros and defines
@@ -128,9 +119,7 @@ struct IRadDrive;
 // This constant defines the optimal memory buffer alignment for use with
 // file read and write operations on the current platform.
 //
-#if defined RAD_GAMECUBE
-#define radFileOptimalMemoryAlignment 32
-#elif defined RAD_PS2
+#if defined RAD_PS2
 #define radFileOptimalMemoryAlignment 64
 #else
 #define radFileOptimalMemoryAlignment 16
@@ -139,10 +128,7 @@ struct IRadDrive;
 //
 // This constant defines the best disk transfer size for the current platform.
 //
-#if defined RAD_GAMECUBE
-#define radFileMaxSectorSize          32
-#define radFileMaxMemcardSectorSize 8192
-#elif defined RAD_PS2
+#if defined RAD_PS2
 #define radFileMaxSectorSize        2048
 #define radFileMaxMemcardSectorSize 1024
 #elif defined RAD_XBOX
@@ -256,61 +242,6 @@ struct radMemcardInfo
 //
 void radMakeIconSys( radPs2IconSys* pIconSys, radSJISChar* title, unsigned short lineBreak ); 
 void radSetIconSysTitle( radPs2IconSys* pIconSys, radSJISChar* title, unsigned short lineBreak );  
-
-#endif
-
-#ifdef RAD_GAMECUBE
-
-//
-// One frame of the icon animation.
-//
-struct radMemcardIconData
-{
-    enum IconSpeed 
-    {
-        Slow   = 3,
-        Middle = 2,
-        Fast   = 1
-    };
-
-    enum IconFormat
-    {
-        RGB5A3  = 2,
-        C8      = 1
-    };
-
-    void*       m_Data;
-    void*       m_CLUT; // ignored in RGB mode
-    IconFormat  m_Format;
-    IconSpeed   m_Speed;
-};
-
-struct radMemcardInfo
-{
-    enum BannerFormat
-    {
-        RGB5A3  = 2,
-        C8      = 1
-    };
-
-    enum IconAnimType 
-    {
-        Loop    = 0x00,
-        Bounce  = 0x04
-    };
-
-    void*               m_Banner;
-    void*               m_CLUT; // ignored in RGB mode
-    BannerFormat        m_BannerFormat;
-
-    unsigned int        m_NumFrames;
-    radMemcardIconData  m_pIcon[ 8 ];
-
-    IconAnimType        m_AnimType;
-
-    char                m_CommentLine1[ 32 ];
-    char                m_CommentLine2[ 32 ];
-};
 
 #endif
 
