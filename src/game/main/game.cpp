@@ -45,10 +45,6 @@
 #include <main/game.h>
 #include <main/platform.h>
 
-#ifdef RAD_GAMECUBE
-#include <main/gamecube_extras/gcmanager.h>
-#endif
-
 #include <memory/srrmemory.h>
 #include <memory/memoryutilities.h>
 

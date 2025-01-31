@@ -75,7 +75,6 @@
 #include <p3d/anim/visibilityanimation.hpp>
 #include <p3d/effects/effect.hpp>
 #include <p3d/effects/optic.hpp>
-#include <p3d/effects/opticcorona.hpp>
 #include <p3d/effects/opticlensflare.hpp>
 #include <p3d/effects/particlesystem.hpp>
 #endif

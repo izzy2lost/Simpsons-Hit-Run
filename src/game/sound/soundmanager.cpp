@@ -74,7 +74,6 @@ const char* RADMUSIC_SCRIPT_FILE = "rms";
 // Doh.
 //
 static const int SOUND_MODE_STEREO_FLAG = 1;
-static const int SOUND_MODE_SURROUND_FLAG = 1 << 1;
 
 static unsigned int gLastServiceTime;
 static unsigned int gLastServiceOncePerFrameTime;
@@ -1609,14 +1608,7 @@ void SoundManager::LoadData( const GameDataByte* dataBuffer, unsigned int numByt
     else
     {
         this->SetDialogueVolume( soundSettings.dialogVolume );
-        if( soundSettings.isSurround )
-        {
-            loadedSoundMode = SOUND_SURROUND;
-        }
-        else
-        {
-            loadedSoundMode = SOUND_STEREO;
-        }
+        loadedSoundMode = SOUND_STEREO;
     }
 
     this->SetSoundMode( loadedSoundMode );
@@ -1649,15 +1641,6 @@ void SoundManager::SaveData( GameDataByte* dataBuffer, unsigned int numBytes )
         // Horrible stinky hack explained in LoadData()
         //
         soundSettings.dialogVolume += 100.0f;
-        soundSettings.isSurround = false;
-    }
-    else if( mode == SOUND_STEREO )
-    {
-        soundSettings.isSurround = false;
-    }
-    else
-    {
-        soundSettings.isSurround = true;
     }
 
     memcpy( dataBuffer, &soundSettings, sizeof( soundSettings ) );
@@ -1699,13 +1682,6 @@ void SoundManager::ResetData()
     SetAmbienceVolume( settings->GetAmbienceVolume() );
     SetDialogueVolume( settings->GetDialogueVolume() );
     SetCarVolume( settings->GetCarVolume() );
-
-    //
-    // Sound mode.  For PS2 and Xbox, default to stereo (RadSound ignores
-    // this stuff for Xbox anyway, since these settings are supposed
-    // to be changed from the dashboard).
-    //
-    SetSoundMode( SOUND_SURROUND );
 }
 
 #ifdef RAD_WIN32
@@ -1874,10 +1850,6 @@ void SoundManager::SetSoundMode( SoundMode mode )
     else if( m_soundMode == SOUND_STEREO )
     {
         radSoundMode = radSoundOutputMode_Stereo;
-    }
-    else
-    {
-        radSoundMode = radSoundOutputMode_Surround;
     }
 
     ::radSoundHalSystemGet()->SetOutputMode( radSoundMode );

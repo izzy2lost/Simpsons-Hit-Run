@@ -19,10 +19,6 @@
 typedef unsigned long simpsonsUInt64;
 #endif
 
-#ifdef RAD_GAMECUBE
-typedef unsigned long long simpsonsUInt64;
-#endif
-
 #if defined RAD_XBOX || defined RAD_WIN32
 typedef unsigned __int64 simpsonsUInt64;
 #endif

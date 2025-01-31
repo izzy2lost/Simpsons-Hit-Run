@@ -185,9 +185,6 @@
     <ClCompile Include="src\raddebugcommunication\hostchannel.cpp">
       <Filter>src\raddebugcommunication</Filter>
     </ClCompile>
-    <ClCompile Include="src\raddebugcommunication\hosthiosocket.cpp">
-      <Filter>src\raddebugcommunication</Filter>
-    </ClCompile>
     <ClCompile Include="src\raddebugcommunication\targetconnection.cpp">
       <Filter>src\raddebugcommunication</Filter>
     </ClCompile>
@@ -365,9 +362,6 @@
       <Filter>src\raddebugcommunication</Filter>
     </ClInclude>
     <ClInclude Include="src\raddebugcommunication\hostchannel.hpp">
-      <Filter>src\raddebugcommunication</Filter>
-    </ClInclude>
-    <ClInclude Include="src\raddebugcommunication\hosthiosocket.hpp">
       <Filter>src\raddebugcommunication</Filter>
     </ClInclude>
     <ClInclude Include="src\raddebugcommunication\netmp.h">

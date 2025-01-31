@@ -45,10 +45,6 @@ const char* SOUND_MENU_ITEMS[] =
     "Engine",
     "Voice",
 
-#ifdef INCLUDE_SOUND_MODE
-    "SurroundSound",
-#endif
-
     "" // dummy terminator
 };
 
@@ -116,29 +112,6 @@ MEMTRACK_PUSH_GROUP( "CGUIScreenSound" );
         sprintf( itemName, "%s_Value", SOUND_MENU_ITEMS[ i ] );
         pTextValue = group->GetText( itemName );
 
-#ifdef INCLUDE_SOUND_MODE
-        if( i == MENU_ITEM_SURROUND_SOUND )
-        {
-            // add menu item for sound mode setting
-            //
-            pText = pTextValue;
-
-            sprintf( itemName, "%s_LArrow", SOUND_MENU_ITEMS[ i ] );
-            pArrowL = group->GetSprite( itemName );
-
-            sprintf( itemName, "%s_RArrow", SOUND_MENU_ITEMS[ i ] );
-            pArrowR = group->GetSprite( itemName );
-
-            m_pMenu->AddMenuItem( pText,
-                                  pTextValue,
-                                  NULL,
-                                  NULL,
-                                  pArrowL,
-                                  pArrowR,
-                                  SELECTION_ENABLED | VALUES_WRAPPED | TEXT_OUTLINE_ENABLED );
-        }
-#endif
-
         // if slider exists
         //
         sprintf( itemName, "%s_Slider", SOUND_MENU_ITEMS[ i ] );
@@ -172,17 +145,6 @@ MEMTRACK_PUSH_GROUP( "CGUIScreenSound" );
         }
     }
 
-#ifdef INCLUDE_SOUND_MODE
-    m_pMenu->SetSelectionValueCount( MENU_ITEM_SURROUND_SOUND, NUM_SOUND_SETTINGS );
-#else
-    // hide surround sound setting
-    //
-    Scrooby::Group* surroundSoundSetting = pPage->GetGroup( "SurroundSound" );
-    if( surroundSoundSetting != NULL )
-    {
-        surroundSoundSetting->SetVisible( false );
-    }
-
   #ifndef RAD_WIN32 // for PC don't shift the pixels... essential for the mouse cursor.
     // and move regular sound menu down a bit to re-center vertically
     //
@@ -190,7 +152,6 @@ MEMTRACK_PUSH_GROUP( "CGUIScreenSound" );
     rAssert( soundMenu != NULL );
     soundMenu->Translate( 0, -30 );
   #endif
-#endif
 
 MEMTRACK_POP_GROUP("CGUIScreenSound");
 }
@@ -286,29 +247,6 @@ void CGuiScreenSound::HandleMessage
 
                         break;
                     }
-#ifdef INCLUDE_SOUND_MODE
-                    case MENU_ITEM_SURROUND_SOUND:
-                    {
-                        if( param2 == MONO_SOUND )
-                        {
-                            GetSoundManager()->SetSoundMode( SOUND_MONO );
-                        }
-                        else if( param2 == STEREO_SOUND )
-                        {
-                            GetSoundManager()->SetSoundMode( SOUND_STEREO );
-                        }
-                        else if( param2 == SURROUND_SOUND )
-                        {
-                            GetSoundManager()->SetSoundMode( SOUND_SURROUND );
-                        }
-                        else
-                        {
-                            rAssert( false );
-                        }
-
-                        break;
-                    }
-#endif
                     default:
                     {
                         break;
@@ -447,23 +385,6 @@ void CGuiScreenSound::InitIntro()
 
     rAssert( m_soundOffIcons[ MENU_ITEM_VOICE ] != NULL );
     m_soundOffIcons[ MENU_ITEM_VOICE ]->SetVisible( menuItem->m_slider.m_value == 0 );
-
-    // surround sound
-    //
-#ifdef INCLUDE_SOUND_MODE
-    if( GetSoundManager()->GetSoundMode() == SOUND_MONO )
-    {
-        m_pMenu->SetSelectionValue( MENU_ITEM_SURROUND_SOUND, MONO_SOUND );
-    }
-    else if( GetSoundManager()->GetSoundMode() == SOUND_STEREO )
-    {
-        m_pMenu->SetSelectionValue( MENU_ITEM_SURROUND_SOUND, STEREO_SOUND );
-    }
-    else if( GetSoundManager()->GetSoundMode() == SOUND_SURROUND )
-    {
-        m_pMenu->SetSelectionValue( MENU_ITEM_SURROUND_SOUND, SURROUND_SOUND );
-    }
-#endif
 
     // reset slider value changed flags
     //

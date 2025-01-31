@@ -23,10 +23,8 @@
     typedef unsigned long radInt64;
 #elif defined( RAD_WIN32 ) || defined ( RAD_XBOX )
     typedef unsigned _int64 radInt64;
-#elif defined(RAD_GAMECUBE)
-    typedef unsigned long long radInt64;
 #else
-    #error 'FTech requires definition of RAD_GAMECUBE, RAD_PS2, RAD_XBOX, or RAD_WIN32'
+    #error 'FTech requires definition of RAD_PS2, RAD_XBOX, or RAD_WIN32'
 #endif
 
 

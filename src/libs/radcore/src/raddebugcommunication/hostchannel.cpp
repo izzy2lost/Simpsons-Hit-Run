@@ -39,7 +39,6 @@
 #include "netmp.h"
 #include "dcmp.h"
 #include "protocol.hpp"
-#include "hosthiosocket.hpp"
 #include "host1394socket.hpp"
 
 //=============================================================================

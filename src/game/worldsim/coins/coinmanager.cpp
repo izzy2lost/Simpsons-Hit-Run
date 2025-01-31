@@ -411,7 +411,6 @@ void CoinManager::SpawnCoins( int Count, const rmt::Vector& Position, float Grou
         SpawnCoin( *c, Position, GroundY + COIN_HOVER, Direction, instaCollect );
     }
     HeapMgr()->PushHeap( GMA_LEVEL_ZONE );
-    #endif
     GetEventManager()->TriggerEvent( EVENT_SPAWNED_COINS, reinterpret_cast<void*>( Count ) );
     HeapMgr()->PopHeap( GMA_LEVEL_ZONE );
 }

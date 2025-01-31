@@ -23,12 +23,6 @@
 #include <main/commandlineoptions.h>
 #include <memory/srrmemory.h>
 
-//#ifdef RAD_GAMECUBE
-//#define strupr(x) (x)
-//#pragma message("strupr not defined on the game cube")
-//#endif
-
-
 //******************************************************************************
 //
 // Global Data, Local Data, Local Classes

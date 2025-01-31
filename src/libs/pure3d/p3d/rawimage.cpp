@@ -36,11 +36,6 @@ bool tRawImageHandler::CheckFormat(Format format)
         case IMG_PS2_8BIT:
         case IMG_PS2_16BIT:
         case IMG_PS2_32BIT:
-        case IMG_GC_4BIT:
-        case IMG_GC_8BIT:
-        case IMG_GC_16BIT:
-        case IMG_GC_32BIT:
-        case IMG_GC_DXT1:
             return true;
         default:
             return false;

@@ -233,52 +233,7 @@ extern void radMemorySpaceTerminate( void );
 
 void radMemoryInitialize( void )
 {
-    if( g_Initialized )
-    {
-        return;
-    }
-
-    ::radMemoryPlatInitialize( );
-
-    //This is memory reserved to really bad situations where we need to printf.
-    gEmergencyMemory = radMemoryPlatAlloc( 1024 * 32 );
-
-    rAssert( g_Initialized == false );
-    g_Initialized = true;
-
-    g_pRadMemoryAllocator_Malloc = new ( g_MemoryForMalloc ) radMemoryAllocatorMalloc( );
-
-    g_AllocatorTreeNode_Root.m_pIRadMemoryAllocator = g_pRadMemoryAllocator_Malloc;
-    g_AllocatorTreeNode_Root.m_pChildren_Head = NULL;
-    g_AllocatorTreeNode_Root.m_pSibling_Next = NULL;
-    g_AllocatorTreeNode_Root.m_pParent = NULL;
-
-    for( unsigned int i = 0; i < ALLOCATOR_TABLE_SIZE; i ++ )
-    {
-        g_AllocatorTreeNodes[ i ].m_pChildren_Head = NULL;
-        g_AllocatorTreeNodes[ i ].m_pParent = NULL;
-        g_AllocatorTreeNodes[ i ].m_pSibling_Next = NULL;
-        g_AllocatorTreeNodes[ i ].m_pIRadMemoryAllocator = g_pRadMemoryAllocator_Malloc;
-    }
-
-    unsigned aramSize = (1024 * 1024 * 16) - sizeVMARAM;
-    radMemorySpaceInitialize( aramSize );
-    sVMMDLHeapInitialized = false;
-
-    if ((sizeVMMainMemory != 0) && (sizeVMARAM != 0))
-    {
-        bool ok = VMAlloc( 0x7E000000, sizeVMARAM );
-        rAssert( ok );
-        vmmHeap = radMemoryCreateDougLeaHeap( (void *)0x7E000000, sizeVMARAM, RADMEMORY_ALLOC_DEFAULT, "GameCube_VMM" );
-        rAssert(vmmHeap != NULL);
-        radMemoryRegisterAllocator( RADMEMORY_ALLOC_VMM, RADMEMORY_ALLOC_DEFAULT, vmmHeap );
-        sVMMDLHeapInitialized = true;
-    }
-
-    //
-    // Initialize static heap
-    //
-    //g_StaticHeap.CreateHeap( STATIC_HEAP_SIZE );
+    // pretty sure this was only gamecube shit so it can go
 }
 
 //============================================================================

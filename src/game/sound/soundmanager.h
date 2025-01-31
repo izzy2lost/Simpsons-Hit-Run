@@ -83,8 +83,7 @@ struct NISSoundPlaybackCompleteCallback
 enum SoundMode
 {
     SOUND_MONO,
-    SOUND_STEREO,
-    SOUND_SURROUND
+    SOUND_STEREO
 };
 
 //=============================================================================
@@ -184,10 +183,6 @@ class SoundManager : public EventListener,
         // Supersprint
         //
         void RestartSupersprintMusic();
-
-        // Surround sound control
-        void SetSoundMode( SoundMode mode );
-        SoundMode GetSoundMode();
 
         // Function for getting that funky beat.  Values from 0.0f to 4.0f, assuming
         // that Marc doesn't write any waltzes
@@ -314,7 +309,6 @@ class SoundManager : public EventListener,
             float sfxVolume;
             float carVolume;
             float dialogVolume;
-            bool isSurround;
         };
         
         // Sound loading subsystem

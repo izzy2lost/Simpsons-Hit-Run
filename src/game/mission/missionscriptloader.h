@@ -76,6 +76,8 @@ private:
     MissionScriptLoader(const MissionScriptLoader& missionscriptloader);
     MissionScriptLoader& operator=(const MissionScriptLoader& missionscriptloader);
 
+    void SetLanguage(int argc, const char** argv);
+
     //
     // Level functions
     //

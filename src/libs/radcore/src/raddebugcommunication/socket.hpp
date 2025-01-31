@@ -103,8 +103,8 @@ struct radSocket
     {
         return( ::WSAAsyncSelect( s, Wnd, wMsg, levent ) );
     }
-    #endif
-    #endif
+    #endif // !RAD_XBOX
+    #endif // RAD_WIN32 || RAD_XBOX 
 
     //
     // This placement operator is used by the host side only
@@ -126,3 +126,5 @@ struct radSocket
 
 };
 #endif
+
+#endif // SOCKET_HPP

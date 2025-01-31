@@ -65,24 +65,8 @@ private:
         MENU_ITEM_EFFECTS,
         MENU_ITEM_ENGINE,
         MENU_ITEM_VOICE,
-
-#ifdef INCLUDE_SOUND_MODE
-        MENU_ITEM_SURROUND_SOUND,
-#endif
-
         NUM_MENU_ITEMS
     };
-
-#ifdef INCLUDE_SOUND_MODE
-    enum eMenuItemSurroundSound
-    {
-        MONO_SOUND,
-        STEREO_SOUND,
-        SURROUND_SOUND,
-
-        NUM_SOUND_SETTINGS
-    };
-#endif
 
     CGuiMenu* m_pMenu;
 

@@ -26,7 +26,7 @@ struct IRadDrive;
 //=============================================================================
 //
 // Synopsis:    Implement this interface for each platform that the game will
-//              support (e.g. PS2, GameCube, Xbox, etc.).
+//              support (e.g. PS2, Xbox, etc.).
 //
 //=============================================================================
 class Platform : public IRadDriveErrorCallback

@@ -170,7 +170,6 @@
     <ClCompile Include="src\raddebugcommunication\host.cpp" />
     <ClCompile Include="src\raddebugcommunication\host1394socket.cpp" />
     <ClCompile Include="src\raddebugcommunication\hostchannel.cpp" />
-    <ClCompile Include="src\raddebugcommunication\hosthiosocket.cpp" />
     <ClCompile Include="src\raddebugcommunication\targetconnection.cpp" />
     <ClCompile Include="src\raddebugcommunication\targetsocketchannel.cpp" />
     <ClCompile Include="src\raddebugcommunication\targetx.cpp" />
@@ -271,7 +270,6 @@
     <ClInclude Include="src\raddebugcommunication\host.hpp" />
     <ClInclude Include="src\raddebugcommunication\host1394socket.hpp" />
     <ClInclude Include="src\raddebugcommunication\hostchannel.hpp" />
-    <ClInclude Include="src\raddebugcommunication\hosthiosocket.hpp" />
     <ClInclude Include="src\raddebugcommunication\netmp.h" />
     <ClInclude Include="src\raddebugcommunication\protocol.hpp" />
     <ClInclude Include="src\raddebugcommunication\socket.hpp" />

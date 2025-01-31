@@ -406,7 +406,7 @@ void daSoundTuner::ServiceOncePerFrame( unsigned int elapsedTime )
 //=============================================================================
 // Function:    daSoundTuner::SetSoundOutputMode
 //=============================================================================
-// Description: Set the sound system output mode (stereo, mono, surround)
+// Description: Set the sound system output mode (stereo, mono)
 //
 // Parameters:  outputMode - the output mode desired
 //
@@ -428,10 +428,6 @@ void daSoundTuner::SetSoundOutputMode
     {
         rsdOutputMode = radSoundOutputMode_Stereo;
     }
-    else if( outputMode == SURROUND )
-    {
-        rsdOutputMode = radSoundOutputMode_Surround;
-    }
     else
     {
         rAssertMsg( 0, "Invalid sound output mode" );
@@ -443,7 +439,7 @@ void daSoundTuner::SetSoundOutputMode
 //=============================================================================
 // Function:    daSoundTuner::GetSoundOutputMode
 //=============================================================================
-// Description: Get the sound system output mode (stereo, mono, surround)
+// Description: Get the sound system output mode (stereo, mono)
 //
 // Parameters:  none
 //
@@ -466,10 +462,6 @@ IDaSoundTuner::SoundOutputMode daSoundTuner::GetSoundOutputMode
     else if( rsdOutputMode == radSoundOutputMode_Stereo )
     {
         outputMode = STEREO;
-    }
-    else if( rsdOutputMode == radSoundOutputMode_Surround )
-    {
-        outputMode = SURROUND;
     }
     else
     {

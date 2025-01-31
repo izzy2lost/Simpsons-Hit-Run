@@ -210,7 +210,6 @@
     <ClCompile Include="p3d\dxtn.cpp" />
     <ClCompile Include="p3d\effects\effect.cpp" />
     <ClCompile Include="p3d\effects\optic.cpp" />
-    <ClCompile Include="p3d\effects\opticcorona.cpp" />
     <ClCompile Include="p3d\effects\opticlensflare.cpp" />
     <ClCompile Include="p3d\effects\opticloader.cpp" />
     <ClCompile Include="p3d\effects\particlearray.cpp" />
@@ -340,7 +339,6 @@
     <ClInclude Include="p3d\effects\effect.hpp" />
     <ClInclude Include="p3d\effects\optic.hpp" />
     <ClInclude Include="p3d\effects\opticconstants.hpp" />
-    <ClInclude Include="p3d\effects\opticcorona.hpp" />
     <ClInclude Include="p3d\effects\opticlensflare.hpp" />
     <ClInclude Include="p3d\effects\opticloader.hpp" />
     <ClInclude Include="p3d\effects\particlearray.hpp" />

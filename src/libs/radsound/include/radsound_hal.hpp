@@ -63,8 +63,7 @@ enum radSoundAuxMode
 
 // The global mode of the sound system.  XBox TRC says that this must be set
 // only from the dashboard, so this setting is ignored.  Windows DirectSound
-// doesn't allow control of this so it is igored.  Ps2 doesn't support surround
-// so _Surround is equivalent to _Stereo.  Game cube supports all modes.
+// doesn't allow control of this so it is igored.
 
 enum radSoundOutputMode
 {
