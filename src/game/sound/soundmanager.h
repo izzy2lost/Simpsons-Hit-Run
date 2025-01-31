@@ -184,6 +184,10 @@ class SoundManager : public EventListener,
         //
         void RestartSupersprintMusic();
 
+        // Surround sound control
+        void SetSoundMode(SoundMode mode);
+        SoundMode GetSoundMode();
+
         // Function for getting that funky beat.  Values from 0.0f to 4.0f, assuming
         // that Marc doesn't write any waltzes
         float GetBeatValue();
