@@ -74,12 +74,6 @@
     <Filter Include="Pddi Headers\gl">
       <UniqueIdentifier>{f35bb267-cc9c-49e5-88ff-834a8f763337}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Pddi Source\dx11">
-      <UniqueIdentifier>{487e7b21-3ca5-444c-b189-6709197efe09}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pddi Headers\dx11">
-      <UniqueIdentifier>{ed205bd1-6b6a-489c-af67-2ed112696ccd}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="p3d\anim\animate.cpp">
@@ -435,33 +429,6 @@
     </ClCompile>
     <ClCompile Include="pddi\gl\gltex.cpp">
       <Filter>Pddi Source\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx11\context.cpp">
-      <Filter>Pddi Source\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx11\device.cpp">
-      <Filter>Pddi Source\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx11\display.cpp">
-      <Filter>Pddi Source\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx11\prim.cpp">
-      <Filter>Pddi Source\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx11\primstream.cpp">
-      <Filter>Pddi Source\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx11\state.cpp">
-      <Filter>Pddi Source\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx11\texture.cpp">
-      <Filter>Pddi Source\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx11\util.cpp">
-      <Filter>Pddi Source\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx11\vertprog.cpp">
-      <Filter>Pddi Source\dx11</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -890,36 +857,6 @@
     </ClInclude>
     <ClInclude Include="pddi\gl\gltex.hpp">
       <Filter>Pddi Headers\gl</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx11\context.hpp">
-      <Filter>Pddi Headers\dx11</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx11\device.hpp">
-      <Filter>Pddi Headers\dx11</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx11\direct3d.hpp">
-      <Filter>Pddi Headers\dx11</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx11\display.hpp">
-      <Filter>Pddi Headers\dx11</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx11\prim.hpp">
-      <Filter>Pddi Headers\dx11</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx11\primstream.hpp">
-      <Filter>Pddi Headers\dx11</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx11\state.hpp">
-      <Filter>Pddi Headers\dx11</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx11\texture.hpp">
-      <Filter>Pddi Headers\dx11</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx11\util.hpp">
-      <Filter>Pddi Headers\dx11</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx11\vertprog.hpp">
-      <Filter>Pddi Headers\dx11</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

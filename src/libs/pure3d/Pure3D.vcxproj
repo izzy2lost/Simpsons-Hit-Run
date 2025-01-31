@@ -60,14 +60,23 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>.\obj\Pure3D\Debug\</OutDir>
     <IntDir>.\obj\Pure3D\Debug\</IntDir>
+    <ExecutablePath>$(DXSDK_DIR)\Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(DXSDK_DIR)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">
     <OutDir>.\obj\Pure3D\Tune\</OutDir>
     <IntDir>.\obj\Pure3D\Tune\</IntDir>
+    <ExecutablePath>$(DXSDK_DIR)\Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(DXSDK_DIR)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>.\obj\Pure3D\Release\</OutDir>
     <IntDir>.\obj\Pure3D\Release\</IntDir>
+    <ExecutablePath>$(DXSDK_DIR)\Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(DXSDK_DIR)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
@@ -265,15 +274,6 @@
     <ClCompile Include="pddi\base\baseshader.cpp" />
     <ClCompile Include="pddi\base\font.cpp" />
     <ClCompile Include="pddi\base\pddiobj.cpp" />
-    <ClCompile Include="pddi\dx11\context.cpp" />
-    <ClCompile Include="pddi\dx11\device.cpp" />
-    <ClCompile Include="pddi\dx11\display.cpp" />
-    <ClCompile Include="pddi\dx11\prim.cpp" />
-    <ClCompile Include="pddi\dx11\primstream.cpp" />
-    <ClCompile Include="pddi\dx11\state.cpp" />
-    <ClCompile Include="pddi\dx11\texture.cpp" />
-    <ClCompile Include="pddi\dx11\util.cpp" />
-    <ClCompile Include="pddi\dx11\vertprog.cpp" />
     <ClCompile Include="pddi\dx8\context.cpp" />
     <ClCompile Include="pddi\dx8\device.cpp" />
     <ClCompile Include="pddi\dx8\display.cpp" />
@@ -417,16 +417,6 @@
     <ClInclude Include="pddi\base\debug.hpp" />
     <ClInclude Include="pddi\base\font.hpp" />
     <ClInclude Include="pddi\base\romans.h" />
-    <ClInclude Include="pddi\dx11\context.hpp" />
-    <ClInclude Include="pddi\dx11\device.hpp" />
-    <ClInclude Include="pddi\dx11\direct3d.hpp" />
-    <ClInclude Include="pddi\dx11\display.hpp" />
-    <ClInclude Include="pddi\dx11\prim.hpp" />
-    <ClInclude Include="pddi\dx11\primstream.hpp" />
-    <ClInclude Include="pddi\dx11\state.hpp" />
-    <ClInclude Include="pddi\dx11\texture.hpp" />
-    <ClInclude Include="pddi\dx11\util.hpp" />
-    <ClInclude Include="pddi\dx11\vertprog.hpp" />
     <ClInclude Include="pddi\dx8\context.hpp" />
     <ClInclude Include="pddi\dx8\device.hpp" />
     <ClInclude Include="pddi\dx8\direct3d.hpp" />
