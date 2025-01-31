@@ -392,11 +392,8 @@ void DialogList::OrganizeDialog( IRadNameSpace* namespaceObj )
             // Resource is dialog but not conversation.  Create a DialogLine object
             // to hold the information about it and store it in the appropriate list.
             //
-#ifdef RAD_GAMECUBE
-            newLine = new( GMA_GC_VMM ) DialogLine( resource );
-#else
             newLine = new( GMA_PERSISTENT ) DialogLine( resource );
-#endif     
+
             if( newLine->IsLevelSpecific() )
             {
                 dialogList = &(m_missionLists[newLine->GetLevel() - 1][newLine->GetMission()]);

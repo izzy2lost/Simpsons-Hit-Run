@@ -245,10 +245,6 @@ CGuiScreenMessage::GetControllerDisconnectedMessage(int controller_id, char *str
 
     s_ControllerDisconnectedPort = controller_id;
 
-#ifdef RAD_GAMECUBE
-    P3D_UNICODE* uni_string = GetTextBibleString( "MSG_CONTROLLER_DISCONNECTED_(GC)" );
-#endif
-
 #ifdef RAD_XBOX
     P3D_UNICODE* uni_string = GetTextBibleString( "MSG_CONTROLLER_DISCONNECTED_(XBOX)" );
 #endif
@@ -305,7 +301,7 @@ CGuiScreenMessage::GetControllerDisconnectedMessage(int controller_id, char *str
 void
 CGuiScreenMessage::ConvertUnicodeToChar(char *str, P3D_UNICODE* uni_str, int max_char)
 {
-    const UnicodeChar CONTROLLER_PORT_WILDCARD_CHARACTER = 0xa5;// since > 0x7f, '¥' wont work;
+    const UnicodeChar CONTROLLER_PORT_WILDCARD_CHARACTER = 0xa5;// since > 0x7f, 'ï¿½' wont work;
     const UnicodeChar NEWLINE_CHARACTER = 0x5c; //'\';
     int i = 0;
     while (*uni_str && i < max_char)
@@ -361,7 +357,7 @@ CGuiScreenMessage::FormatMessage( Scrooby::Text* pText,
 {
     const UnicodeChar SLOT_WILDCARD_CHARACTER = '$';
 	const UnicodeChar BLOCKS_WILDCARD_CHARACTER = '#';
-	const UnicodeChar CONTROLLER_PORT_WILDCARD_CHARACTER = 0xa5;// since > 0x7f, '¥' wont work;
+	const UnicodeChar CONTROLLER_PORT_WILDCARD_CHARACTER = 0xa5;// since > 0x7f, 'ï¿½' wont work;
 
     rAssert( pText != NULL );
     UnicodeChar* stringBuffer = pText->GetStringBuffer();
@@ -415,20 +411,6 @@ CGuiScreenMessage::FormatMessage( Scrooby::Text* pText,
 		}
 	}
 // update slot wild card character---------------------
-
-#ifdef RAD_GAMECUBE
-    for( int i = 0; stringBuffer[ i ] != '\0'; i++ )
-    {
-        // search for slot wildcard character
-        //
-        if( stringBuffer[ i ] == SLOT_WILDCARD_CHARACTER )
-        {
-            stringBuffer[ i ] = 'A' + CGuiScreenMemoryCard::s_currentMemoryCardSlot;
-
-            break;
-        }
-    }
-#endif // RAD_GAMECUBE
 
 #ifdef RAD_PS2
     for( int i = 0; stringBuffer[ i ] != '\0'; i++ )

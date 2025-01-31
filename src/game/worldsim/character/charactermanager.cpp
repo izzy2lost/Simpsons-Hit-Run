@@ -130,12 +130,7 @@ Return:         CharacterManager
 CharacterManager*  CharacterManager::CreateInstance( void )
 {
 	rAssertMsg( spCharacterManager == 0, "CharacterManager already created.\n" );
-#ifdef RAD_GAMECUBE
-	spCharacterManager = new ( GMA_GC_VMM ) CharacterManager;
-#else
     spCharacterManager = new ( GMA_PERSISTENT ) CharacterManager;
-#endif
-
     return( spCharacterManager );
 }
 /*
@@ -724,12 +719,7 @@ Character* CharacterManager::AddCharacter( CharacterType type, const char* chara
 
     Character* character;
 
-    
-//    #ifdef RAD_GAMECUBE
-//        HeapMgr()->PushHeap( GMA_GC_VMM );
-//    #else
-        HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
-//    #endif
+    HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
 
     unsigned int NewTime = radTimeGetMicroseconds();
     if(type == PC)
@@ -737,17 +727,12 @@ Character* CharacterManager::AddCharacter( CharacterType type, const char* chara
         if( (int)mNumCharactersAdded >= GetGameplayManager()->GetNumPlayers() )
         {
             rReleasePrintf("Tried to add too many PCs, not supported right now. Check level scrips for multiple AddCharacter calls.\n");
-//            #ifdef RAD_GAMECUBE
-//                HeapMgr()->PopHeap( GMA_GC_VMM );
-//            #else
-                HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
-//            #endif
+            HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
             return NULL;
         }
         MEMTRACK_PUSH_GROUP( "CharacterManager - Add PC" );
         character = new Character;
         character->mbAllowUnload = false;
-        //character->SetSimpleShadow( false );
     }
     else
     {
@@ -770,11 +755,7 @@ Character* CharacterManager::AddCharacter( CharacterType type, const char* chara
     rAssert( character );
     NewTime = radTimeGetMicroseconds() - NewTime;
 
-//    #ifdef RAD_GAMECUBE
-//        HeapMgr()->PopHeap( GMA_GC_VMM );
-//    #else
-        HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
-//    #endif
+    HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
 
     unsigned int SetNameTime = radTimeGetMicroseconds();
     character->SetName( characterName );
@@ -1052,11 +1033,7 @@ unsigned int CharacterManager::SetupCharacter( CharacterLoadData& data, Characte
     tName curr = p3d::inventory->GetCurrentSection()->GetName();
     p3d::inventory->SetCurrentSectionOnly(true);
 
-//    #ifdef RAD_GAEMCUBE
-//        HeapMgr()->PushHeap( GMA_GC_VMM );
-//    #else
-        HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
-//    #endif
+    HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
 
 MEMTRACK_PUSH_GROUP( "CharacterManager - CharacterRenderable" );
     p3d::inventory->SelectSection(data.modelSection.GetUID());
@@ -1147,12 +1124,8 @@ MEMTRACK_PUSH_GROUP( "CharacterManager - Puppet" );
     
     PuppetTime = radTimeGetMicroseconds() - PuppetTime;
 
-//    #ifdef RAD_GAEMCUBE
-//        HeapMgr()->PopHeap( GMA_GC_VMM );
-//    #else
-        HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
-//    #endif
-   
+    HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
+
 MEMTRACK_POP_GROUP( "CharacterManager - Puppet" );
 
 

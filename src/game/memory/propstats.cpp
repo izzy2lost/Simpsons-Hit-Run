@@ -24,10 +24,7 @@
 //===========================================================================
 
 static GameMemoryAllocator s_ListOfValidHeaps[] =
-{
-#ifdef RAD_GAMECUBE                                            
-    GMA_GC_VMM,              
-#endif                                                         
+{                                                      
     GMA_LEVEL_ZONE,
 };
 

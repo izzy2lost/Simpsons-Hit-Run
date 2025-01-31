@@ -320,20 +320,11 @@ void ParticleManager::DeactiveateAll()
 //==============================================================================
 ParticleManager::ParticleManager()
 {
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PushHeap( GMA_PERSISTENT );
     // Allocate the (std:vector) arrays that will be filled out using the InitializeSystem function
     mActiveSystems.Grow( ParticleEnum::eNumParticleTypes );
     mIsParticleTypeDynamicallyLoaded.resize( ParticleEnum::eNumParticleTypes, false );
-
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PopHeap( GMA_PERSISTENT );
 }
 //==============================================================================
 // ParticleManager::~ParticleManager
@@ -426,11 +417,7 @@ void ParticleManager::InitializeSystem( ParticleEnum::ParticleID type,
     MEMTRACK_PUSH_GROUP( "InitParticleSystem" );
 
     //This should be looked at.  TODO
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
-    #endif
+    HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
     mActiveSystems[ type ].Resize( maxInstances );
 
 
@@ -439,11 +426,7 @@ void ParticleManager::InitializeSystem( ParticleEnum::ParticleID type,
         mActiveSystems[ type ][ i ] = new ManagedParticleSystem( pFactory, pController);
     }
     mIsParticleTypeDynamicallyLoaded[ type ] = isDynamic;
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
-    #endif
+    HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
     MEMTRACK_POP_GROUP( "InitParticleSystem" );
 
 

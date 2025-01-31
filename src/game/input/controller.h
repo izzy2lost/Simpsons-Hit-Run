@@ -12,10 +12,6 @@ namespace Input
     const static unsigned int MaxPorts = 2;
     const static unsigned int MaxSlots = 4;
     #endif
-    #ifdef RAD_GAMECUBE
-    const static unsigned int MaxPorts = 4;
-    const static unsigned int MaxSlots = 1;
-    #endif
     #if defined( RAD_WIN32 )
     const static unsigned int MaxPorts = 4;
     const static unsigned int MaxSlots = 1;
@@ -69,11 +65,7 @@ namespace Input
     #endif
 
     // Maximum number of rumble motors
-    #ifdef RAD_GAMECUBE
-    const static unsigned int MaxOutputMotor = 1;
-    #else
     const static unsigned int MaxOutputMotor = 2;
-    #endif
 
     // Control system state (for keeping input roped in in certain gameplay states)
     enum ActiveState

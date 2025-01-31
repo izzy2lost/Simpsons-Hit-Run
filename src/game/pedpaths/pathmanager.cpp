@@ -63,11 +63,7 @@ PathManager::~PathManager()
 void PathManager::AllocatePaths( int nPaths )
 {
     MEMTRACK_PUSH_GROUP( "PathManager" );
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
-    #endif
+    HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
 
     if( mPaths != NULL )
     {
@@ -78,12 +74,7 @@ void PathManager::AllocatePaths( int nPaths )
 
     mnPaths = nPaths;
     mPaths = new Path[ mnPaths ];
-
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_LEVEL_OTHER);
-    #endif
+    HeapMgr()->PopHeap( GMA_LEVEL_OTHER);
 
     MEMTRACK_POP_GROUP( "PathManager" );
 }

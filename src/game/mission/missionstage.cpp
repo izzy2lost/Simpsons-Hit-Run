@@ -404,11 +404,7 @@ void MissionStage::AddVehicle(Vehicle* vehicle,
 
                 //wrap allocates with the heap manager
 
-#ifdef RAD_GAMECUBE
-                HeapMgr()->PushHeap(GMA_GC_VMM);
-#else
                 HeapMgr()->PushHeap(GMA_LEVEL_MISSION);
-#endif
 
                 VehicleAI* pAI = NULL;
                 if (strcmp(ainame, "chase") == 0)
@@ -442,11 +438,7 @@ void MissionStage::AddVehicle(Vehicle* vehicle,
                 }
                 MEMTRACK_POP_GROUP("Mission - AI ");
 
-#ifdef RAD_GAMECUBE
-                HeapMgr()->PopHeap(GMA_GC_VMM);
-#else
                 HeapMgr()->PopHeap(GMA_LEVEL_MISSION);
-#endif
 
                 mVehicles[i].vehicleAI = pAI;
 
@@ -477,11 +469,7 @@ void MissionStage::AddVehicle(Vehicle* vehicle,
     mVehicles[mNumVehicles].spawn = spawnlocator;
 
     //wrap allocates with the heap manager
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PushHeap(GMA_GC_VMM);
-#else
     HeapMgr()->PushHeap(GMA_LEVEL_MISSION);
-#endif
 
     if (ainame[0] != 0)
     {
@@ -537,11 +525,7 @@ void MissionStage::AddVehicle(Vehicle* vehicle,
 
     mNumVehicles++;
 
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PopHeap(GMA_GC_VMM);
-#else
     HeapMgr()->PopHeap(GMA_LEVEL_MISSION);
-#endif
 
     MEMTRACK_POP_GROUP("MissionStage");
 }
@@ -1983,17 +1967,9 @@ int MissionStage::AddSafeZone(CarStartLocator* locator, unsigned int radius)
     {
         if (m_SafeZone_Array[i] == NULL)
         {
-#ifdef RAD_GAMECUBE
-            HeapMgr()->PushHeap(GMA_GC_VMM);
-#else
             HeapMgr()->PushHeap(GMA_LEVEL_MISSION);
-#endif
             m_SafeZone_Array[i] = new SafeZone(locator, radius);
-#ifdef RAD_GAMECUBE
-            HeapMgr()->PopHeap(GMA_GC_VMM);
-#else
             HeapMgr()->PopHeap(GMA_LEVEL_MISSION);
-#endif
             return 0;
         }
     }

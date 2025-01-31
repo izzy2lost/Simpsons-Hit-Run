@@ -182,20 +182,12 @@ MissionScriptLoader* MissionScriptLoader::CreateInstance()
     MEMTRACK_PUSH_GROUP("MissionScriptLoader");
     rAssert(spInstance == 0);
 
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PushHeap(GMA_GC_VMM);
-#else
     HeapMgr()->PushHeap(GMA_PERSISTENT);
-#endif
 
     spInstance = new MissionScriptLoader;
     rAssert(spInstance);
 
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PopHeap(GMA_GC_VMM);
-#else
     HeapMgr()->PopHeap(GMA_PERSISTENT);
-#endif
 
     spInstance->Register();
 
@@ -702,15 +694,12 @@ void MissionScriptLoader::SetLanguage(int argc, const char** argv)
 
         break;
     }
-
-#ifndef RAD_GAMECUBE
     case 'S':
     {
         CGuiTextBible::SetCurrentLanguage(Scrooby::XL_SPANISH);
 
         break;
     }
-#endif // !RAD_GAMECUBE
 
     default:
     {
@@ -1465,11 +1454,7 @@ void MissionScriptLoader::AddBonusObjective(int argc, const char** argv)
 {
     rAssert(spInstance->mpMission);
 
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PushHeap(GMA_GC_VMM);
-#else
     HeapMgr()->PushHeap(GMA_LEVEL_MISSION);
-#endif
 
     if (strncmp("no_damage", argv[1], 9) == 0)
     {
@@ -1507,11 +1492,7 @@ void MissionScriptLoader::AddBonusObjective(int argc, const char** argv)
         spInstance->mpMission->AddBonusObjective(rpbo);
     }
 
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PopHeap(GMA_GC_VMM);
-#else
     HeapMgr()->PopHeap(GMA_LEVEL_MISSION);
-#endif
 }
 
 
@@ -4137,10 +4118,6 @@ void MissionScriptLoader::LoadP3DFile(int argc, const char** argv)
             heap = GMA_DEFAULT;
         else if (heapName == "GMA_TEMP")
             heap = GMA_TEMP;
-#ifdef RAD_GAMECUBE
-        else if (heapName == "GMA_GC_VMM")
-            heap = GMA_GC_VMM;
-#endif
         else if (heapName == "GMA_PERSISTENT")
             heap = GMA_PERSISTENT;
         else if (heapName == "GMA_LEVEL")

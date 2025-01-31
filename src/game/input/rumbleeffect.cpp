@@ -188,13 +188,6 @@ void RumbleEffect::SetDynaEffect( DynaEffect effect, unsigned int milliseconds, 
         }
 
         mCurrentDynaEffects[ effect ].mMaxGain = gain * GAIN_FUDGE;
-
-#ifdef RAD_GAMECUBE
-        if ( gain * GAIN_FUDGE < 0.3f )
-        {
-            mCurrentDynaEffects[ effect ].mMaxGain = 0;
-        }
-#endif
     }
 }
 
@@ -261,11 +254,7 @@ void RumbleEffect::Update( unsigned int milliseconds )
         {
             if ( mMotors[ i ]&& mMotors[ i ]->GetGain() > 0.0f )
             {
-#ifdef RAD_GAMECUBE
-                mMotors[ i ]->SetGain( -1.0f ); //This stops the motor HARD
-#else
                 mMotors[ i ]->SetGain( 0.0f );
-#endif
             }
         }
 
@@ -296,11 +285,7 @@ void RumbleEffect::ShutDownEffects()
     {
         if ( mMotors[ i ] && mMotors[ i ]->GetGain() > 0.0f )
         {
-#ifdef RAD_GAMECUBE
-            mMotors[ i ]->SetGain( -1.0f ); //This stops the motor HARD
-#else
             mMotors[ i ]->SetGain( 0.0f );
-#endif
         }
     }
 
@@ -337,37 +322,8 @@ void RumbleEffect::UpdateEffect( Effect effect, unsigned int milliseconds )
                 mMotors[ VALUES[effect].motor ]->SetGain( VALUES[effect].gain );
                 mMotorUpdated[ VALUES[effect].motor ] = true;
             }
-#ifdef RAD_GAMECUBE
-            // Michael Riegger - Gamecube is different from other platforms in rumble
-            // control in that motor control is basically turn on / turn off commands
-            // and that rumble just 'goes' in between those commands. No need to
-            // toggle on and off manually
-            // so set the updated flag to true always if its where we want. Otherwise
-            // gain will be reset to 0 or -1 automatically
-            else if ( currMotorGain == desiredGain )
-            {
-                mMotorUpdated[ VALUES[effect].motor ] = true;
-            }
-#endif
         }
     }
-    /*    if ( mCurrentEffects[ effect ].mRumbleTimeLeft % VALUES[effect].pulseTime < 32 ) //We use 32 because we hope to only do this once a frame (or twice)
-    {
-        if ( mMotors[ VALUES[effect].motor ] )
-        {
-
-
-            if ( currMotorGain == desiredGain )
-            {
-                mMotorUpdated[ VALUES[effect].motor ] = true;
-            }
-            else if ( currMotorGain < desiredGain )
-            {                
-                mMotors[ VALUES[effect].motor ]->SetGain( VALUES[effect].gain );
-                mMotorUpdated[ VALUES[effect].motor ] = true;
-            }
-        }
-    }*/
 }
 
 //=============================================================================

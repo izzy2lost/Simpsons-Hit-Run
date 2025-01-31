@@ -108,11 +108,7 @@ Mission::Mission() :
     mIsStreetRace1Or2( false ),
     mNumMissionStages( 0 ),
     mCurrentStage( -1 ),
-#ifdef RAD_GAMECUBE
-    mHeap( GMA_GC_VMM ),
-#else
     mHeap( GMA_LEVEL_MISSION ),
-#endif
     mbComplete( false ),
     mbIsLastStage( false ),
     mMissionTimer( 0 ),

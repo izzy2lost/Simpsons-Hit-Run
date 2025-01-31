@@ -420,12 +420,7 @@ Return:         void
 */
 void Character::Init( void )
 {
-
-//#ifdef RAD_GAMECUBE
-//    HeapMgr()->PushHeap(GMA_GC_VMM);
-//#else
     HeapMgr()->PushHeap(GMA_LEVEL_OTHER);
-//#endif
 
     mpCharacterTarget = new CharacterTarget( this );
 
@@ -539,11 +534,7 @@ void Character::Init( void )
     // 
     SetPosition( position );
 
-//#ifdef RAD_GAMECUBE
-//    HeapMgr()->PopHeap( GMA_GC_VMM );
-//#else
     HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
-//#endif
 }
 
 

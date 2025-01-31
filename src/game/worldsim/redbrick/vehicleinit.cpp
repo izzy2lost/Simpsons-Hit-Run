@@ -115,19 +115,10 @@ Vehicle::Vehicle() :
     mVehicleFacing.Set(0.0f, 0.0f, 1.0f);
     mVehicleUp.Set(0.0f, 1.0f, 0.0f);
     
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PushHeap( GMA_GC_VMM );
-#else
     GameMemoryAllocator allocator = GetGameplayManager()->GetCurrentMissionHeap();
     HeapMgr()->PushHeap( allocator );
-#endif
     mGeometryVehicle = new GeometryVehicle;
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PopHeap( GMA_GC_VMM );
-#else
     HeapMgr()->PopHeap( allocator );
-#endif
-
 
     //mPhysicsVehicle = new PhysicsVehicle;
     //mPhysicsVehicle = 0;  test this motherfucker

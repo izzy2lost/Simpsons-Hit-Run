@@ -149,11 +149,7 @@ void Lane::NotifyWaitingTraffic( unsigned int state )
 
         //TODO: GET RID OF THIS.
     #ifndef TOOLS
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
         HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
-    #endif
     #endif
         mPoints = new rmt::Vector[ numPoints ];
         rAssert( mPoints );
@@ -161,11 +157,7 @@ void Lane::NotifyWaitingTraffic( unsigned int state )
         mNumPoints = numPoints;
 
     #ifndef TOOLS
-        #ifdef RAD_GAMECUBE
-            HeapMgr()->PopHeap( GMA_GC_VMM );
-        #else
-            HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
-        #endif
+        HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
     #endif
 
         MEMTRACK_POP_GROUP( "Lane" );

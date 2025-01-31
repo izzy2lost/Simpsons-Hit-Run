@@ -7,7 +7,7 @@
 #include <radcontroller.hpp>
 #include <radkey.hpp>
 
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2)
+#if defined(RAD_PS2)
 #include <input/steeringspring.h>
 #include <input/baseDamper.h>
 #include <input/constanteffect.h>
@@ -81,7 +81,7 @@ public:
     // return the button id from the name.
     int GetIdByName( const char* pszName ) const;
 
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2)
+#if defined(RAD_PS2)
     SteeringSpring* GetSpring() { return mSteeringSpring.IsInit() ? &mSteeringSpring : NULL; };
     BaseDamper* GetDamper() { return mSteeringDamper.IsInit() ? &mSteeringDamper : NULL; };
     ConstantEffect* GetConstantEffect() { return mConstantEffect.IsInit() ? &mConstantEffect : NULL; };
@@ -93,7 +93,7 @@ public:
 
     bool IsWheel() 
     {
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2)
+#if defined(RAD_PS2)
         return mSteeringSpring.IsInit();
 #else
         return false;
@@ -123,7 +123,7 @@ protected:
 
     unsigned mGameState;
     
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2)
+#if defined(RAD_PS2)
     SteeringSpring mSteeringSpring;
     BaseDamper mSteeringDamper;
     ConstantEffect mConstantEffect;

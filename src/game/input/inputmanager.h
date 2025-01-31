@@ -188,42 +188,6 @@ public:
         AnalogL2,
         AnalogR2,
     };
-#else //RAD_GAMECUBE
-    enum eButtonMap
-    {
-        DPadLeft,
-        DPadRight,
-        DPadDown,
-        DPadUp,
-        TriggerZ,
-        L3 = TriggerZ,
-        TriggerR,
-        AnalogR1 = TriggerR,
-        TriggerL,
-        AnalogL1 = TriggerL,
-        A,
-        X = A,
-        B,
-        Square = B,
-//        X,  //This one is conflicting with PS2
-        Circle, //This is X
-        Y,
-        Triangle = Y,
-        Menu,
-        Start = Menu,
-        LeftStickX,
-        LeftStickY,
-        RightStickX,
-        RightStickY,
-        AnalogTriggerL,
-        LeftTrigger = AnalogTriggerL,
-        AnalogTriggerR,
-        RightTrigger = AnalogTriggerR,
-        AnalogA,
-        AnalogueX = AnalogA,
-        AnalogB,
-        AnalogSquare = AnalogB
-    };
 #endif
 
     // Static Methods for accessing this singleton.

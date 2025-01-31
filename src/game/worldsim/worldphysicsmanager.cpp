@@ -195,15 +195,10 @@ WorldPhysicsManager* WorldPhysicsManager::CreateInstance()
 {
     rAssert(spInstance == 0);
 
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PushHeap( GMA_GC_VMM );
-    spInstance = new WorldPhysicsManager;
-    HeapMgr()->PopHeap( GMA_GC_VMM );
-#else
     HeapMgr()->PushHeap( GMA_PERSISTENT );
     spInstance = new WorldPhysicsManager;
     HeapMgr()->PopHeap( GMA_PERSISTENT );
-#endif
+
     rAssert(spInstance);
     
     return spInstance;
@@ -538,11 +533,7 @@ MEMTRACK_PUSH_GROUP( "WorldPhysicsManager" );
     mCollisionManager->SetUseExclusiveAutoPair(true);
 
     mCollisionManager->ActivateAllAreas();
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PushHeap( GMA_PERSISTENT );
 
     mCollisionAreaAllocated = new bool[mNumCollisionAreas];
     mCollisionAreaActive = new bool[mNumCollisionAreas];
@@ -733,11 +724,7 @@ MEMTRACK_PUSH_GROUP( "WorldPhysicsManager" );
 
     mInInterior = false;    
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PopHeap( GMA_PERSISTENT );
 MEMTRACK_POP_GROUP("WorldPhysicsManager");
 }
 

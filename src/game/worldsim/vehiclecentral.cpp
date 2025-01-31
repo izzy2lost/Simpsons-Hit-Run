@@ -887,11 +887,7 @@ Vehicle* VehicleCentral::InitVehicle( const char* name, bool addToActiveVehicleL
     HeapMgr()->PushHeap( GetGameplayManager()->GetCurrentMissionHeap() );
 
     MEMTRACK_PUSH_GROUP( "VehicleCentral" );
-//#ifdef RAD_GAMECUBE
-//    Vehicle* vehicle = new( GMA_GC_VMM ) Vehicle;
-//#else
     Vehicle* vehicle = new(GetGameplayManager()->GetCurrentMissionHeap()) Vehicle;
-//#endif
 
     //if this car is owned by the player then set the flag.
     if(playercar ==true)

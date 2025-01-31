@@ -31,10 +31,6 @@
     #include <typeinfo>
 #endif // RAD_PS2
 
-#ifdef RAD_GAMECUBE
-    #include <dolphin.h>
-    extern OSHeapHandle gGCHeap;
-#endif
 //========================================
 // Project Includes
 //========================================
@@ -329,10 +325,6 @@ size_t GetLargestFreeBlock()
     #ifdef _WIN32
         return 0;
     #endif
-    
-    #ifdef RAD_GAMECUBE
-        return 0;
-    #endif
 
     //
     // Find out the largest block of memory I can grab
@@ -469,8 +461,6 @@ size_t GetTotalMemoryFree()
         size_t maxFree = GetMaxFreeMemory();
         size_t free = maxFree - used;
         return free;
-    #elif defined RAD_GAMECUBE
-        return OSCheckHeap( gGCHeap );
     #else
         #pragma error( "CMemoryTracker::GetTotalMemoryFree - What platform is this then?");
     #endif
@@ -529,8 +519,6 @@ size_t GetTotalMemoryUnavailable()
         size_t maxFree = GetMaxFreeMemory();
         size_t unavailable = totalPhysicalMemory - maxFree;
         return unavailable;
-    #elif defined RAD_GAMECUBE
-        return 0;
     #else
         #pragma error( "CMemoryTracker::GetTotalMemoryFree - What platform is this then?");
     #endif
@@ -577,10 +565,6 @@ size_t GetTotalMemoryUsed()
 #if defined RAD_PS2
     struct mallinfo info = mallinfo();
     return info.uordblks;
-#endif
-
-#if defined RAD_GAMECUBE
-    return 0;
 #endif
 };
 

@@ -49,10 +49,6 @@
 
 #include <stdlib.h>
 
-#ifdef RAD_GAMECUBE
-#include <pddi/gamecube/gcrefractionshader.hpp>
-#endif
-
 #define TEST_DISTRIBUTED_SORT
 #define ZSORT_RENDER
 //#define TRACK_SHADERS
@@ -71,11 +67,7 @@
 //static Vector3f TODO_GRANULARITY(240.0f, 2000.0f, 240.0f);
 //static Vector3f TODO_GRANULARITY(10.0f, 2000.0f, 10.0f);
 //static Vector3f TODO_GRANULARITY(200.0f, 2000.0f, 200.0f);
-#ifdef RAD_GAMECUBE
-static Vector3f TODO_GRANULARITY(40.0f, 2000.0f, 40.0f);
-#else
 static Vector3f TODO_GRANULARITY(20.0f, 2000.0f, 20.0f);
-#endif
 //static Vector3f TODO_GRANULARITY(120.0f, 2000.0f, 120.0f);
 
 //defines

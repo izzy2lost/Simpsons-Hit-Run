@@ -281,19 +281,10 @@ Return:         void
 =============================================================================*/
 void HitnRunManager::Init( void )
 {
-    #ifdef RAD_GAMECUBE
-        HeapManager::GetInstance()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapManager::GetInstance()->PushHeap( GMA_LEVEL_ZONE );
-    #endif
+    HeapManager::GetInstance()->PushHeap( GMA_LEVEL_ZONE );
 
 	//do some allocations here
-
-    #ifdef RAD_GAMECUBE
-        HeapManager::GetInstance()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapManager::GetInstance()->PopHeap( GMA_LEVEL_ZONE );
-    #endif
+    HeapManager::GetInstance()->PopHeap( GMA_LEVEL_ZONE );
 
     GetEventManager()->AddListener( this, EVENT_VEHICLE_DESTROYED_BY_USER );
     GetEventManager()->AddListener( this, EVENT_VEHICLE_VEHICLE_COLLISION );

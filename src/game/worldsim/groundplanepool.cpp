@@ -53,11 +53,7 @@ GroundPlanePool::GroundPlanePool(int num)
 MEMTRACK_PUSH_GROUP( "GroundPlanePool" );
     mTotalNum = num;
 
-//    #ifdef RAD_GAMECUBE
-//        HeapMgr()->PushHeap( GMA_GC_VMM );
-//    #else 
-        HeapMgr()->PushHeap( GMA_PERSISTENT );
-//    #endif
+    HeapMgr()->PushHeap( GMA_PERSISTENT );
 
     mPool = new sim::ManualSimState*[mTotalNum];
     //mPool = new sim::SimState*[mTotalNum];
@@ -109,11 +105,8 @@ MEMTRACK_PUSH_GROUP( "GroundPlanePool" );
         
         
     }
-//    #ifdef RAD_GAMECUBE
-//        HeapMgr()->PopHeap( GMA_GC_VMM );
-//    #else 
-        HeapMgr()->PopHeap( GMA_PERSISTENT );
-//    #endif
+
+    HeapMgr()->PopHeap( GMA_PERSISTENT );
 MEMTRACK_POP_GROUP( "GroundPlanePool" );
 }
 

@@ -38,11 +38,7 @@ void Path::AllocateSegments( int nSegments )
 MEMTRACK_PUSH_GROUP( "Path" );
     rAssert( nSegments > 0 );
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
-    #endif
+    HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
 
     if( mPathSegments != NULL )
     {
@@ -60,12 +56,7 @@ MEMTRACK_PUSH_GROUP( "Path" );
     }
     mNumPathSegments = nSegments;
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
-    #endif
-
+    HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
 
 MEMTRACK_POP_GROUP( "Path" );
 }

@@ -74,11 +74,7 @@ tSimpleChunkHandler(SRR2::ChunkID::FENCE_DSG)
 //========================================================================
 tEntity* FenceLoader::LoadObject(tChunkFile* f, tEntityStore* store)
 {
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_LEVEL_ZONE );
-    #endif
+    HeapMgr()->PushHeap( GMA_LEVEL_ZONE );
 
     IEntityDSG::msDeletionsSafe = true;
     FenceEntityDSG* pFenceDSG = new FenceEntityDSG;
@@ -119,12 +115,7 @@ tEntity* FenceLoader::LoadObject(tChunkFile* f, tEntityStore* store)
     
     IEntityDSG::msDeletionsSafe=false;
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_LEVEL_ZONE );
-    #endif
-
+    HeapMgr()->PopHeap( GMA_LEVEL_ZONE );
 
     return pFenceDSG;
 }

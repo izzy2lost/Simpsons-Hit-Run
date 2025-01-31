@@ -65,17 +65,6 @@ unsigned int g_scroobySimulationTime = 0;
 
 #define LOAD_LEVEL_SPECIFIC_PROJECT
 
-/*
-#ifdef RAD_GAMECUBE
-    float g_gcnScreenScaleX = 1.1f;
-    float g_gcnScreenScaleY = 1.0f;
-#endif
-
-#ifdef RAD_PS2
-    float g_ps2screenScale = 1.096f;
-#endif
-*/
-
 #ifdef DEBUGWATCH
     const char* GUI_WATCHER_NAMESPACE = "GUI System";
     float g_wGuiSimulationTimeFactor = 1.0f;
@@ -95,17 +84,6 @@ unsigned int g_scroobySimulationTime = 0;
         extern float g_CameraNearPlane;
         extern float g_CameraFarPlane;
     }
-
-/*
-#ifdef RAD_PS2
-    static void UpdatePS2ScreenScale()
-    {
-        Scrooby::App::GetInstance()->EnableScreenScaling( true,
-                                                          g_ps2screenScale,
-                                                          g_ps2screenScale );
-    }
-#endif
-*/
 
     // for Formatting Scrooby Drawables in Run-time
     //
@@ -494,15 +472,6 @@ MEMTRACK_PUSH_GROUP( "CGUISystem" );
     GetGameDataManager()->RegisterGameData( this, 1, "GUI System" );
 
 #if defined( PAL ) && !defined( RAD_DEMO )
-/*
-  #ifdef RAD_GAMECUBE
-    // GC ONLY: load language configuration file
-    //
-    HeapMgr()->PushHeap( GMA_TEMP );
-    GetMissionScriptLoader()->LoadScriptAsync( "language.ini" );
-    HeapMgr()->PopHeap( GMA_TEMP );
-  #endif
-*/
     // load language Scrooby project (into FE heap)
     //
     GetLoadingManager()->AddRequest( FILEHANDLER_SCROOBY,
@@ -640,18 +609,6 @@ void CGuiSystem::HandleMessage
             {
                 m_pManagerFrontEnd->Start();
             }
-
-/*
-#ifdef RAD_GAMECUBE
-            // enable screen scaling (for GameCube)
-            m_pApp->EnableScreenScaling( true, g_gcnScreenScaleX, g_gcnScreenScaleY );
-#endif
-
-#ifdef RAD_PS2
-            // enable screen scaling (for PS2)
-            m_pApp->EnableScreenScaling( true, g_ps2screenScale, g_ps2screenScale );
-#endif
-*/
 
             break;
         }
@@ -1245,9 +1202,6 @@ void CGuiSystem::OnInitBootUp()
 
     char licenseImageFile[ 256 ];
     sprintf( licenseImageFile,
-#ifdef RAD_GAMECUBE
-             "%s%slicenseG.p3d",
-#endif
 #ifdef RAD_PS2
              "%s%slicenseP.p3d",
 #endif
@@ -1422,18 +1376,6 @@ void CGuiSystem::OnReleaseFrontEnd()
         m_pApp->UnloadProject( m_pProject );
         m_pProject = NULL;
     }
-
-/*
-#ifdef RAD_GAMECUBE
-    // disable screen scaling (for GameCube)
-    m_pApp->EnableScreenScaling( false );
-#endif
-
-#ifdef RAD_PS2
-    // disable screen scaling (for PS2)
-    m_pApp->EnableScreenScaling( false );
-#endif
-*/
 
     HeapMgr()->PopHeap(GMA_LEVEL_FE);
 
@@ -1637,10 +1579,6 @@ void CGuiSystem::FormatTutorialTextWithLineBreaks()
         //
         P3D_UNICODE* platformText = NULL;
 
-#ifdef RAD_GAMECUBE
-        strcat( textBibleID, "_(GC)" );
-        platformText = GetTextBibleString( textBibleID );
-#endif
 #ifdef RAD_PS2
         strcat( textBibleID, "_(PS2)" );
         platformText = GetTextBibleString( textBibleID );

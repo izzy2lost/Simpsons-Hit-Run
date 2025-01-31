@@ -258,10 +258,6 @@ void RoadManager::InitializeRoadSegmentDataMemory( unsigned int numSegments )
     mRoadSegmentData = new RoadSegmentData[numSegments];
     mNumRoadSegmentData = numSegments;
     mNumRoadSegmentDataUsed = 0;
-
-#ifndef TOOLS
-    HeapMgr()->PopHeap( GMA_GC_VMM );
-#endif
 }
 
 void RoadManager::DumpRoadSegmentDataMemory()

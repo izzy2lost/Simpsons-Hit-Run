@@ -88,19 +88,11 @@ LoadingManager* LoadingManager::CreateInstance()
 MEMTRACK_PUSH_GROUP( "LoadingManager" );
     rAssert( spInstance == NULL );
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PushHeap( GMA_PERSISTENT );
     spInstance = new LoadingManager;
     rAssert( spInstance );
 
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_PERSISTENT );
-    #endif
+    HeapMgr()->PopHeap( GMA_PERSISTENT );
 MEMTRACK_POP_GROUP("LoadingManager");
     
     return spInstance;
@@ -459,11 +451,7 @@ CementFileHandle LoadingManager::RegisterCementLibrary( const char* filename )
 #ifdef MEMORYTRACKER_ENABLED
         strcpy( mRequests[mRequestTail].groupTag, filename );
 #endif
-#ifdef RAD_GAMECUBE
-        mRequests[mRequestTail].heap = GMA_GC_VMM;
-#else
         mRequests[mRequestTail].heap = GMA_PERSISTENT;          // Cement library registrations should be around for the duration --jdy
-#endif
 
 MEMTRACK_PUSH_GROUP( "LoadingManager" );
         HeapMgr()->PushHeap (GMA_TEMP);

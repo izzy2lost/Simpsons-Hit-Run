@@ -12,7 +12,7 @@ Cheat ID [08]: Apply Full Damage to Car: { Squ, Squ, Tri, Tri }
 Cheat ID [09]: Show Avatar Position: { Cir, Cir, Cir, Cir }                    
 
 
-#######################     GAMECUBE / XBOX     #######################
+##############################     XBOX     ##############################
 
 Cheat ID [00]: Display All Cheats: { A, B, X, Y }
 Cheat ID [01]: Collect All Cards: { A, A, A, A }

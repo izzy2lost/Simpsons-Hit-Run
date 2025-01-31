@@ -17,10 +17,6 @@
 //========================================
 #include <radcontroller.hpp>
 
-#ifdef RAD_GAMECUBE
-#include <dolphin/lg.h>
-#endif
-
 #ifdef RAD_PS2
 #include <liblgdev.h>
 #endif

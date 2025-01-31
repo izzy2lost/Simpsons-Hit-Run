@@ -42,11 +42,6 @@
 
 #include <memory/leakdetection.h>
 
-#ifdef RAD_GAMECUBE
-    IRadMemoryHeap *vmmHeap = NULL; //This is for exterman linkage...  Shitty.
-    extern void MemoryHackCallback();
-#endif
-
 #ifdef RAD_MW
     extern void MemoryHackCallback();
 #endif
@@ -225,14 +220,8 @@ IRadMemoryAllocator * radMemoryFindAllocatorAlignedRecursive( radMemoryAllocator
 // We initialize the external memory space system, don't put these functions
 // in the header file or it might confuse people.
 
-#ifdef RAD_GAMECUBE
-    extern void radMemorySpaceInitialize( unsigned int aramSizeInBytes );
-    extern void radMemorySpaceTerminate( void );
-    static bool sVMMDLHeapInitialized = false;
-#else
-    extern void radMemorySpaceInitialize( void );
-    extern void radMemorySpaceTerminate( void );
-#endif
+extern void radMemorySpaceInitialize( void );
+extern void radMemorySpaceTerminate( void );
 
 #ifdef RAD_MW
     static bool sVMMDLHeapInitialized = false;
@@ -242,9 +231,6 @@ IRadMemoryAllocator * radMemoryFindAllocatorAlignedRecursive( radMemoryAllocator
 // ::radMemoryInitialize
 //============================================================================
 
-#ifdef RAD_GAMECUBE
-#include <dolphin/vm.h>
-
 void gcnVMMLogStats(unsigned long realVirtualAddress,
                     unsigned long physicalAddress, 
                     unsigned long pageNumber,
@@ -253,26 +239,17 @@ void gcnVMMLogStats(unsigned long realVirtualAddress,
 
 static gcnVMMStats sVMMStats;
 
-void radMemoryInitialize( unsigned int sizeVMMainMemory, unsigned int sizeVMARAM )
-#else
 void radMemoryInitialize( void )
-#endif
 {
     if( g_Initialized )
     {
         return;
     }
 
-#ifdef RAD_GAMECUBE
-    ::radMemoryPlatInitialize( sizeVMMainMemory, sizeVMARAM );
-#else
     ::radMemoryPlatInitialize( );
-#endif
 
     //This is memory reserved to really bad situations where we need to printf.
-#ifndef RAD_GAMECUBE
     gEmergencyMemory = radMemoryPlatAlloc( 1024 * 32 );
-#endif
 
     rAssert( g_Initialized == false );
     g_Initialized = true;
@@ -292,7 +269,6 @@ void radMemoryInitialize( void )
         g_AllocatorTreeNodes[ i ].m_pIRadMemoryAllocator = g_pRadMemoryAllocator_Malloc;
     }
 
-#ifdef RAD_GAMECUBE
     unsigned aramSize = (1024 * 1024 * 16) - sizeVMARAM;
     radMemorySpaceInitialize( aramSize );
     sVMMDLHeapInitialized = false;
@@ -309,10 +285,6 @@ void radMemoryInitialize( void )
         VMSetLogStatsCallback(&gcnVMMLogStats);
 #endif
     }
-
-#else
-    radMemorySpaceInitialize( );
-#endif
 
     //
     // Initialize static heap
@@ -341,19 +313,6 @@ void radMemoryTerminate( void )
     g_Initialized = false;
     
     g_pRadMemoryAllocator_Malloc->~radMemoryAllocatorMalloc( );
-
-#ifdef RAD_GAMECUBE
-    if (sVMMDLHeapInitialized)
-    {
-        IRadMemoryAllocator *vmmHeap = radMemoryGetAllocator( RADMEMORY_ALLOC_VMM );
-        rAssert(vmmHeap != NULL);
-        vmmHeap->Release();
-        radMemoryUnregisterAllocator( RADMEMORY_ALLOC_VMM );
-        sVMMDLHeapInitialized = false;
-
-        VMFreeAll();
-    }
-#endif
 
     ::radMemoryPlatTerminate( );
     
@@ -514,7 +473,7 @@ void * radMemoryAlloc( radMemoryAllocator allocator, unsigned int numberOfBytes 
         allocator = HACK_SMALL_ALLOC;
     }
 #endif
-#if ( defined RAD_XBOX ) || ( defined RAD_GAMECUBE ) || ( defined RAD_MW )
+#if ( defined RAD_XBOX ) || ( defined RAD_MW )
     if ( !g_Initialized )
     {
         MemoryHackCallback();
@@ -567,7 +526,7 @@ void * radMemoryAllocAligned
     unsigned int alignment
 )
 {
-#if ( defined RAD_GAMECUBE ) || ( defined RAD_MW )
+#if ( defined RAD_MW )
     if ( !g_Initialized )
     {
         MemoryHackCallback();
@@ -1058,43 +1017,3 @@ const char * radMemoryGetAllocationName( void )
 {
     return g_pAllocationName;
 }
-
-
-#ifdef RAD_GAMECUBE
-//-----------------------------------------------------------------------------
-// VMM Stats
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-void radVMMClearStats( void )
-{
-    sVMMStats.pageMisses = 0;        
-    sVMMStats.pageWrites = 0;
-    sVMMStats.pageMissLatency = 0; // in microsceonds
-
-}
-
-//-----------------------------------------------------------------------------
-void radVMMGetStats( gcnVMMStats *stats )
-{
-    rAssert (stats != NULL );
-    stats->pageMisses      = sVMMStats.pageMisses;
-    stats->pageWrites      = sVMMStats.pageWrites;
-    stats->pageMissLatency = sVMMStats.pageMissLatency;
-}
-
-
-
-void gcnVMMLogStats(unsigned long realVirtualAddress,
-                    unsigned long physicalAddress, 
-                    unsigned long pageNumber,
-                    unsigned long pageMissLatency,
-                    BOOL pageSwappedOut )
-{
-    sVMMStats.pageMisses++;
-    sVMMStats.pageWrites      += (unsigned) pageSwappedOut;
-    sVMMStats.pageMissLatency += pageMissLatency;
-}
-
-#endif
-

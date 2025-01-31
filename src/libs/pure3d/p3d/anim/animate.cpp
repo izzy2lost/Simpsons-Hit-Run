@@ -45,12 +45,6 @@
 #include <stdlib.h>
 #include <new>
 
-// For VMM stuff
-#ifdef RAD_GAMECUBE
-#include <radmemory.hpp>
-#include <dolphin/vm.h>
-#endif
-
 static const unsigned ANIMATION_VERSION = 0;
 static const unsigned ANIMATION_GROUP_VERSION = 0;
 static const unsigned ANIMATION_GROUP_LIST_VERSION = 0;
@@ -1427,11 +1421,6 @@ tAnimationLoader::tAnimationLoader() :
 //-------------------------------------------------------------------------
 tEntity* tAnimationLoader::LoadObject(tChunkFile* f, tEntityStore* store)
 {
-
-#ifdef RAD_GAMECUBE
-    radMemoryAllocator oldAllocator = radMemorySetCurrentAllocator(RADMEMORY_ALLOC_VMM);
-#endif
-
     unsigned int animVersion = f->GetLong();
     P3DASSERT(animVersion == ANIMATION_VERSION);
     
@@ -1455,13 +1444,11 @@ tEntity* tAnimationLoader::LoadObject(tChunkFile* f, tEntityStore* store)
                 unsigned int animSizeVersion = f->GetLong();
                 if (animSizeVersion != ANIMATION_SIZE_VERSION)
                 {
-#ifndef RAD_RELEASE
-#ifdef P3D_ALLOW_ENTITY_GETNAME
+                #ifndef RAD_RELEASE && defined(def P3D_ALLOW_ENTITY_GETNAME)
                     char buffer[1024];
                     sprintf(buffer,"WARNING : animation %s has an old animation size chunk re-export or use p3danim\n",anim->GetName());
                     p3d::print(buffer);
-#endif
-#endif
+                #endif
                 }
                 else
                 {
@@ -1470,21 +1457,13 @@ tEntity* tAnimationLoader::LoadObject(tChunkFile* f, tEntityStore* store)
                     unsigned int xboxSize = f->GetLong();
                     unsigned int gcSize = f->GetLong();
 
-#ifdef RAD_WIN32
+                    #ifdef RAD_WIN32
                     unsigned int animSize = pcSize;
-#else
-#ifdef RAD_PS2
+                    #elif defined(RAD_PS2)
                     unsigned int animSize = ps2Size;
-#else
-#ifdef RAD_XBOX
+                    #elif defined(RAD_XBOX)
                     unsigned int animSize = xboxSize;
-#else
-#ifdef RAD_GAMECUBE
-                    unsigned int animSize = gcSize;
-#endif
-#endif
-#endif
-#endif
+                    #endif
                     if ((anim->numGroups==0)&&(animSize>0))
                     {
                         anim->memoryBlock = new tAnimationMemoryBlock(animSize);
@@ -1545,12 +1524,6 @@ tEntity* tAnimationLoader::LoadObject(tChunkFile* f, tEntityStore* store)
 #endif
 
     anim->SortAnimationGroups();
-
-#ifdef RAD_GAMECUBE
-    radMemorySetCurrentAllocator(oldAllocator);
-    // Makes swapping faster later
-    //VMStoreAllPages();
-#endif
 
     return anim;
 }

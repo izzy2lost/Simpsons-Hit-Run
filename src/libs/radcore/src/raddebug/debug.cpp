@@ -34,10 +34,6 @@
 #include <xtl.h>
 #endif
 
-#ifdef RAD_GAMECUBE
-	#include <dolphin/os.h>
-#endif // RAD_GAMECUBE
-
 //=============================================================================
 // Local Functions 
 //=============================================================================
@@ -55,8 +51,6 @@ int rDebugVsnPrintf( char *buffer, size_t count, const char *format, va_list arg
 {
     #if defined (RAD_WIN32) || defined (RAD_XBOX)
         return _vsnprintf( buffer, count, format, argptr );
-    #elif defined (RAD_GAMECUBE)
-        return vsnprintf( buffer, count, format, argptr );
     #elif defined (RAD_PS2)
         return vsprintf( buffer, format, argptr );
     #endif
@@ -354,15 +348,6 @@ int rDebugValidPointer_Implementation
 	return( true );
 
     #endif
-
-	#ifdef RAD_GAMECUBE
-	
-		// to be completed
-		(void) p; 
-	
-		return( true );
-	
-	#endif // RAD_GAMECUBE
 }
 
 //=============================================================================
@@ -412,13 +397,6 @@ int rDebugValidPointer32_Implementation
     return( true );
 
 #endif
-
-	#ifdef RAD_GAMECUBE
-	
-		// to be completed
-		return( true );  
-		
-	#endif // RAD_GAMECUBE
 
 }
 
@@ -515,15 +493,6 @@ void rDebuggerString_Implementation( const char* string )
     fflush( stdout );
 
     #endif
-	//
-	// Display a formatted output message into 
-	// the debugger's log window
-	//
-	#ifdef RAD_GAMECUBE
-		
-		OSReport( (char*)string );
-		
-	#endif // RAD_GAMECUBE
 }
 
 //=============================================================================

@@ -364,11 +364,7 @@ void BreakablesManager::AllocateBreakables( BreakablesEnum::BreakableID type,
 
     if ( mBreakablesList[type].size == 0 )
     {
-        #ifdef RAD_GAMECUBE
-            HeapMgr()->PushHeap( GMA_GC_VMM );
-        #else
-            HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
-        #endif
+        HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
         mBreakablesList[ type ].size = numInstances;
         mBreakablesList[ type ].list = new ManagedBreakable*[ numInstances ];
         for( int i = 0 ; i < numInstances ; ++i )
@@ -376,11 +372,7 @@ void BreakablesManager::AllocateBreakables( BreakablesEnum::BreakableID type,
             mBreakablesList[ type ].list[ i ] = new ManagedBreakable;
             mBreakablesList[ type ].list[ i ]->mpBreakableDSG->Init( pFactory, pController );
         }
-        #ifdef RAD_GAMECUBE
-            HeapMgr()->PopHeap( GMA_GC_VMM );
-        #else
-            HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
-        #endif
+        HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
     }
 }
 //==============================================================================

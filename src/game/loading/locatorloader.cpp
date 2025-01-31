@@ -666,10 +666,6 @@ MEMTRACK_PUSH_GROUP( "Locator Loading" );
             memcpy( text, elements, numElements * 4 );
             text[numElements * 4] = '\0';
 
-#ifdef RAD_GAMECUBE
-            Swap( text, text, numElements * 4 + 4 );
-#endif
-
             sLoc->SetString( text );
 
             delete[] text;

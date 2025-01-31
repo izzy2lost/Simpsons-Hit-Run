@@ -97,11 +97,7 @@ void Road::AllocateSegments( unsigned int numSegments )
 {
 MEMTRACK_PUSH_GROUP( "Road" );
 #ifndef TOOLS
-#ifdef RAD_GAMECUBE
-    HeapMgr()->PushHeap( GMA_GC_VMM );
-#else
     HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
-#endif
 #endif
 
     rAssert( numSegments > 0 );
@@ -118,11 +114,7 @@ MEMTRACK_PUSH_GROUP( "Road" );
     }
 
 #ifndef TOOLS
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
-    #endif
+    HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
 #endif
 MEMTRACK_POP_GROUP( "Road" );
 }
@@ -223,11 +215,7 @@ MEMTRACK_PUSH_GROUP( "Road" );
 	//
     //TODO: REMOVE!
     #ifndef TOOLS
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PushHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
-    #endif
+    HeapMgr()->PushHeap( GMA_LEVEL_OTHER );
     #endif
 
 	mLaneList = new Lane[ mnLanes ];
@@ -296,11 +284,7 @@ MEMTRACK_PUSH_GROUP( "Road" );
 
     //TODO: REMOVE!
     #ifndef TOOLS
-    #ifdef RAD_GAMECUBE
-        HeapMgr()->PopHeap( GMA_GC_VMM );
-    #else
-        HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
-    #endif
+    HeapMgr()->PopHeap( GMA_LEVEL_OTHER );
     #endif
 
 MEMTRACK_POP_GROUP( "Road" );

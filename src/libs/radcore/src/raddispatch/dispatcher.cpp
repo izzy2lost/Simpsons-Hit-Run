@@ -33,10 +33,6 @@
 #include <eekernel.h>
 #endif
 
-#ifdef RAD_GAMECUBE
-#include <os.h>
-#endif
-
 #include <raddispatch.hpp>
 #include <radobject.hpp>
 #include <radmemory.hpp>
@@ -250,9 +246,6 @@ void radDispatcher::QueueCallback
     #ifdef RAD_PS2
     DI( );
     #endif
-    #ifdef RAD_GAMECUBE
-    BOOL   oldInterruptMask = OSDisableInterrupts( ); 
-    #endif
 
     //
     // Assert that we have not exceeded the maximum number of events in the queue.
@@ -279,9 +272,6 @@ void radDispatcher::QueueCallback
     #endif
     #ifdef RAD_PS2
     EI( );
-    #endif
-    #ifdef RAD_GAMECUBE
-    OSRestoreInterrupts( oldInterruptMask );
     #endif
 }
 
@@ -317,7 +307,7 @@ void radDispatcher::QueueCallbackFromInterrupt
 
     #endif
 
-    #if defined( RAD_PS2 ) || defined( RAD_GAMECUBE )
+    #if defined( RAD_PS2 )
 
     //
     // Update reference count on the dispatch event object since we are holding
@@ -389,9 +379,6 @@ unsigned int radDispatcher::Service( void )
     #ifdef RAD_PS2
     DI( );
     #endif
-    #ifdef RAD_GAMECUBE
-    OSDisableInterrupts( );
-    #endif
 
     while( (m_EventsQueued != 0) && (eventsToDispatch != 0) )
     {
@@ -416,9 +403,6 @@ unsigned int radDispatcher::Service( void )
         #ifdef RAD_PS2
         EI( );
         #endif
-        #ifdef RAD_GAMECUBE
-        OSEnableInterrupts( );
-        #endif
 
         event.m_Callback->OnDispatchCallack( event.m_UserData );
 
@@ -434,23 +418,12 @@ unsigned int radDispatcher::Service( void )
         //
         RotateThreadReadyQueue( threadInfo.currentPriority );
         #endif
-    
-        #ifdef RAD_GAMECUBE
-        //
-        // On GameCube, yield to threads at same priority.
-        //
-        OSYieldThread( );
-        #endif    
 
         #if defined ( RAD_WIN32 ) || defined( RAD_XBOX )
         EnterCriticalSection( &m_CriticalSection );
         #endif
         #ifdef RAD_PS2
         DI( );
-        #endif
-
-        #ifdef RAD_GAMECUBE
-        OSDisableInterrupts( );
         #endif
     }
 
@@ -459,9 +432,6 @@ unsigned int radDispatcher::Service( void )
     #endif
     #ifdef RAD_PS2
     EI( );
-    #endif
-    #ifdef RAD_GAMECUBE
-    OSEnableInterrupts( );
     #endif
 
     return( m_EventsQueued );

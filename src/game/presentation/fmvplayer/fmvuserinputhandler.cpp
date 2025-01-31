@@ -49,27 +49,6 @@ struct ControlMap
 
 const ControlMap FMV_CONTROL_MAP[] =
 {
-#ifdef RAD_GAMECUBE
-    { "Menu",           FMVInput::Skip },
-    { "A",              FMVInput::Skip },
-    #ifdef ANY_BUTTON_SKIP
-    { "LeftStickX",     FMVInput::Skip },
-    { "LeftStickY",     FMVInput::Skip },
-    { "RightStickX",    FMVInput::Skip },
-    { "RightStickY",    FMVInput::Skip },
-    { "DPadLeft",       FMVInput::Skip },
-    { "DPadRight",      FMVInput::Skip },
-    { "DPadUp",         FMVInput::Skip },
-    { "DPadDown",       FMVInput::Skip },
-    { "B",              FMVInput::Skip },
-    { "X",              FMVInput::Skip },
-    { "Y",              FMVInput::Skip },
-    { "Z",              FMVInput::Skip },
-    { "TriggerL",       FMVInput::Skip },
-    { "TriggerR",       FMVInput::Skip },
-    #endif
-#endif // RAD_GAMECUBE
-
 #ifdef RAD_PS2
     { "Start",          FMVInput::Start},
     { "X",              FMVInput::Skip },

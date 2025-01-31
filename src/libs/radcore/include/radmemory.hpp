@@ -121,11 +121,8 @@ struct IRadMemoryAllocator;
 //  }
 //-----------------------------------------------------------------------------
 
-#ifdef RAD_GAMECUBE
-void radMemoryInitialize( unsigned int sizeVMMainMemory, unsigned int sizeVMARAM );
-#else
+
 void radMemoryInitialize( void );
-#endif
 void radMemoryTerminate( void );
 
 //-----------------------------------------------------------------------------

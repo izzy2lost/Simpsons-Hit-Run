@@ -501,11 +501,7 @@ void AnimatedIcon::InitAnimatedIcons( GameMemoryAllocator allocator )
     
     if ( sAnimatedIconPool == NULL )
     {
-        #ifdef RAD_GAMECUBE
-                HeapMgr()->PushHeap( GMA_GC_VMM );
-        #else
-                HeapMgr()->PushHeap( allocator );
-        #endif
+        HeapMgr()->PushHeap( allocator );
         sAnimatedIconPool = new AnimatedIcon[ MAX_ICONS ];
 
         unsigned int i;
@@ -514,11 +510,7 @@ void AnimatedIcon::InitAnimatedIcons( GameMemoryAllocator allocator )
             sAnimatedIconPool[ i ].mAllocated = false;
         }
 
-        #ifdef RAD_GAMECUBE
-                HeapMgr()->PopHeap( GMA_GC_VMM );
-        #else
-                HeapMgr()->PopHeap( allocator );
-        #endif
+        HeapMgr()->PopHeap( allocator );
     }
 }
 

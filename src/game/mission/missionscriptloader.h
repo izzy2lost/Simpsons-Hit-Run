@@ -77,11 +77,6 @@ private:
     MissionScriptLoader& operator=(const MissionScriptLoader& missionscriptloader);
 
     //
-    // *** for GameCube only ***
-    //
-    static void SetLanguage(int argc, const char** argv);
-
-    //
     // Level functions
     //
     static void InitLevelPlayerVehicle(int argc, const char** argv);

@@ -176,11 +176,7 @@ GameplayManager::GameplayManager() :
     mCurrentMission( -1 ),
     mNumPlayers( 0 ),
     mNumMissions( 0 ),
-#ifdef RAD_GAMECUBE
-    mCurrentMissionHeap( GMA_GC_VMM ),
-#else
     mCurrentMissionHeap( GMA_LEVEL_MISSION ),
-#endif
     mLevelComplete( false ),
     mGameComplete( false ),
     mCurrentVehicle( NULL ),
@@ -2097,11 +2093,7 @@ int missionNum = GetMissionNumByName( missionName );
 
         mBonusMissions[ missionIndex ].SetNPC( character );
 
-        #ifdef RAD_GAMECUBE
-            HeapMgr()->PushHeap( GMA_GC_VMM );
-        #else
-            HeapMgr()->PushHeap( GMA_LEVEL_MISSION );
-        #endif
+        HeapMgr()->PushHeap( GMA_LEVEL_MISSION );
         //Set up the talk trigger around this guy.
         EventLocator* evtLoc = new EventLocator();
 
@@ -2145,11 +2137,7 @@ int missionNum = GetMissionNumByName( missionName );
 
         mBonusMissions[ missionIndex ].SetDialogueName( dialogueName );
 
-        #ifdef RAD_GAMECUBE
-            HeapMgr()->PopHeap( GMA_GC_VMM );
-        #else
-            HeapMgr()->PopHeap( GMA_LEVEL_MISSION );
-        #endif
+        HeapMgr()->PopHeap( GMA_LEVEL_MISSION );
 
         if ( alternateIconName != NULL )
         {
@@ -2681,11 +2669,7 @@ BonusMissionInfo* GameplayManager::GetBonusMissionInfo( int missionNumber )
 //=============================================================================
 GameMemoryAllocator GameplayManager::GetMissionHeap( int index )
 {
-#ifdef RAD_GAMECUBE
-    return GMA_GC_VMM;
-#else
     return( GMA_LEVEL_MISSION );
-#endif
 }
 
 //=============================================================================

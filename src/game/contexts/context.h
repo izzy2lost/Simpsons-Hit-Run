@@ -47,7 +47,6 @@ class Context : public EventListener
         void Stop( ContextEnum nextContext );
         void Update( unsigned int elapsedTime );
         
-        // The game must halt when the disc door is opened on the GameCube.
         void Suspend();
         void Resume();
         bool IsSuspended() const {return m_state == S_SUSPENDED;};

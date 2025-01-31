@@ -41,15 +41,7 @@ public:
       Clear();
       mSize = iSize;
 
-#ifdef RAD_GAMECUBE
-      //HeapMgr()->PushHeap( GMA_GC_VMM );
-#endif
-
       mpData = new T[mSize];
-
-#ifdef RAD_GAMECUBE
-      //HeapMgr()->PopHeap( GMA_GC_VMM );
-#endif
 
       rAssert(mSize>0);
       rAssert(mpData!=NULL);

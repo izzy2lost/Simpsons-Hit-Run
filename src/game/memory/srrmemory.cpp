@@ -1115,30 +1115,6 @@ void HeapManager::DumpHeapStats ( bool text )
         unsigned int highwater;
     };
 
-/*
-
-    HeapInfo info[] = 
-    { 
-        { GMA_DEFAULT, "Default", &s_pIRadMemoryHeapDefault, 0 },
-        { GMA_TEMP, "Temp", &s_pIRadMemoryHeapTemp, 0 },
-        { GMA_PERSISTENT, "Persist", &s_pIRadMemoryHeapPersistent, 0  },
-        { GMA_MUSIC, "Music", &s_pIRadMemoryHeapMusic, 0 },
-        { GMA_AUDIO_PERSISTENT, "Audio Persistent", &s_pIRadMemoryHeapAudioPersistent, 0 },
-        { GMA_LEVEL, "Level", &s_pIRadMemoryHeapLevel, 0 },
-            { GMA_LEVEL_MOVIE, "- Movie", &s_pIRadMemoryHeapLevelMovie, 0 },
-            { GMA_LEVEL_FE, "- FE", &s_pIRadMemoryHeapLevelFE, 0 },
-
-            { GMA_LEVEL_ZONE, "- Zone", &s_pIRadMemoryHeapLevelZone, 0 },
-//            { GMA_LEVEL_OTHER, "- Other", &s_pIRadMemoryHeapLevelOther, 0 },
-            { GMA_LEVEL_HUD, "- HUD", &s_pIRadMemoryHeapLevelHUD, 0 },
-//            { GMA_LEVEL_MISSION, "- Mission", &s_pIRadMemoryHeapLevelMission, 0 },
-
-            { GMA_LEVEL_AUDIO, "- Audio", &s_pIRadMemoryHeapLevelAudio, 0 },
-    
-        { GMA_GC_VMM, "VMM", &s_pIRadMemoryHeapVMM, 0 }
-    };
-	*/
-
 	HeapInfo info[] = 
     { 
         { GMA_DEFAULT,    "Default", GetHeapReference( GMA_DEFAULT ),    0 },

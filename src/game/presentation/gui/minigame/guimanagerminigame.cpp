@@ -244,13 +244,10 @@ void CGuiManagerMiniGame::HandleMessage( eGuiMessage message,
         }
 
         case GUI_MSG_CONTROLLER_DISCONNECT:
-#ifndef RAD_GAMECUBE
             this->OnControllerDisconnected( static_cast<int>( param1 ) );
-#endif // !RAD_GAMECUBE
         break;
         
         case GUI_MSG_CONTROLLER_CONNECT:
-#ifndef RAD_GAMECUBE
             m_oldControllerState = InputManager::GetInstance()->GetGameState();
             if( m_oldControllerState == Input::ACTIVE_ANIM_CAM )
             {
@@ -261,7 +258,6 @@ void CGuiManagerMiniGame::HandleMessage( eGuiMessage message,
                 GetInputManager()->SetGameState( Input::DEACTIVE_ANIM_CAM );
             }
             GetInputManager()->SetGameState( Input::ACTIVE_FRONTEND );
-#endif // !RAD_GAMECUBE
         break;
         default:
         {
@@ -290,10 +286,8 @@ void CGuiManagerMiniGame::HandleMessage( eGuiMessage message,
                 rAssert( pScreen != NULL );
                 pScreen->HandleMessage( message, param1, param2 );
             }
-#ifndef RAD_GAMECUBE
             if ( message == GUI_MSG_UPDATE)
                 PollControllers();
-#endif
             break;
         }
     }

@@ -86,11 +86,7 @@ void ConversationMatcher::AddNewLine( IDaSoundResource* resource )
     //
     // Create a DialogLine object
     //
-#ifdef RAD_GAMECUBE
-    line = new( GMA_GC_VMM ) DialogLine( resource );
-#else
     line = new( GMA_PERSISTENT ) DialogLine( resource );
-#endif
     rAssert( line != NULL );
 
     //
@@ -118,11 +114,7 @@ void ConversationMatcher::AddNewLine( IDaSoundResource* resource )
         //
         // No conversation matched, create a new conversation
         //
-#ifdef RAD_GAMECUBE
-        newConversation = new( GMA_GC_VMM ) Conversation( *line );
-#else
         newConversation = new( GMA_PERSISTENT ) Conversation( *line );
-#endif
         newConversation->AddToDialogList( reinterpret_cast<SelectableDialog**>(&m_conversationList) );
     }
 }
