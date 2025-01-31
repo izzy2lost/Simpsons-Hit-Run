@@ -150,16 +150,6 @@ struct IRadMoviePlayer2 : public IRefCount
         unsigned int audioPrimaryBufferSize, unsigned int audioSecondaryBufferSize,
         IRadSoundHalAudioFormat::SizeType audioSizeType ) = 0;
 
-    #elif RAD_GAMECUBE
-
-    virtual void Initialize( 
-        IRadMovieRenderLoop * pIRadMovieRenderLoop, 
-        IRadMovieRenderStrategy * pIRadMovieRenderStrategy,
-        unsigned int maxWidthPixels, 
-        unsigned int maxHeightPixels, unsigned int codedVideoBufferBytes, 
-        unsigned int audioPrimaryBufferSize, unsigned int audioSecondaryBufferSize,
-        IRadSoundHalAudioFormat::SizeType audioSizeType ) = 0;
-
     #endif
 
     //

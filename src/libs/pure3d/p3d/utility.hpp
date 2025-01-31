@@ -21,11 +21,7 @@
 
 struct IRadFileCompletionCallback;
 
-#ifdef RAD_GAMECUBE
-    #include <size_t.h> // Stinky metrowerks, size_t is in its own header file!
-#endif
-
-#if defined( RAD_WIN32 ) || defined( RAD_GAMECUBE )
+#if defined( RAD_WIN32 )
     #include <string.h> // for strlen()
 #endif
 

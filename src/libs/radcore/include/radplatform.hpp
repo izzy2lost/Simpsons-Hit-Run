@@ -33,8 +33,8 @@
 // Build Configuration Check
 //=============================================================================
 
-#if !defined(RAD_GAMECUBE) && !defined(RAD_PS2) && !defined(RAD_XBOX) && !defined(RAD_WIN32)
-    #error 'FTech requires definition of RAD_GAMECUBE, RAD_PS2, RAD_XBOX, or RAD_WIN32'
+#if !defined(RAD_PS2) && !defined(RAD_XBOX) && !defined(RAD_WIN32)
+    #error 'FTech requires definition of RAD_PS2, RAD_XBOX, or RAD_WIN32'
 #endif
 
 //=============================================================================
@@ -76,25 +76,13 @@ void radPlatformTerminate( void );
 IRadPlatform* radPlatformGet( void );
 
 //
-// These functions are provided to convert between little and big endian. Big endian
-// is currently only used by the GameCube
+// These functions are provided to convert between little and big endian.
 //
-#ifdef RAD_GAMECUBE
-
-#define RAD_BIG_ENDIAN
-
-inline unsigned short radPlatformEndian16( unsigned short value ) { return( __lhbrx( &value, 0 ) ); }
-inline unsigned int radPlatformEndian32( unsigned int value ) { return( __lwbrx( &value, 0 ) ); }
-inline float radPlatformEndianFloat( float value ) { float x; int* p = (int*) &x; *p = __lwbrx( &value, 0 ); return( x ); }
-
-#else 
-
 #define RAD_LITTLE_ENDIAN
 
 inline unsigned short radPlatformEndian16( unsigned short value ) { return( value ); }
 inline unsigned int radPlatformEndian32( unsigned int value ) { return( value ); }
 inline float radPlatformEndianFloat( float value ) { return( value ); }
-#endif
 
 
 //=============================================================================
@@ -217,28 +205,4 @@ struct IRadPlatform : public IRefCount
 };
 
 #endif // RAD_PS2
-
-//=============================================================================
-// Gamecube Platform
-//=============================================================================
-
-#ifdef RAD_GAMECUBE
-//
-// Game cube initialization yet to be defined.
-//
-void radPlatformInitialize( void );
-
-//
-// Game Cube Platform interface.
-//
-struct IRadPlatform : public IRefCount
-{
-    //
-    // Nothing
-    //
-};
-
-#endif // RAD_GAMECUBE
-
 #endif // RADPLATFORM_HPP
-

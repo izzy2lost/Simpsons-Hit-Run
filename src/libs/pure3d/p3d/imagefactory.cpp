@@ -24,29 +24,6 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#ifdef RAD_GAMECUBE
-#include <ctype.h>
-int strcmpi(const char *a, const char *b)
-{
-     if ((a == NULL) && (b == NULL)) return 0;
-     if ((a != NULL) && (b == NULL)) return -1;
-     if ((a == NULL) && (b != NULL)) return 1;
-
-     while ((*a != 0) && (*b != 0))
-     {
-          if (tolower(*a) < tolower(*b)) return -1;
-          else if (tolower(*a) > tolower(*b)) return 1;
-          ++a;
-          ++b;
-     }
-
-     if (*a == *b) return 0;
-     if (*a == 0) return -1;
-
-     return 1;
-}
-#endif
-
 //-------------------------------------------------------------------
 class ImageBuilder : public tImageHandler::Builder
 {
@@ -621,7 +598,7 @@ tImageFactory::tImageFactory() :
     AddHandler(new tBMPHandler);
     AddHandler(new tTargaHandler); 
     AddHandler(new tRawImageHandler);
-#if defined(WIN32) || defined(RAD_GAMECUBE)
+#if defined(WIN32)
     AddHandler( new tDXTNHandler );
 #endif
 }
@@ -813,9 +790,6 @@ void tImageFactory::LoadIntoTexture(char* filename, tTexture* texture, int mipLe
     {
         file->AddRef();
 
-#ifdef RAD_GAMECUBE
-        file->SetEndianSwap(true);
-#endif
         tImageHandler* handler = FindHandler(filename);
         if(!handler)
         {

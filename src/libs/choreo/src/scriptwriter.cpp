@@ -90,8 +90,6 @@ void BufferFileWriter::WriteString(const char* str)
     m_BufferLength = postBufferLength;
 }
 
-
-#ifndef RAD_GAMECUBE
 //---------------------------------------------------------------------------
 // class CStreamFileWriter
 //---------------------------------------------------------------------------
@@ -109,8 +107,6 @@ void CStreamFileWriter::WriteString(const char* str)
 {
 	fwrite(str, strlen(str), 1, m_File);
 }
-#endif // !RAD_GAMECUBE
-
 
 #ifdef CHOREO_USE_FILE_FTT
 //---------------------------------------------------------------------------

@@ -132,19 +132,6 @@ void CharacterMappable::LoadControllerMappings( unsigned int controllerId )
     Map( "Circle", CharacterController::Dash, 0, controllerId );
     Map( "Square", CharacterController::Attack, 0, controllerId );
 #endif
-#ifdef RAD_GAMECUBE
-	ClearMap( 0 );
-	Map( "LeftStickX", CharacterController::LeftStickX, 0, controllerId );
-    Map( "LeftStickY", CharacterController::LeftStickY, 0, controllerId );
-    Map( "DPadUp", CharacterController::DPadUp, 0, controllerId );
-    Map( "DPadDown", CharacterController::DPadDown, 0, controllerId );
-    Map( "DPadLeft", CharacterController::DPadLeft, 0, controllerId );
-    Map( "DPadRight", CharacterController::DPadRight, 0, controllerId );
-    Map( "Y", CharacterController::DoAction, 0, controllerId );
-    Map( "A", CharacterController::Jump, 0, controllerId );
-    Map( "X", CharacterController::Dash, 0, controllerId );
-    Map( "B", CharacterController::Attack, 0, controllerId );
-#endif
 #ifdef RAD_WIN32
     ClearMap( 0 );
     Map( "MoveUp", CharacterController::DPadUp, 0, controllerId );

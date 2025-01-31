@@ -74,12 +74,7 @@ inline float UnitWrap(float unit);
 // String manip function prototypes
 //----------------------------------------------------------------------
 
-#if defined(RAD_GAMECUBE)
-inline int VStrPrintf(char* str, int len, const char* fmt, va_list ap)
-    { return vsnprintf(str, len, fmt, ap); }
-#else
 int VStrPrintf(char* str, int len, const char* fmt, va_list ap);
-#endif
 int StrPrintf(char* str, int len, const char* fmt, ...);
 char* StrSet(char* str, int len, const char* orig);
 char* StrCat(char* str, int len, const char* orig);

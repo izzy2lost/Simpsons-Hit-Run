@@ -53,31 +53,6 @@ struct radFileDirHandle
 };
 #endif
 
-#ifdef RAD_GAMECUBE
-#include <dolphin/dvd.h>
-typedef unsigned int radFileHandle;
-
-//
-// Structure for memory cards
-//
-struct MEMDir
-{
-    unsigned int m_fileNo;
-};
-
-#define RAD_GCN_SPEC_LEN    31
-struct radFileDirHandle
-{
-    char m_pSpec[ RAD_GCN_SPEC_LEN + 1 ];
-    union
-    {
-        DVDDir  m_DVD;
-        MEMDir  m_MEM;
-
-    };
-};
-#endif
-
 //=============================================================================
 // Functions
 //=============================================================================

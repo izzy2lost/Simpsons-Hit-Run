@@ -127,7 +127,7 @@ void printf(const char* s, ...)
     #if (defined RAD_WIN32 || defined RAD_XBOX)
     _vsnprintf( printfstr, 1024, s, va_alist );
     #endif
-    #if (defined RAD_PS2 || defined RAD_GAMECUBE)
+    #if (defined RAD_PS2
     vsprintf( printfstr, s, va_alist );
     #endif
 

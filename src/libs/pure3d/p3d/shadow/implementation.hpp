@@ -12,7 +12,7 @@
 #define DRAW_CAPS // draw caps on volumes
 #endif
 
-#if defined (RAD_PS2) || defined (RAD_GAMECUBE)
+#if defined (RAD_PS2)
 //#define CARMACK_REVERSE // use inverted z-buffer mode 
 //#define DRAW_CAPS // draw caps on volumes
 #endif

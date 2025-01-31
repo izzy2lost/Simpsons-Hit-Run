@@ -2922,11 +2922,7 @@ void GeometryVehicle::Update(float dt)
         //
         if( mRefractionShader[ 0 ] != NULL )
         {
-            #ifdef RAD_GAMECUBE
-                float adjustedRefraction = refraction;
-            #else
-                float adjustedRefraction = 0.5f + (0.5f * refraction);
-            #endif
+            float adjustedRefraction = 0.5f + (0.5f * refraction);
 
             #ifndef RAD_WIN32
                 mRefractionShader[ 0 ]->SetFloat( PDDI_SP_REFRACTBLEND, adjustedRefraction );

@@ -18,7 +18,7 @@
 const int PDDI_MAX_UV_CHANNELS = 4;
 const int PDDI_MAX_CLIP_PLANES = 6;
 
-#if defined(RAD_PS2) || defined(RAD_GAMECUBE) 
+#if defined(RAD_PS2)
     const int PDDI_MAX_LIGHTS = 4;
 #else
     const int PDDI_MAX_LIGHTS = 8;

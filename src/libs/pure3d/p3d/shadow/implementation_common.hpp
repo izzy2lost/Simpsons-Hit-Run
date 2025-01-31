@@ -41,28 +41,6 @@ protected:
     pddiCullMode oldCull;
 };
 
-#ifdef RAD_GAMECUBE
-
-class tShadowGeneratorImpl : public tShadowGeneratorImplCommon
-{
-public:
-    tShadowGeneratorImpl();
-    ~tShadowGeneratorImpl();
-    
-    void PreRender(void);
-
-    void SetWashColour(tColour c);
-
-    void Begin(void);
-    void End(void);
-
-protected:
-    gcExtBufferCopy *bufferCopier;
-    pddiTexture     *shadowColourBuffer;
-};
-
-#else
-
 class tShadowGeneratorImpl : public tShadowGeneratorImplCommon
 {
 public:
@@ -78,8 +56,6 @@ public:
 
 protected:
 };
-
-#endif
 
 //---------------------------------------------------------------
 class tShadowMeshImpl

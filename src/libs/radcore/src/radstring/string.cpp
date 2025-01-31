@@ -397,19 +397,7 @@ class radString
     {
         if ( IsNull( ) == false )
         {
-            #ifdef RAD_GAMECUBE
-            // 
-            // Gamecube has no to lower function. Do it ourself.
-            //
-            char* str = m_pBuffer;
-            while( *str != '\0' )
-            {
-                *str = (char) tolower( *str );
-                str++;
-            }
-            #else
-                strlwr( m_pBuffer );
-            #endif
+            strlwr( m_pBuffer );
         }
     }
 
@@ -417,19 +405,7 @@ class radString
     {
         if( IsNull( ) == false )
         {
-            #ifdef RAD_GAMECUBE
-            // 
-            // Gamecube has no to upper function. Do it ourself.
-            //
-            char* str = m_pBuffer;
-            while( *str != '\0' )
-            {
-                *str = (char) toupper( *str );
-                str++;
-            }
-            #else
-                strupr( m_pBuffer );
-            #endif
+            strupr( m_pBuffer );
         }
     }
 

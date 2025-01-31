@@ -53,9 +53,6 @@ extern "C"
 #include "targetconnection.hpp"     // Connection objects
 #include "protocol.hpp"             // Protocol
 #include "targetsocketchannel.hpp"
-#ifdef RAD_GAMECUBE
-#include "targethiosocket.hpp"
-#endif
 #include "decitypes.h"
 #include "deci2x.h"
 #include "netmp.h"

@@ -134,19 +134,6 @@ rDbgComHostChannel::rDbgComHostChannel
     if( INADDR_NONE == inet_addr( m_ParentHost->GetIpAddress( m_TargetIndex ) ) )
     {   
         //
-        // For now, it the name is GameCubeUSB, then we use the HIO socket implementation.
-        //
-        if( 0 == stricmp( m_ParentHost->GetIpAddress( m_TargetIndex ), "GameCubeUsb" ) )
-        {
-            char* p = new char[ sizeof( CHostHioSocket ) ];
-            m_SocketImp = new( p ) CHostHioSocket( );
-            // do not lookup DNS for usb
-            m_UsingDNSLookup = false;
-
-            return;
-        }
-
-        //
         // For now, it the name is FireWire, then we use the 1394 socket implementation.
         //
         if( 0 == stricmp( m_ParentHost->GetIpAddress( m_TargetIndex ), "FireWire" ) )

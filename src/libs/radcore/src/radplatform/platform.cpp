@@ -42,11 +42,6 @@
 #include <libcdvd.h>
 #endif
 
-#ifdef RAD_GAMECUBE
-#include <dolphin.h>
-#include <dolphin/arq.h>
-#endif
-
 #undef NULL
 #define NULL 0
 
@@ -521,48 +516,6 @@ class radPlatform : public IRadPlatform
     radPlatformGameMediaType    m_MediaType;
 
 #endif
-
-#ifdef RAD_GAMECUBE
-
-    //
-    // GAMECUBE implementation
-    //
-    void Initialize( void )
-    {
-        rAssertMsg( !m_Initialized, "radPlatform already initialized");
-        radMemoryMonitorIdentifyAllocation( this, g_nameFTech, "radPlatform" );
-        m_Initialized = true;
-   	    		
-		//
-		// Initializes Operating System
-		//
-		OSInit();
-
-        // Set the DMA Chunk Size
-
-        ARQSetChunkSize( 4096 );
-        //
-        // This function initializes ARQ (Aram DMA Queue).
-        //
-
-        ARQInit( );	
-
-        //
-        // Set the DMA chunk size (used when higher priority DMA interrups
-        // current DMA.  4096 is the default set in ARQInit, set it explicitly
-        // just to be clear.
-        //
-    }
-
-    void Terminate( void )
-    {
-        rAssertMsg( m_Initialized, "radPlatform not initialized");
-        rAssertMsg( m_RefCount == 0, "radPlatorm still in use" );
-        m_Initialized = false;
-
-    }
-
-#endif // RAD_GAMECUBE
     
     //
     // Data members common to all plaforms.
@@ -645,18 +598,6 @@ void radPlatformInitialize( const char* pIrxPath, radPlatformIOPMedia IOPMedia, 
     pthePlatform->Initialize( pIrxPath, IOPMedia, GameMediaType, pIopImage, allocator );
 }
 #endif // RAD_PS2
-
-#ifdef RAD_GAMECUBE
-//
-// On the RAD_GAMECUBE, OSInit() & OSInitAlloc() initialized the OS memory allocator 
-// and ensures that new and delete will work properly.
-//
-void radPlatformInitialize( void )
-{
-    pthePlatform = new( thePlaftormSpace ) radPlatform( );
-    pthePlatform->Initialize();
-}
-#endif // RAD_GAMECUBE
 
 //=============================================================================
 // Function: radPlatformTerminate

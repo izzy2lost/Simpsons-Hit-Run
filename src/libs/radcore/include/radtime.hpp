@@ -38,8 +38,8 @@
 // Build Configuration Check
 //=============================================================================
 
-#if !defined(RAD_GAMECUBE) && !defined(RAD_PS2) && !defined(RAD_XBOX) && !defined(RAD_WIN32)
-    #error 'FTech requires definition of RAD_GAMECUBE, RAD_PS2, RAD_XBOX, or RAD_WIN32'
+#if !defined(RAD_PS2) && !defined(RAD_XBOX) && !defined(RAD_WIN32)
+    #error 'FTech requires definition of RAD_PS2, RAD_XBOX, or RAD_WIN32'
 #endif
 
 //=============================================================================
@@ -100,10 +100,6 @@ unsigned int radTimeGetMicroseconds( void );
 //
 #ifdef RAD_PS2
 typedef unsigned long radTime64;
-#endif
-
-#ifdef RAD_GAMECUBE
-typedef unsigned long long radTime64;
 #endif
 
 #if defined ( RAD_XBOX )

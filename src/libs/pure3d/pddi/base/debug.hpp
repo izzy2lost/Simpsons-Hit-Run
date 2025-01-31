@@ -18,10 +18,6 @@
     #define pddiBreak() { asm( ".word 0x0000004d"); }
 #endif
 
-#ifdef RAD_GAMECUBE
-    #define pddiBreak(){ asm(trap); }
-#endif
-
 #ifdef RAD_LINUX
     #define pddiBreak() { exit(0); }
 #endif

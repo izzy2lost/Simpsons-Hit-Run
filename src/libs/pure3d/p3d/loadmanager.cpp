@@ -34,29 +34,6 @@
 #define strcmpi strcasecmp
 #endif
 
-#ifdef RAD_GAMECUBE
-#include <ctype.h>
-int strcmpi(const char *a, const char *b)
-{
-     if ((a == NULL) && (b == NULL)) return 0;
-     if ((a != NULL) && (b == NULL)) return -1;
-     if ((a == NULL) && (b != NULL)) return 1;
-
-     while ((*a != 0) && (*b != 0))
-     {
-          if (tolower(*a) < tolower(*b)) return -1;
-          else if (tolower(*a) > tolower(*b)) return 1;
-          ++a;
-          ++b;
-     }
-
-     if (*a == *b) return 0;
-     if (*a == 0) return -1;
-
-     return 1;
-}
-#endif
-
 class tTempStore : public tEntityStore
 {
 public:

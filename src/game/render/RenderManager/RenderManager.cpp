@@ -501,7 +501,7 @@ void RenderManager::ContextUpdate( unsigned int iElapsedTime )
     p3d::context->SwapBuffers();
     END_PROFILE( "Swap Buffers" );
 
-#if defined( RAD_XBOX ) || defined ( RAD_GAMECUBE )
+#if defined( RAD_XBOX )
     LoadingManager* lm = GetLoadingManager();
     PresentationManager* pm = GetPresentationManager();
     p3d::display->SetForceVSync( lm && !lm->IsLoading(), !(pm && pm->GetFMVPlayer()->IsPlaying()));               

@@ -33,9 +33,6 @@
 #ifdef RAD_PS2
     #include <eekernel.h>
 #endif
-#ifdef RAD_GAMECUBE
-    #include <os.h>
-#endif 
 
 #include <radobject.hpp>
 #include <radmemory.hpp>
@@ -110,15 +107,6 @@ class radThreadMutex : public IRadThreadMutex,
     int             m_Semaphore;        
     int             m_CurrentOwner;
     unsigned int    m_OwnedCount;
-
-    #endif
-
-    //
-    // On the GameCube, we use the OS primitive. It does exactly what we want.
-    //
-    #ifdef RAD_GAMECUBE
-
-    OSMutex         m_Mutex;
 
     #endif
 };

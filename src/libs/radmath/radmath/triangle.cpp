@@ -7,9 +7,6 @@
 //
 //-----------------------------------------------------------------------------
 #include <radmath/geometry.hpp>
-#ifdef RAD_GAMECUBE
-#include <stdio.h>
-#endif
 #include <float.h>
 
 namespace RadicalMathLibrary

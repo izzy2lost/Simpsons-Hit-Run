@@ -1726,10 +1726,6 @@ END_PROFILE("qsort display")
 
 void WorldScene::RenderTranslucent( void )
 {
-    #ifdef RAD_GAMECUBE
-        RefractionShader::AllowOneBufferCapture();
-    #endif
-
 #ifdef TEST_DISTRIBUTED_SORT
     BEGIN_PROFILE("qsort2")
 	    //qsort(mpZSortsPass2.mpData, (size_t)mpZSortsPass2.mUseSize, sizeof(IEntityDSG*), gZSortCompare);

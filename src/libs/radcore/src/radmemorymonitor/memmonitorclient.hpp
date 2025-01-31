@@ -58,42 +58,6 @@ extern unsigned int _stackstart;
 extern unsigned int _stackend;
 #endif
 
-#if defined RAD_GAMECUBE
-//
-// __ArenaLo etc are symbols defined in Linker, and placed inside large data
-// section. If we just declare __ArenaLo as extern unsigned int, by default,
-// those symbols will be placed under the small data section. Hence, it will
-// cause linker to fail.( you don't want to decypt those messages :) )
-// 
-// One solution is to declare those linker symbol as a array instead of 
-// unsigned int. And those symbol will be referenced to large data section.
-// ( what a interesting solution :) )
-//
-// Size of the array doesn't matter, it is there to force become a large data
-// section.
-//
-extern unsigned int _f_init[ 100 ];         // .init
-extern unsigned int _fextab[ 100 ];         // extab
-extern unsigned int _fextabindex[ 100 ];    // extabindex
-extern unsigned int _f_text[ 100 ];         // .text
-extern unsigned int _f_ctors[ 100 ];        // .ctors
-extern unsigned int _f_dtors[ 100 ];        // .dtors
-extern unsigned int _f_rodata[ 100 ];       // .rodata
-extern unsigned int _f_data[ 100 ];         // .data
-extern unsigned int _f_bss[ 100 ];          // .bss
-extern unsigned int _f_sdata[ 100 ];        // .sdata
-extern unsigned int _f_sbss[ 100 ];         // .sbss
-extern unsigned int _f_sdata2[ 100 ];       // .sdata2
-extern unsigned int _e_sdata2[ 100 ];       // .sbss2
-
-extern unsigned int __ArenaLo[ 100 ];      // memory space start
-extern unsigned int __ArenaHi[ 100 ];      // memory space end
-
-extern unsigned int _stack_addr[ 100 ];    // stack
-extern unsigned int _stack_end[ 100 ];     // stack
-#endif
-
-
 //
 // max number of memory sections user can define, increase this number if
 // you are running out of spaces

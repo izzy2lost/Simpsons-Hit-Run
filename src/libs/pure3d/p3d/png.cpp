@@ -271,10 +271,6 @@ void LoadPNG32(png_structp pPNG, png_infop pngInfo, tImageHandler::Builder* buil
     for (int y = 0; y < height; y++)
     {
         png_read_row(pPNG, (unsigned char*)row, (unsigned char*)NULL);
-#ifdef RAD_GAMECUBE
-        int a;
-        for (a = 0; a < width; a++) row[a] = __lwbrx(&row[a], 0);
-#endif
         builder->ProcessScanline32(row);
     }
 

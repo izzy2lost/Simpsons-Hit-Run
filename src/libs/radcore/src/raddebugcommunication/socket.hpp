@@ -18,8 +18,6 @@
 //
 // Revisions:	V1.00	Mar 30, 2001
 //
-// Notes:       On the GameCube, there is not real implemtation of sockets.
-//              All interfaces must be implemented.
 //=============================================================================
 
 #ifndef	SOCKET_HPP
@@ -127,78 +125,4 @@ struct radSocket
     }
 
 };
-
-#else
-
-//
-// GameCube does not have real socket implementation. Define a bunch of socket definitions
-// normally found on platforms that have sockets. 
-//
-struct linger
-{
-    int l_onoff;                   /* option on/off */
-    int l_linger;                  /* linger time */
-};
-#define SOL_SOCKET      0               /* options for socket level */
-#define SO_LINGER       0x0080          /* linger on close if data present */
-#define SO_KEEPALIVE    0x0008          /* keep connections alive */
-#define WSAEWOULDBLOCK  6       
-#define AF_INET         2               /* internetwork: UDP, TCP, etc. */
-#define SO_REUSEADDR    0x0004          /* allow local address reuse */
-#define SOCK_STREAM     1               /* stream socket */
-#define WSAENOTCONN     9
-
-struct in_addr
-{
-    unsigned int       s_addr;             /* IP address */
-};
-
-#define INADDR_ANY      0               /* Match any internet address */
-
-/* Socket address structure as used for internet TCP/IP protocol */
-
-#define INVALID_SOCKET -1
-
-struct sockaddr_in
-{
-    unsigned short       sin_family;         /* Address family = AF_INET */
-    unsigned short       sin_port;           /* TCP: protocol port */
-    struct in_addr  sin_addr;           /* TCP: IP address */
-    char         sin_zero[8];        /* TCP: unused (0) */
-};
-
-#define htonl(l)        ((unsigned int)(l))
-#define htons(s)        ((unsigned short)(s))
-
-struct radSocket 
-{
-    virtual int socket( int af, int type, int protocol) = 0;
-    virtual int closesocket( int sock ) = 0;
-    virtual int setsockopt( int sock, int level, int optname, const char* optval, int optlen) = 0;
-    virtual int accept( int sock, struct sockaddr* addr, int* addrlen) = 0;
-    virtual int bind( int sock, struct sockaddr* addr, int addrlen)= 0;
-    virtual int listen( int sock, int backlog)= 0;
-    virtual int recv( int sock, char* buf, int len, int flags)= 0;
-    virtual int send( int sock, const char* buf, int len, int flags)= 0;
-    virtual int lasterror( int sock )= 0;
-
-    void* operator new( size_t size, radMemoryAllocator alloc )
-    {
-        return( radMemoryAlloc( alloc, size ) );
-    }    
-
-    void operator delete( void * pMemory )
-    {
-	    radMemoryFree( pMemory );
-    }
-
-    virtual ~radSocket( void ) 
-    {
-        
-    } 
-
-};
-
-#endif
-
 #endif

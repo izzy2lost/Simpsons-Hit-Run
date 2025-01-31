@@ -130,16 +130,12 @@ LensFlareDSG::~LensFlareDSG()
 // Checks to see if this flare is visible to the camera
 void LensFlareDSG::ReadFrameBufferIntensity()
 {
-#ifndef RAD_GAMECUBE
-
 	pddiExtVisibilityTest* mVisibilityTestExtension = static_cast<pddiExtVisibilityTest*> (p3d::pddi->GetExtension( PDDI_EXT_VISIBILITY_TEST ) );
 	if ( mVisibilityTestExtension != NULL )
 	{
 		int count = mVisibilityTestExtension->Result( mP3DVisibilityId );		
 		mNumPixelsVisible = count;
 	}
-#endif
-
 }
 // Called by the loader - allocates space for iNumGroups of billboards
 void LensFlareDSG::SetNumBillBoardQuadGroups( int iNumGroups )

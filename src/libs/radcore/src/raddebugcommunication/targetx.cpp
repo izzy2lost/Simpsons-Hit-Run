@@ -57,10 +57,6 @@ extern "C"
 #include "targetdecichannel.hpp"    // Deci channel implementation
 #include "targetsocketchannel.hpp"  // Socket channel implementation
 
-#ifdef RAD_GAMECUBE
-    #include "targethiosocket.hpp"
-#endif
-
 #ifdef RAD_PS2
     #include "target1394socket.hpp"     // Socket implementation using 1394 FireWire
 #endif
@@ -394,12 +390,6 @@ rDbgComTarget::~rDbgComTarget( void )
 
     #endif
 
-    #ifdef RAD_GAMECUBE
-
-    delete (CTargetHIOSocket*) m_SocketImp;
- 
-    #endif
-
     radRelease( m_Dispatcher, this );
 
     //
@@ -591,23 +581,6 @@ void rDbgComTarget::Initialize
     #endif
 
     //
-    // For the GameCube, we have a socket emulation using HIO
-    //
-    #ifdef RAD_GAMECUBE
- 
-    rAssert( m_TargetType == HostIO );
-
-    s32 hioChannel = 1;
-    if( initInfo != NULL )
-    {
-        hioChannel = ((radDbgComGameCubeInitInfo *)initInfo)->m_HioChannel;
-    }
-
-    m_SocketImp = new( alloc ) CTargetHIOSocket(hioChannel);
-
-    #endif
-
-    //
     // Lets begin the set up of sockets. First create a socket we will use for
     // listening for host connections.
     //
@@ -688,7 +661,7 @@ void rDbgComTarget::Terminate
 )
 {
 
-#if defined( RAD_WIN32 ) || defined( RAD_XBOX ) || defined( RAD_GAMECUBE )
+#if defined( RAD_WIN32 ) || defined( RAD_XBOX )
 
     radSingleLock< IRadThreadMutex > singleLock( this, true );
 
@@ -817,7 +790,7 @@ void rDbgComTarget::CreateChannel
     // Based on the target type, construct the appropaite target channel object. Currently
     // we support DECI and sockets target channels.
     //
-#if defined( RAD_WIN32 ) || defined( RAD_XBOX ) || defined( RAD_GAMECUBE )
+#if defined( RAD_WIN32 ) || defined( RAD_XBOX )
 
      *ppChannel = new( alloc ) rDbgComSocketTargetChannel( this, protocol );        
 

@@ -156,14 +156,6 @@ MEMTRACK_PUSH_GROUP( "CGuiScreenPauseSettings" );
                               SELECTION_ENABLED | VALUES_WRAPPED | TEXT_OUTLINE_ENABLED );
     }
 
-#ifdef RAD_GAMECUBE
-    // change "Vibration" text to "Rumble"
-    //
-    Scrooby::Text* vibrationText = dynamic_cast<Scrooby::Text*>( m_pMenu->GetMenuItem( MENU_ITEM_VIBRATION )->GetItem() );
-    rAssert( vibrationText != NULL );
-    vibrationText->SetIndex( 1 );
-#endif // RAD_GAMECUBE
-
     for( int j = 0; j < NUM_CAMERA_SELECTION_MODES; j++ )
     {
         m_cameraSelections[ j ] = NULL;

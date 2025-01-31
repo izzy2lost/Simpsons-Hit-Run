@@ -57,8 +57,6 @@ const unsigned int MaxNumResourceFiles = 512;
     const IRadSoundHalAudioFormat::Encoding DEFAULT_ENCODING = IRadSoundHalAudioFormat::PCM;
 #elif defined RAD_PS2
     const IRadSoundHalAudioFormat::Encoding DEFAULT_ENCODING = IRadSoundHalAudioFormat::VAG;
-#elif defined RAD_GAMECUBE
-    const IRadSoundHalAudioFormat::Encoding DEFAULT_ENCODING = IRadSoundHalAudioFormat::PCM_BIGENDIAN;
 #else
     Uh oh.
 #endif

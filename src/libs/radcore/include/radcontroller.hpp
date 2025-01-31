@@ -41,10 +41,6 @@ struct IRadControllerOutputPoint;
 struct IRadController;
 struct IRadControllerConnectionChangeCallback;
 
-#ifdef RAD_GAMECUBE
-struct LGForceEffect;
-#endif
-
 #ifdef RAD_PS2
 struct lgDevForceEffect;
 typedef struct lgDevForceEffect LGForceEffect;
@@ -349,7 +345,7 @@ struct IRadControllerOutputPoint
     //
     // Force feedback effects for ps2 and gc
     //
-#if defined(RAD_GAMECUBE) || defined(RAD_PS2)
+#if defined(RAD_PS2)
     virtual const LGForceEffect* GetEffect() const { return NULL; };
     virtual void UpdateEffect( const LGForceEffect* effect ) {};
     virtual void Start() {};
@@ -581,32 +577,6 @@ extern const int* VirtualJoyKeyToIndex;
 //      "LeftStickY"        "YAxis"
 //      "RightStickX"       "XAxis"
 //      "RightStickY"       "YAxis"
-//
-// GAMECUBE:
-//
-// "GcnStandard" : "Joystick"
-//
-//      "DPadLeft",         "Button"            "Motor"          "Analog"
-//      "DPadRight",        "Button"
-//      "DPadDown",         "Button"
-//      "DPadUp",           "Button"
-//      "TriggerZ",         "Button"
-//      "TriggerR",         "Button"
-//      "TriggerL",         "Button"
-//      "A",                "Button"
-//      "B",                "Button"
-//      "X",                "Button"
-//      "Y",                "Button"
-//      "Menu",             "Button"
-//      "LeftStickX",       "XAxis"
-//      "LeftStickY",       "YAxis"
-//      "RightStickX",      "XAxis"
-//      "RightStickY",      "YAxis"
-//      "AnalogTriggerL",   "AnalogButton"
-//      "AnalogTriggerR",   "AnalogButton"
-//      "AnalogA",          "AnalogButton"
-//      "AnalogB",          "AnalogButton"
-//
 //
 // PC:
 //

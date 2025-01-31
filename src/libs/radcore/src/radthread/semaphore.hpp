@@ -33,9 +33,6 @@
 #ifdef RAD_PS2
     #include <eekernel.h>
 #endif
-#ifdef RAD_GAMECUBE
-    #include <os.h>
-#endif 
 
 #include <radobject.hpp>
 #include <radmemory.hpp>
@@ -106,15 +103,6 @@ class radThreadSemaphore : public IRadThreadSemaphore,
     //
 #ifdef RAD_PS2
     int       m_Semaphore;        
-#endif
-
-    //
-    // Gamecube uses their weird condition object and a mutex.
-    //
-#ifdef RAD_GAMECUBE
-    OSCond          m_Condition;
-    OSMutex         m_Mutex;
-    int             m_Count;
 #endif
 
 };

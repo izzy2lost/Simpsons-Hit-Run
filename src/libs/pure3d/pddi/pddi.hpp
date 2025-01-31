@@ -52,7 +52,6 @@ const int PDDI_LIBID_WIN32GDI   = 5;
 const int PDDI_LIBID_LINUX      = 6;
 const int PDDI_LIBID_PS2        = 7;
 const int PDDI_LIBID_MAC        = 8;
-const int PDDI_LIBID_GAMECUBE   = 9;
 const int PDDI_LIBID_XBOX       = 10;
 const int PDDI_LIBID_NEOGEO     = 11;
 const int PDDI_LIBID_VECTREX    = 12;

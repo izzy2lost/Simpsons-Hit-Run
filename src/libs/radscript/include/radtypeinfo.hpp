@@ -1202,10 +1202,6 @@ inline IRadTypeInfo * IRadTypeInfoSystem::GetTypeInfo( IRefCount * pIRefCount )
 		    sprintf( interfaceName, "%s%s", "I", pClassName );
 
         #endif
-    
-        #ifdef RAD_GAMECUBE
-		    sprintf( interfaceName, "%s%s", "I", pName ); // Yay, metroworks got it right!
-        #endif
 
         interfaceName[ 1 ] = toupper( interfaceName[ 1 ] );                                             
 

@@ -197,16 +197,8 @@ bool tDXTNHandler::CheckFormat(Format format)
 }
 
 void tDXTNHandler::CreateImage(tFile* file, tImageHandler::Builder* builder)
-{
-#ifdef RAD_GAMECUBE
-    bool origswap = file->GetEndianSwap();
-    file->SetEndianSwap(true);
-#endif
-    
+{    
     LoadDXTNFile( file, builder );
-#ifdef RAD_GAMECUBE
-    file->SetEndianSwap(origswap);
-#endif
 }
 
 bool tDXTNHandler::SaveImage(tImage*, char*)

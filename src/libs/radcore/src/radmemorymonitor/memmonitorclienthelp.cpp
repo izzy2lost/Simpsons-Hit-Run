@@ -145,9 +145,6 @@ void radMemoryMonitorClient::SendStackUsageData( radMemorySpace memSpace, unsign
 #if defined RAD_PS2
     rAssert( memSpace == radMemorySpace_Ee || memSpace == radMemorySpace_Iop || memSpace == radMemorySpace_Sound );
 #endif
-#if defined RAD_GAMECUBE
-    rAssert( memSpace == radMemorySpace_Main || memSpace == radMemorySpace_Aram );
-#endif
 #if defined RAD_WIN32 || defined RAD_XBOX
     rAssert( memSpace == radMemorySpace_Main );
 #endif
@@ -314,9 +311,6 @@ void radMemoryMonitorClient::SendMemoryBlock128Byte( radMemorySpace memorySpace,
 #if defined RAD_PS2
     rAssert( memorySpace == radMemorySpace_Ee || memorySpace == radMemorySpace_Iop || memorySpace == radMemorySpace_Sound );
 #endif
-#if defined RAD_GAMECUBE
-    rAssert( memorySpace == radMemorySpace_Main || memorySpace == radMemorySpace_Aram );
-#endif
 #if defined RAD_WIN32 || defined RAD_XBOX
     rAssert( memorySpace == radMemorySpace_Main );
 #endif
@@ -397,9 +391,6 @@ void radMemoryMonitorClient::SendObjectRefount( radMemorySpace memorySpace, void
     //
 #ifdef RAD_PS2
     rAssert( memorySpace == radMemorySpace_Ee );
-#endif
-#ifdef RAD_GAMECUBE
-    rAssert( memorySpace == radMemorySpace_Main );
 #endif
 #if defined RAD_WIN32 || defined RAD_XBOX
     rAssert( memorySpace == radMemorySpace_Main );
@@ -828,17 +819,6 @@ MM_ClientMemorySpace radMemoryMonitorClient::ConvertMemSpc2ClientMemSpc( radMemo
 			return MM_PS2_SOUND;
 		}
 		break;
-#elif defined RAD_GAMECUBE
-		case radMemorySpace_Main:
-		{
-			return MM_GCN_MAIN;
-		}
-		break;
-		case radMemorySpace_Aram:
-		{
-			return MM_GCN_ARAM;
-		}
-		break;
 #elif defined RAD_WIN32 || defined RAD_XBOX
 		case radMemorySpace_Main:
 		{
@@ -873,17 +853,6 @@ radMemorySpace radMemoryMonitorClient::ConvertClientMemSpc2MemSpc( MM_ClientMemo
 		case MM_PS2_SOUND:
 		{
 			return radMemorySpace_Sound;
-		}
-		break;
-#elif defined RAD_GAMECUBE
-		case MM_GCN_MAIN:
-		{
-			return radMemorySpace_Main;
-		}
-		break;
-		case MM_GCN_ARAM:
-		{
-			return radMemorySpace_Aram;
 		}
 		break;
 #elif defined RAD_WIN32 || defined RAD_XBOX

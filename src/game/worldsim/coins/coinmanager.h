@@ -120,10 +120,6 @@ protected:
         ActiveCoin() : State( CS_Inactive ) {};
         union
         {
-#ifdef RAD_GAMECUBE
-            rmt::Vector Velocity;
-            tUID Sector;
-#else
             struct
             {
                 rmt::Vector Velocity;
@@ -134,11 +130,8 @@ protected:
                 tUID Sector;
                 short PersistentObjectID;
             };
-#endif
         };
-#ifdef RAD_GAMECUBE
-        short PersistentObjectID;
-#endif
+        
         rmt::Vector Position;
         float HeadingCos;
         float HeadingSin;

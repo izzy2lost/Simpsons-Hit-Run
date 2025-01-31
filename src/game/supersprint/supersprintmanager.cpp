@@ -1443,19 +1443,6 @@ void SuperSprintManager::LoadControllerMappings( unsigned int controllerId )
         Map( "Triangle", ShowPositions, 0, controllerId );
 #endif
 
-#ifdef RAD_GAMECUBE
-        ClearMap(0);
-        Map( "Menu", Start, 0, controllerId );
-        Map( "A", Select, 0, controllerId );
-        Map( "B", Back, 0, controllerId );
-        Map( "DPadRight", Right, 0, controllerId );
-        Map( "DPadLeft", Left, 0, controllerId );
-        Map( "LeftStickX", StickX, 0, controllerId );
-        Map( "AnalogTriggerL", L1, 0, controllerId );
-        Map( "DPadDown", CamSelect, 0, controllerId );
-        Map( "Y", ShowPositions, 0, controllerId );
-#endif
-
 #ifdef RAD_WIN32
         ClearMap(0);
         Map( "Pause", Start, 0, controllerId );

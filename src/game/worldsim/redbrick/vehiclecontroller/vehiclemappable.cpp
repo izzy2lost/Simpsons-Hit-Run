@@ -186,41 +186,6 @@ void VehicleMappable::LoadControllerMappings( unsigned int controllerId )
 
     #endif
 
-    #ifdef RAD_GAMECUBE
-
-    ClearMap(0);
-    Map( "LeftStickX", Steer, 0, controllerId );
-//    Map( "DPadLeft", SteerLeft, 0, controllerId );
-//    Map( "DPadRight", SteerRight, 0, controllerId );
-
-    Map( "AnalogTriggerR", Gas, 0, controllerId );
-    Map( "A", Gas, 0, controllerId );
-
-    Map( "X", Brake, 0, controllerId );
-    Map( "AnalogTriggerL", Brake, 0, controllerId );
-
-    Map( "B", HandBrake, 0, controllerId );
-
-    Map( "TriggerZ", Horn, 0, controllerId );
-    Map( "DPadUp", Reset, 0, controllerId );
-    Map( "DPadDown", Reset, 0, controllerId );
-    Map( "DPadLeft", Reset, 0, controllerId );
-    Map( "DPadRight", Reset, 0, controllerId );
-
-    if ( Map( "Wheel", Steer, 0, controllerId ) )
-    {
-        mIsWheel = true;
-        //This is a wheel!
-        Map( "Gas", Gas, 0, controllerId );
-        Map( "Brake", Brake, 0, controllerId );
-    }
-    else
-    {
-//
-    }
-
-    #endif
-
     #ifdef RAD_WIN32
 
     ClearMap(0);

@@ -310,11 +310,7 @@ void pddiBaseContext::DisplayStats()
 #endif
         "tex cache: %.0f hit, %.0f miss (%.1f KB)\n"
         "Skin XformVtx: %d  BPV: %.2f  XForm: %.3fms"
-#ifdef RAD_GAMECUBE
-        "  Wait: %.3f",
-#else
         "\n", 
-#endif
             
         stats[PDDI_STAT_CURRENT_FRAME],
         stats[PDDI_STAT_FRAME_TIME], 1000.0f / stats[PDDI_STAT_FRAME_TIME],
@@ -354,9 +350,6 @@ void pddiBaseContext::DisplayStats()
         (int)stats[PDDI_STAT_SKINNED_XFORM_VERT],
         bonesPerVertex,
         stats[PDDI_STAT_SKINNED_XFORM_MS]
-#ifdef RAD_GAMECUBE
-        , stats[PDDI_STAT_SKINNED_WAIT_MS]
-#endif
         );
 
         DrawString(buf, 10, 25, pddiColour(20, 20, 20));

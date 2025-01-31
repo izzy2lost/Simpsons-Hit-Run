@@ -133,8 +133,6 @@ DialogCoordinator::DialogCoordinator( IRadNameSpace* namespaceObj ) :
         {
 #ifdef RAD_PS2
             sprintf( buffer, "%sps2", tutorialConvNames[i].convName );
-#elif RAD_GAMECUBE
-            sprintf( buffer, "%sngc", tutorialConvNames[i].convName );
 #else
             sprintf( buffer, "%sxbx", tutorialConvNames[i].convName );
 #endif

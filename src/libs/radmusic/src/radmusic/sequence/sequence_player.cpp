@@ -1171,9 +1171,6 @@ bool _event_stream( sequence_player * p_sp, sequence_player_event * p_e_head )
                         ptr_audio_format,
                         p_e_window->stream.current_sample );
 
-                #ifdef RAD_GAMECUBE
-                    stream_start_frame = radMemoryRoundDown( stream_start_frame, 32 );
-                #endif
                 // must round samples back to nearest frame, or counter will be get out!
                 
                 p_e_window->stream.current_sample =

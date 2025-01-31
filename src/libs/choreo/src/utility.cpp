@@ -107,15 +107,14 @@ void MatrixFillRotateVectorToVector(rmt::Matrix& m, const rmt::Vector& s, const 
 // String manip function implementations
 //----------------------------------------------------------------------
 
-#if !defined(RAD_GAMECUBE)
 int VStrPrintf(char* str, int len, const char* fmt, va_list ap)
 {
-#if (defined(RAD_WIN32) || defined(RAD_XBOX))
-#define vsnprintf _vsnprintf
-#elif (defined(RAD_PS2))
-// FIXME:  this sucks
-#define vsnprintf(a, b, c, d) vsprintf(a, c, d)
-#endif
+    #if (defined(RAD_WIN32) || defined(RAD_XBOX))
+        #define vsnprintf _vsnprintf
+    #elif (defined(RAD_PS2))
+        // FIXME:  this sucks
+        #define vsnprintf(a, b, c, d) vsprintf(a, c, d)
+    #endif
 
     int rc = vsnprintf(str, len, fmt, ap);
 
@@ -126,7 +125,6 @@ int VStrPrintf(char* str, int len, const char* fmt, va_list ap)
 
     return rc;
 }
-#endif // !RAD_GAMECUBE
 
 int StrPrintf(char* str, int len, const char* fmt, ...)
 {

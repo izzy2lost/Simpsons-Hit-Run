@@ -25,7 +25,7 @@
 //
 // Set the doug alignment to our standard alignment.
 //
-#if defined RAD_WIN32 || defined RAD_XBOX || defined RAD_GAMECUBE
+#if defined RAD_WIN32 || defined RAD_XBOX
 #define MALLOC_ALIGNMENT 8
 #elif defined RAD_PS2
 #define MALLOC_ALIGNMENT 16
@@ -5702,15 +5702,7 @@ public radRefCount
     virtual ~radMemoryDlAllocator( void )
     {
         radMemoryMonitorRescindSection( (void*)m_StartOfMemory );
-#ifdef RAD_GAMECUBE
-        // Don't try to free Virtual memory
-        if ((m_StartOfMemory & 0x7E000000) != 0x7E000000)
-        {
-            ::radMemoryFree( (void*) m_StartOfMemory );
-        }
-#else
         ::radMemoryFree( (void*) m_StartOfMemory );
-#endif
     }
 	
 	unsigned int m_StartOfMemory;

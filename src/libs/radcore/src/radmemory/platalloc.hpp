@@ -6,11 +6,7 @@
 #ifndef PLATALLOC_HPP
 #define PLATALLOC_HPP
 
-#ifdef RAD_GAMECUBE
-void   radMemoryPlatInitialize( unsigned int sizeVMMainMemory, unsigned int sizeVMARAM );
-#else
 void   radMemoryPlatInitialize( void );
-#endif
 void   radMemoryPlatTerminate( void );
 
 void * radMemoryPlatAlloc( unsigned int size );

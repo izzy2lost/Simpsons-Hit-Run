@@ -96,28 +96,6 @@ tEntity* tShaderLoader::LoadObject(tChunkFile* f, tEntityStore* store)
     P3DASSERT(version == 0);
     f->GetString(shaderName);
 
-    // Gamecube soln to having chainlink and gate_chlink fence shaders that 
-    // become solid at certain mipmap levels
-#ifdef RAD_GAMECUBE
-    const char* s_HighThresholdNames[] = 
-    {
-        "gate_chlink_m",
-        "chainlink_m"
-    };
-    const int NUM_HIGH_THRESHOLD_NAMES = sizeof( s_HighThresholdNames ) / sizeof( s_HighThresholdNames[0] );
-    const float HIGH_ALPHA_THRESHOLD = 0.8f;
-    bool useHighAlphaThreshold = false;
-    for ( int i = 0 ; i < NUM_HIGH_THRESHOLD_NAMES ; i++ )
-    {
-        if ( strcmp( name, s_HighThresholdNames[i] ) == 0 )
-        {
-            useHighAlphaThreshold = true;          
-            break;
-        }             
-    }
-#endif
-
-
     bool     HasTranslucency = (f->GetLong() != 0);
     unsigned VertexNeeds = f->GetLong();
     unsigned VertexMask = f->GetLong();
@@ -196,15 +174,6 @@ tEntity* tShaderLoader::LoadObject(tChunkFile* f, tEntityStore* store)
 
                     unsigned param = f->GetInt();
                     float val = f->GetFloat();
-
-#ifdef RAD_GAMECUBE
-                    // MKR - we are forcing the alpha compare threshold to a higher level
-                    // to fix the problem with chainlink fences
-                    if ( useHighAlphaThreshold && param == PDDI_SP_ALPHACOMPARE_THRESHOLD )
-                    {
-                        val = HIGH_ALPHA_THRESHOLD;
-                    }
-#endif
 
                     shader->SetFloat(param, val);
                 }

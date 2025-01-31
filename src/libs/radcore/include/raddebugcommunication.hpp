@@ -29,8 +29,8 @@
 // Build Configuration Check
 //=============================================================================
 
-#if !defined(RAD_GAMECUBE) && !defined(RAD_PS2) && !defined(RAD_XBOX) && !defined(RAD_WIN32)
-    #error 'FTech requires definition of RAD_GAMECUBE, RAD_PS2, RAD_XBOX, or RAD_WIN32'
+#if !defined(RAD_PS2) && !defined(RAD_XBOX) && !defined(RAD_WIN32)
+    #error 'FTech requires definition of RAD_PS2, RAD_XBOX, or RAD_WIN32'
 #endif
 
 //=============================================================================
@@ -73,9 +73,6 @@ enum radDbgComType
     FileSockets,                        // Socket emulation using files (obsolete)
     FireWire                            // Socket emulation using 1394 Firewire
   #endif
-  #ifdef RAD_GAMECUBE
-    HostIO                              // GameCube HostI/O link
-  #endif
 };
 
 //
@@ -86,11 +83,6 @@ struct radDbgComUsbTcpIpInitInfo
     char    m_IPAddress[ 15 + 1 ];  // Null terminated string of form aaa.bbb.ccc.ddd
     char    m_SubMask[ 15 + 1 ];    // Submask using the same formate
     char    m_Gateway[ 15 + 1 ];    // Gateway
-};
-
-struct radDbgComGameCubeInitInfo
-{
-    unsigned int m_HioChannel;      // specify the HioChannel for GameCube
 };
 
 //

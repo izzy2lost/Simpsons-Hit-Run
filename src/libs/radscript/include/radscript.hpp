@@ -349,13 +349,7 @@ inline bool IRadScript::IsCurrentPlatForm( ) const
         return true;
     }
     #endif
-
-    #ifdef RAD_GAMECUBE
-    if ( nReturnOption & ParserConst::PT_GCN )
-    {
-        return true;
-    }
-    #endif
+    
     return false;
 }
 

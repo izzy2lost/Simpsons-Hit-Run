@@ -34,12 +34,7 @@ public:
         IMG_PS2_4BIT,        // PS2 Memory image formats
         IMG_PS2_8BIT,
         IMG_PS2_16BIT,
-        IMG_PS2_32BIT,
-        IMG_GC_4BIT,        // GameCube Memory image formats
-        IMG_GC_8BIT,
-        IMG_GC_16BIT,
-        IMG_GC_32BIT,
-        IMG_GC_DXT1
+        IMG_PS2_32BIT
     };
 
     class Builder

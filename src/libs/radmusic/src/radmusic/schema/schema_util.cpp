@@ -396,11 +396,7 @@ radRef< IRadSoundHalAudioFormat > construct_audio_format( const audio_format & p
     
     if ( e == IRadSoundHalAudioFormat::RadicalAdpcm && targetFormat )
     {
-        #ifdef RAD_GAMECUBE
-           e = IRadSoundHalAudioFormat::PCM_BIGENDIAN;
-        #else
-           e = IRadSoundHalAudioFormat::PCM;
-        #endif        
+        e = IRadSoundHalAudioFormat::PCM;
     }
                 
     ref_af->Initialize(
@@ -749,8 +745,6 @@ float tempo_track_beat(
         static float game_loop_latency_ms = 60.0f;
     #elif defined RAD_XBOX
         static float game_loop_latency_ms = 10.0f;
-    #elif defined RAD_GAMECUBE
-        static float game_loop_latency_ms = 30.0f;
     #elif defined RAD_PS2
         static float game_loop_latency_ms = 50.0;
     #endif

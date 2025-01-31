@@ -51,15 +51,7 @@ bool tRawImageHandler::CheckFormat(Format format)
 
 static void GetHeader(tFile* file, RawHeader* header)
 {
-    // Toollib is broken.  GC Memory image chunks are ALWAYS in big endian
-#ifdef RAD_GAMECUBE
-    bool swap = file->GetEndianSwap();
-    file->SetEndianSwap(false);
     file->GetData(header, sizeof(RawHeader)/4, tFile::DWORD);
-    file->SetEndianSwap(swap);
-#else    
-    file->GetData(header, sizeof(RawHeader)/4, tFile::DWORD);
-#endif
 }
 
 void tRawImageHandler::CreateImage(tFile* file, tImageHandler::Builder* builder)
