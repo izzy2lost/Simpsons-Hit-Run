@@ -151,7 +151,7 @@ void radSoundStreamPlayer::AllocateResources( IRadSoundHalAudioFormat * pIRadSou
 		}
 		else
 		{
-            m_xIRadSoundHalVoice->GetBuffer( )->ReSetAudioFormat( pIRadSoundHalAudioFormat );
+            // hm?
 			return;
 		}
 	}

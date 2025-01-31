@@ -49,7 +49,7 @@ audio_format_info g_audio_format_info[] =
     { VAG_MONO_FRAME_SIZE / 2, VAG_SAMPLES_PER_FRAME }, //VAG
     { 1, 1 },   // PCM_BIGENDIAN,
     { 36 / 2, 64 }, // XBOXADPCM,
-    { GCN_ADPCM_BYTES_PER_FRAME / 2, GCN_ADPCM_SAMPLES_PER_FRAME },
+    { 0, 0 }, // GCN - REMOVED
     { RADICAL_ADPCM_FRAME_SIZE / 2, RADICAL_ADPCM_FRAME_SIZE } 
 };
 

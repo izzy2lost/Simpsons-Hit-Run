@@ -143,11 +143,6 @@ void radSoundStitchedDataSource::Update( unsigned int elapsedTime )
 // radSoundStitchedDataSource::Reset
 //============================================================================
 
-void radSoundStitchedDataSource::ResetAudioFormat( IRadSoundHalAudioFormat * pAf )
-{
-    m_xIRadSoundHalAudioFormat = pAf;
-}
-
 void radSoundStitchedDataSource::Reset( void )
 {
 /*    rDebugPrintf( "STITCHER: Reset, this [0x0x] Load Outstanding: [0x%x] Callback: [0x%x], CallbackCancelled: [0x%x]\n",

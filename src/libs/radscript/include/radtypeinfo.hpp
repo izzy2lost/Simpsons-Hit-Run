@@ -69,9 +69,8 @@ namespace ParserConst
         PT_PC           = 0x0001,
         PT_XBOX         = 0x0002,
         PT_PS2          = 0x0004,
-        PT_GCN          = 0x0008,
 
-        PT_ALL          = PT_PC | PT_XBOX | PT_PS2 | PT_GCN,
+        PT_ALL          = PT_PC | PT_XBOX | PT_PS2,
         PT_DEFAULT      = -1
     };
 
@@ -84,8 +83,6 @@ namespace ParserConst
     extern const unsigned int TOK_PC;
     extern const unsigned int TOK_PS2;
     extern const unsigned int TOK_XBOX;
-    extern const unsigned int TOK_GCN;
-    extern const unsigned int TOK_REF;
 
     extern const unsigned int TOK_LCURLY;
     extern const unsigned int TOK_RCURLY;

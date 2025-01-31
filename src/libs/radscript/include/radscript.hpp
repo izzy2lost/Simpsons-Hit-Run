@@ -244,7 +244,7 @@ inline bool IRadScript::IsInt( const char * p )
 inline int IRadScript::SplitOption( char * pToken, int * pnOptionField )
 {
     // option looks like this
-    // PC|PS2|XBOX|GCN
+    // PC|PS2|XBOX
     // DEFAULT
     // PC|PS2
     //
@@ -294,10 +294,6 @@ inline int IRadScript::SplitOption( char * pToken, int * pnOptionField )
             else if ( strncmp ( pszOption [ j ], "XBOX", 4 ) == 0 )
             {
                 *pnOptionField |= ParserConst::PT_XBOX;
-            }
-            else if ( strncmp ( pszOption [ j ], "GCN", 3 ) == 0 )
-            {
-                *pnOptionField |= ParserConst::PT_GCN;
             }
             else
             {

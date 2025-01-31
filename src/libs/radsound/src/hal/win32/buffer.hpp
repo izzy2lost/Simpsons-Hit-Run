@@ -57,8 +57,6 @@ class radSoundHalBufferWin
 
         virtual unsigned int GetMinTransferSize( IRadSoundHalAudioFormat::SizeType sizeType );
 
-        virtual void ReSetAudioFormat( IRadSoundHalAudioFormat * pIRadSoundHalAudioFormat ) { };
-
         // IRadSoundHalBufferLoadCallback
 
         virtual void OnBufferLoadComplete( unsigned int dataSourceFrames );

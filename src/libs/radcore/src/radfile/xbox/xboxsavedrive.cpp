@@ -440,7 +440,7 @@ unsigned int radXboxSaveDrive::GetCapabilities( void )
 }
 
 //=============================================================================
-// Function:    radGcnDVDDrive::GetDriveName
+// Function:    radXboxSaveDrive::GetDriveName
 //=============================================================================
 
 const char* radXboxSaveDrive::GetDriveName( void )

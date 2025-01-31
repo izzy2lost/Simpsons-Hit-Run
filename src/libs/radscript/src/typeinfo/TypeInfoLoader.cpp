@@ -120,7 +120,7 @@ struct radTypeInfoLoader
     //
     char * ReadString( unsigned int ** p )
     {
-        // size of string in byte, always multiple of 4 ( PS2/GCN alignment )
+        // size of string in byte, always multiple of 4 ( PS2 alignment )
         unsigned int uStringLength = **p; (*p)++; uStringLength = radEndianLittleToPlat( uStringLength );
         char * pName = reinterpret_cast< char * >( *p );
         (*p) += uStringLength * sizeof( char ) / sizeof( *p );

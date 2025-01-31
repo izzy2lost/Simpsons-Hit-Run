@@ -162,7 +162,7 @@ unsigned int radWin32Drive::GetCapabilities( void )
 }
 
 //=============================================================================
-// Function:    radGcnDVDDrive::GetDriveName
+// Function:    radWin32Drive::GetDriveName
 //=============================================================================
 
 const char* radWin32Drive::GetDriveName( void )

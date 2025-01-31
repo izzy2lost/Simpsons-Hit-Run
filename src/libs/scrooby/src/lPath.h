@@ -17,16 +17,7 @@
     #define _MAX_EXT    256 /* max. length of extension component */
 #endif
 
-#ifdef GCN
-    //IAN IMPROVE: what are these values really?
-   #include <stdlib.h>
-    #define _MAX_DRIVE  3   /* max. length of drive component */
-    #define _MAX_DIR    256 /* max. length of path component */
-    #define _MAX_FNAME  256 /* max. length of file name component */
-    #define _MAX_EXT    256 /* max. length of extension component */
-#endif
-
-#if !defined ( WIN32 ) && !defined( macintosh ) && !defined( GCN )
+#if !defined ( WIN32 ) && !defined( macintosh )
     #define _MAX_PATH   260 /* max. length of full pathname */
     #define _MAX_DRIVE  3   /* max. length of drive component */
     #define _MAX_DIR    256 /* max. length of path component */

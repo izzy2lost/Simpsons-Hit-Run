@@ -58,8 +58,6 @@ struct radSoundBufferXBox
 
         virtual unsigned int GetMinTransferSize( IRadSoundHalAudioFormat::SizeType sizeType );
 
-        virtual void ReSetAudioFormat( IRadSoundHalAudioFormat * pIRadSoundHalAudioFormat ) { };
-
 		// Internal
 
 		void * GetBufferMemory( void );

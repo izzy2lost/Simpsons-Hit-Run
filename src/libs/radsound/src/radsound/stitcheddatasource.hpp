@@ -36,7 +36,6 @@ class radSoundStitchedDataSource
 		virtual void SetStitchCallback( IRadSoundStitchCallback * pStitchCallback,
 			void * pUserData );
 
-        virtual void ResetAudioFormat( IRadSoundHalAudioFormat * );
 		virtual void Reset( void );
 
 		// IRadSoundHalDataSource

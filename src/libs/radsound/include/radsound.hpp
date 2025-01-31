@@ -271,7 +271,6 @@ struct IRadSoundStitchedDataSource : public IRadSoundHalDataSource
         void * pUserData ) = 0;
 
     virtual void Reset( void ) = 0; // Clear current data source + counter
-    virtual void ResetAudioFormat( IRadSoundHalAudioFormat * ) = 0; // GCN ADPCM hack
 };
 
 //============================================================================

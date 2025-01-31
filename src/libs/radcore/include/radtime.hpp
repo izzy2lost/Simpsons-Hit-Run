@@ -19,10 +19,6 @@
 // Note:        There is support for date and time. To set the date and time on
 //              each platform:
 //              * Xbox: use the dashboard.
-//              * GCN: use the IPL. If you don't see the IPL when running a program, 
-//                     run bootmode.elf and set the mode to `Production'. Run a program 
-//                     and by holding down 'A' during the bouncing G animation, you get 
-//                     to the IPL. Go to `Gameplay' to start your program.
 //              * PS2 test/commercial: start the machine without a disk to get to
 //                    system configuration.
 //              * PS2 tool: log into the web interface (http://[ip address]). If

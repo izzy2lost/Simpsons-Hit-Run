@@ -10,7 +10,6 @@ namespace Sound
 const Encoding gPcmEncoding     = { IRadSoundHalAudioFormat::PCM, 1, 1 };
 const Encoding gPcmBEncoding    = { IRadSoundHalAudioFormat::PCM_BIGENDIAN, 1, 1 };
 const Encoding gVagEncoding     = { IRadSoundHalAudioFormat::VAG, 2, 7 };
-const Encoding gGcAdpcmEncoding = { IRadSoundHalAudioFormat::GCNADPCM, 2, 7 };
 const Encoding gRadAdpcmEncoding = { IRadSoundHalAudioFormat::RadicalAdpcm, 5, 16 };
 const Encoding gXAdpcmEncoding = { IRadSoundHalAudioFormat::XBOXADPCM, 36, 128 };
 

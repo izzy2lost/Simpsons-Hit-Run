@@ -1152,7 +1152,6 @@ void daSoundClipStreamPlayer::HookUpAndCuePlayer( void )
             m_StreamInfo.m_pResources->m_pStreamPlayer->SetPositionalGroup( m_IsPositional ? m_pPositionalGroup : NULL );
                                   
             m_StreamInfo.m_pResources->m_pStitchedDataSource->SetStitchCallback( this, NULL );
-            m_StreamInfo.m_pResources->m_pStitchedDataSource->ResetAudioFormat( m_StreamInfo.m_pRsdFileDataSource->GetFormat( ) ); // GCN ADPCM HACK
             m_StreamInfo.m_pResources->m_pStitchedDataSource->Reset( );
                                                                         
             if ( NULL != m_StreamInfo.m_pResources->m_pBufferedDataSource  )

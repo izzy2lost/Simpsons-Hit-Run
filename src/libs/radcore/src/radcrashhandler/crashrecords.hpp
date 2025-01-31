@@ -50,7 +50,6 @@
 //=============================================================================
 
 struct radCrashRecordInfo;
-struct radCrashRecordGcn;
 struct radCrashRecordXBox;
 struct radCrashRecordPs2;
 

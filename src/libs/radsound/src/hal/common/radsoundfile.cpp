@@ -35,7 +35,7 @@ IRadSoundHalAudioFormat::Encoding radSoundHalFileHeader::GetEncodingFromChars( c
 	}
 	if ( radSoundMemCmp( chars, "GADP", 4 ) )
 	{
-		return 	IRadSoundHalAudioFormat::GCNADPCM;
+		return 	NULL;
 	}
     if ( radSoundMemCmp( chars, "RADP", 4 ) )
     {

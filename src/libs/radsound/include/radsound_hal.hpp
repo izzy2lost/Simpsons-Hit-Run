@@ -298,8 +298,6 @@ struct IRadSoundHalBuffer : public IRefCount
     // This will cancel all outstaning load/clear operations.
 
     virtual void CancelAsyncOperations( void ) = 0;
-
-    virtual void ReSetAudioFormat( IRadSoundHalAudioFormat * pIRadSoundHalAudioFormat ) = 0;
 };
 
 // Helper function for initialization of IRadSoundHalBuffer.  Rounds requested 

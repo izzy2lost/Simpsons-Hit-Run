@@ -231,14 +231,6 @@ extern void radMemorySpaceTerminate( void );
 // ::radMemoryInitialize
 //============================================================================
 
-void gcnVMMLogStats(unsigned long realVirtualAddress,
-                    unsigned long physicalAddress, 
-                    unsigned long pageNumber,
-                    unsigned long pageMissLatency,
-                    BOOL pageSwappedOut );
-
-static gcnVMMStats sVMMStats;
-
 void radMemoryInitialize( void )
 {
     if( g_Initialized )
@@ -281,9 +273,6 @@ void radMemoryInitialize( void )
         rAssert(vmmHeap != NULL);
         radMemoryRegisterAllocator( RADMEMORY_ALLOC_VMM, RADMEMORY_ALLOC_DEFAULT, vmmHeap );
         sVMMDLHeapInitialized = true;
-#ifndef RAD_RELEASE
-        VMSetLogStatsCallback(&gcnVMMLogStats);
-#endif
     }
 
     //
