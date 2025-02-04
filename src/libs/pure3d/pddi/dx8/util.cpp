@@ -10,15 +10,16 @@
 #include "direct3d.hpp"
 #include "../base/debug.hpp"
 
+// TODO: move somewhere else later
+#include <DxErr.h>
+#pragma comment(lib, "dxerr.lib")
+
 void DDVERIFY(HRESULT res)
 {
-    if(res == D3D_OK)
-    {
-        return;
-    }
+    if(res == D3D_OK) return;
 
     char errStr[256];
-    D3DXGetErrorString(res, errStr, 256);
+    strncpy_s(errStr, DXGetErrorString(res), _TRUNCATE);
 
     char errBuf[512];
     wsprintf(errBuf, "%s\nCode: %d, facility: %d, severity: %d",

@@ -18,7 +18,7 @@
 #include "../base/debug.hpp"
 
 
-char DEVICE_DESCRIPTION[] = "Direct3D 8";
+char DEVICE_DESCRIPTION[] = "Direct3D9";
 
 static d3dDevice* static_d3d = NULL;
 
@@ -33,13 +33,13 @@ __declspec(dllexport) int pddiCreate(int versionMajor, int versionMinor, pddiDev
 
     if(!static_d3d)
     {
-        static_d3d = new d3dDevice(Direct3DCreate8(D3D_SDK_VERSION));
+        static_d3d = new d3dDevice(Direct3DCreate9(D3D_SDK_VERSION));
     }
     *device = static_d3d;
     return PDDI_OK;
 }
 
-d3dDevice::d3dDevice(LPDIRECT3D8 d3d)
+d3dDevice::d3dDevice(LPDIRECT3D9 d3d)
 {
     direct3D = d3d;
 
@@ -84,10 +84,10 @@ int d3dDevice::GetDisplayInfo(pddiDisplayInfo** info)
         nDisplay = 0;
         for(int i = 0; i < totalDisplay; i++)
         {
-            D3DADAPTER_IDENTIFIER8 identity;
-            D3DCAPS8 devCaps;
+            D3DADAPTER_IDENTIFIER9 identity;
+            D3DCAPS9 devCaps;
 
-            direct3D->GetAdapterIdentifier(i, D3DENUM_NO_WHQL_LEVEL , &identity);
+            direct3D->GetAdapterIdentifier(i, 0, &identity);
             if(direct3D->GetDeviceCaps(i, D3DDEVTYPE_HAL, &devCaps) != D3D_OK)
                 continue;
 
@@ -98,14 +98,14 @@ int d3dDevice::GetDisplayInfo(pddiDisplayInfo** info)
             displayInfo[nDisplay].fullscreenOnly = 0;
             displayInfo[nDisplay].caps = 0;
 
-            int totalModes = direct3D->GetAdapterModeCount(i);
+            int totalModes = direct3D->GetAdapterModeCount(i, D3DFMT_X8R8G8B8);
             displayInfo[nDisplay].modeInfo = new pddiModeInfo[totalModes];
             int usefulModes = 0;
 
             for(int j = 0; j < totalModes; j++)
             {
                 D3DDISPLAYMODE mode;
-                direct3D->EnumAdapterModes(i, j, &mode);
+                direct3D->EnumAdapterModes(i, D3DFMT_X8R8G8B8, j, &mode);
                 displayInfo[nDisplay].modeInfo[usefulModes].width  = mode.Width;
                 displayInfo[nDisplay].modeInfo[usefulModes].height = mode.Height;
                     

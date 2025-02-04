@@ -31,7 +31,7 @@ D3DFORMAT depthFormatTable[4][7] = {
 bool g_videoCardLayerdShaderBusted = false;
 
 //------------------------------------------------------------------------
-d3dDisplay::d3dDisplay(pddiDisplayInfo* info, LPDIRECT3D8 d)
+d3dDisplay::d3dDisplay(pddiDisplayInfo* info, LPDIRECT3D9 d)
 {
     displayInfo = info;
     d3d = d;
@@ -72,7 +72,7 @@ d3dDisplay::d3dDisplay(pddiDisplayInfo* info, LPDIRECT3D8 d)
 	m_ForceVSync = false;
 
     //[cbc]Collect display specific disable hacks here
-    D3DADAPTER_IDENTIFIER8 adaptID;
+    D3DADAPTER_IDENTIFIER9 adaptID;
     if(d && D3D_OK == d->GetAdapterIdentifier(adapterID, 0, &adaptID))
     {
         if(adaptID.VendorId == 4098)
@@ -279,11 +279,14 @@ bool d3dDisplay::InitDisplay(const pddiDisplayInit* init)
     bufferMask = bufMask;
     displayDepth = bpp;
 
-    if(!(d3dCaps.Caps2 & D3DCAPS2_CANRENDERWINDOWED) && (mode == PDDI_DISPLAY_WINDOW))
+    /*
+    * TODO(3ur): cant find a D3D9 alternative and it seems like junk who cant render windowed in 2025
+    if(!(d3dCaps.Caps & D3DCAPS9_CANRENDERWINDOWED) && (mode == PDDI_DISPLAY_WINDOW))
     {
         mode = PDDI_DISPLAY_FULLSCREEN;
         OutputDebugString("PDDI: Cannot use a selected adapter in a window, switching to fullscreen.\n");
     }
+    */
 
     switch(mode)
     {
@@ -399,7 +402,7 @@ bool d3dDisplay::InitDisplay(const pddiDisplayInit* init)
     d3dpp.BackBufferHeight       = displayHeight;
     d3dpp.BackBufferFormat       = colourBufferFormat;
     d3dpp.FullScreen_RefreshRateInHz = (mode == PDDI_DISPLAY_WINDOW) ? 0 : D3DPRESENT_RATE_DEFAULT;
-    d3dpp.FullScreen_PresentationInterval = (mode == PDDI_DISPLAY_WINDOW) ? D3DPRESENT_INTERVAL_DEFAULT : (lockToVsync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE);
+    d3dpp.PresentationInterval = (mode == PDDI_DISPLAY_WINDOW) ? D3DPRESENT_INTERVAL_DEFAULT : (lockToVsync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE);
 
     if(d3dDevice)
     {
@@ -498,7 +501,7 @@ bool d3dDisplay::InitDisplay(const pddiDisplayInit* init)
         d3d->GetAdapterDisplayMode(dcp.AdapterOrdinal, &dm);
 
 		//create temporary front buffer
-        DDVERIFY(d3dDevice->CreateImageSurface(dm.Width, dm.Height, D3DFMT_A8R8G8B8, &frontTmpBuffer));
+        DDVERIFY(d3dDevice->CreateOffscreenPlainSurface(dm.Width, dm.Height, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &frontTmpBuffer, nullptr));
     }
 
     return d3dDevice != NULL;
@@ -595,11 +598,11 @@ unsigned d3dDisplay::Screenshot(pddiColour* buffer, int nBytes, const pddiRect& 
     {
         // create a temp destination buffer the size of the whole screen
         // it'll be in a fixed format we can copy easily
-        LPDIRECT3DSURFACE8 dest;
-        DDVERIFY( d3dDevice->CreateImageSurface( width, height, colourBufferFormat, &dest ) ); // TODO : breaks in 16bpp
+        LPDIRECT3DSURFACE9 dest;
+        DDVERIFY( d3dDevice->CreateOffscreenPlainSurface( width, height, colourBufferFormat, D3DPOOL_SYSTEMMEM, &dest, nullptr ) );
 
         // grab the back buffer
-        LPDIRECT3DSURFACE8 src;
+        LPDIRECT3DSURFACE9 src;
         DDVERIFY( d3dDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &src) );
 
         // suck the bits out of the back buffer
@@ -638,8 +641,8 @@ unsigned d3dDisplay::Screenshot(pddiColour* buffer, int nBytes, const pddiRect& 
         d3d->GetAdapterDisplayMode(dcp.AdapterOrdinal, &dm);
 
         // create a surface
-        LPDIRECT3DSURFACE8 src;
-        DDVERIFY(d3dDevice->CreateImageSurface(dm.Width, dm.Height, D3DFMT_A8R8G8B8, &src));
+        LPDIRECT3DSURFACE9 src;
+        DDVERIFY(d3dDevice->CreateOffscreenPlainSurface(dm.Width, dm.Height, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &src, nullptr));
 
         // this copies the bits from the front buffer
 //        DDVERIFY(d3dDevice->GetFrontBuffer(src));
@@ -767,8 +770,8 @@ void d3dDisplay::Snapshot(void)
 	     snapshotSurface->Release();		
 
 /*		
-        LPDIRECT3DSURFACE8 renderTarget;
-        LPDIRECT3DSURFACE8 snapshotSurface;
+        LPDIRECT3DSURFACE9 renderTarget;
+        LPDIRECT3DSURFACE9 snapshotSurface;
         d3dDevice->GetRenderTarget(&renderTarget);
         snapshot->GetSurfaceLevel(0, &snapshotSurface);
 

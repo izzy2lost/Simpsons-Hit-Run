@@ -19,7 +19,7 @@ class d3dSurface;
 class d3dDisplay : public pddiDisplay
 {
 public:
-    d3dDisplay(pddiDisplayInfo* info, LPDIRECT3D8);
+    d3dDisplay(pddiDisplayInfo* info, LPDIRECT3D9);
     virtual ~d3dDisplay();
 
     // public interface stuff
@@ -48,16 +48,16 @@ public:
     unsigned Screenshot(pddiColour* buffer, int nBytes, const pddiRect& rectangle, pddiBuffer source = PDDI_BUFFER_FRONT);
 
 	void Snapshot(void);
-	LPDIRECT3DTEXTURE8  GetSnapshotTexture(void) { return snapshot;}
+	LPDIRECT3DTEXTURE9  GetSnapshotTexture(void) { return snapshot;}
 
     // class specific stuff
     bool HasReset(void);
 
     bool              IsHardwareTransform(void) { return hwTrans;}
     bool              IsHardwareVertexShader ( void ){ return hwVertexShader; }
-    LPDIRECT3D8       GetD3D(void)       { return d3d;}
-    LPDIRECT3DDEVICE8 GetD3DDevice(void) { return d3dDevice;}
-    D3DCAPS8*         GetCaps(void)      { return &d3dCaps;}
+    LPDIRECT3D9       GetD3D(void)       { return d3d;}
+    LPDIRECT3DDEVICE9 GetD3DDevice(void) { return d3dDevice;}
+    D3DCAPS9*         GetCaps(void)      { return &d3dCaps;}
     D3DFORMAT         GetColourBufferFormat(void) { return colourBufferFormat;}
 
     void SetGamma(float r, float g, float b);
@@ -65,15 +65,15 @@ public:
     HRESULT Reset() { return d3dDevice->Reset(&d3dpp); };
 
 protected:
-    LPDIRECT3D8       d3d;
-    LPDIRECT3DDEVICE8 d3dDevice;
+    LPDIRECT3D9       d3d;
+    LPDIRECT3DDEVICE9 d3dDevice;
     D3DPRESENT_PARAMETERS d3dpp;
-    D3DCAPS8 d3dCaps;
+    D3DCAPS9 d3dCaps;
     D3DGAMMARAMP initialGammaRamp;
     D3DFORMAT colourBufferFormat;
     D3DFORMAT depthBufferFormat;
     D3DDISPLAYMODE origMode;
-	LPDIRECT3DTEXTURE8 snapshot;
+	LPDIRECT3DTEXTURE9 snapshot;
     bool hwTrans;
     bool hwVertexShader;
 
@@ -90,7 +90,7 @@ protected:
     bool ignoreResize;
     
     d3dSurface* backBuffer;  
-	LPDIRECT3DSURFACE8 frontTmpBuffer;
+	LPDIRECT3DSURFACE9 frontTmpBuffer;
 
     int      adapterID;
     int      nColourBuffer;

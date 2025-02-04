@@ -19,7 +19,7 @@ struct ddDisplayInfo;
 class d3dDevice : public pddiDevice
 {
 public:
-    d3dDevice(LPDIRECT3D8);
+    d3dDevice(LPDIRECT3D9);
     virtual ~d3dDevice();
 
     virtual int GetDisplayInfo(pddiDisplayInfo** info);
@@ -41,7 +41,7 @@ private:
     int nDisplay;
     pddiDisplayInfo* displayInfo;
 
-    LPDIRECT3D8 direct3D;
+    LPDIRECT3D9 direct3D;
 };
 
 #endif // _DEVICE_HPP
