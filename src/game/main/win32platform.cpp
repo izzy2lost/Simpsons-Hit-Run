@@ -154,15 +154,15 @@ unsigned char gFont[] =
 static const Win32Platform::Resolution StartingResolution = Win32Platform::Res_800x600;
 static const int StartingBPP = 32;
 
-// This specifies the PDDI DLL to use.  We are using directx8.
+// This specifies the PDDI DLL to use.  We are using directx9.
 #ifdef RAD_DEBUG
-static const char d3dLibraryName[] = "pddidx8d.dll";
+static const char d3dLibraryName[] = "pddidx9d.dll";
 #endif
 #ifdef RAD_TUNE
-static const char d3dLibraryName[] = "pddidx8t.dll";
+static const char d3dLibraryName[] = "pddidx9t.dll";
 #endif
 #ifdef RAD_RELEASE
-static const char d3dLibraryName[] = "pddidx8r.dll";
+static const char d3dLibraryName[] = "pddidx9r.dll";
 #endif
 
 // Name of the application.  This is the string that appears in the Window's

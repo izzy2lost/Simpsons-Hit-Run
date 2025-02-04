@@ -180,7 +180,7 @@ class radTextDisplay : public IRadTextDisplay
     // XBox specific data members
     //
     #ifdef RAD_XBOX
-	LPDIRECT3D8             m_pD3D;			// Used to create the D3DDevice
+	LPDIRECT3D9             m_pD3D;			// Used to create the D3DDevice
 	LPDIRECT3DDEVICE8       m_pd3dDevice;	// Our rendering device
 	XFONT *                 m_pXFont;		// Our xbox font
 	#endif // RAD_XBOX

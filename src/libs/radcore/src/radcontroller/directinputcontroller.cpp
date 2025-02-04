@@ -1451,7 +1451,7 @@ class radControllerDirectInput
                     size = 1;
 
                     //
-                    // DirectX8 Debug Run-Time generates a debug message if we
+                    // DirectX9 Debug Run-Time generates a debug message if we
                     // don't have the device aquired before we call GetDevice-
                     // Data. This is really dumb cause we can really test to
                     // see if it is aquired by calling GetDeviceData()

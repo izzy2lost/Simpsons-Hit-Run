@@ -20,7 +20,7 @@ public:
 
     virtual void GetShaderInfo(d3dShaderInfo*);
 
-    void SetTexture(LPDIRECT3DDEVICE8 d3d, int stage, pddiTexture* texture)
+    void SetTexture(LPDIRECT3DDEVICE9 d3d, int stage, pddiTexture* texture)
     {
         if(texture)
         {

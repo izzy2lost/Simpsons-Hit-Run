@@ -122,7 +122,7 @@ public:
         context->GetDisplay()->GetD3DDevice()->SetRenderState(D3DRS_MULTISAMPLEMASK,mask);
     }
     
-    // ziemek - temp fix to get dx8 building.
+    // ziemek - temp fix to get dx9 building.
     int GetAntiAliasMode(void)
     {
         return 0;

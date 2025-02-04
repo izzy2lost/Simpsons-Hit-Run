@@ -81,7 +81,7 @@ void d3dVertexProgramManager::AssembleVertexShader( const char * vsName )
     else{
         //resource name is the same as vertex shader name
         vsTemplates[ nTemplates ].name = Hash( vsName ); 
-        HMODULE hr = GetModuleHandle( "pddidx8d" );
+        HMODULE hr = GetModuleHandle( "pddidx9d" );
 #ifndef VSH_TEST
 /*
         LPD3DXBUFFER error;

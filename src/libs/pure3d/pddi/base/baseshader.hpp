@@ -19,7 +19,7 @@ const int PDDI_SHADER_COUNT = 16;
 //    SHADE_<type>            = cast macro for converting funciton pointers to base class
 //
 //    tables should be terminated with a PDDI_SP_NULL entry.
-//    see dx8/simpleshader.* for examples of user
+//    see dx9/simpleshader.* for examples of user
 
 typedef void (pddiBaseShader::*pddiShadeIntFunction)(int);
 struct pddiShadeIntTable
@@ -83,7 +83,7 @@ public:
     ~pddiBaseShader() { if(lastShader == this) lastShader = NULL;}
 
     // set functions for pddi interface, implimented to pass through dispatch tables
-    // don't need to be overloaded most of the time (DX8 effects shader does though)
+    // don't need to be overloaded most of the time (DX9 effects shader does though)
     virtual bool SetTexture(unsigned param, pddiTexture* tex);
     virtual bool SetInt(unsigned param, int);
     virtual bool SetFloat(unsigned param, float);
