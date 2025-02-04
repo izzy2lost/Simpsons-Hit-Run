@@ -310,7 +310,8 @@ void SoundNucleusInitialize( radMemoryAllocator alloc )
 #endif
 
     ::radSoundHalSystemGet( )->Initialize( desc );    
-                     
+    ::radSoundHalSystemGet()->SetOutputMode(radSoundOutputMode_Surround);
+
     for( unsigned int i = 0; i < SOUND_NUM_STREAM_PLAYERS; i ++ )
     {
         gStreamers[ i ].index = i;

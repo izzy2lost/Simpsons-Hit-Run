@@ -33,10 +33,6 @@ IRadSoundHalAudioFormat::Encoding radSoundHalFileHeader::GetEncodingFromChars( c
 	{
 		return 	IRadSoundHalAudioFormat::XBOXADPCM;
 	}
-	/*if (radSoundMemCmp(chars, "GADP", 4))
-	{
-		return NULL;
-	}*/
     if ( radSoundMemCmp( chars, "RADP", 4 ) )
     {
         return IRadSoundHalAudioFormat::RadicalAdpcm;

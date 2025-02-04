@@ -42,7 +42,7 @@
 struct radSoundHalFileHeader
 {
     char m_RsdDataTag[4];    // RADSOUND_HAL_FILEVERSION
-    char m_SoundDataType[4]; // "VAG ", "PCM ", "GADP", "XADP"
+    char m_SoundDataType[4]; // "VAG ", "PCM ", "XADP"
     unsigned int m_Channels;
     unsigned int m_BitResolution;
     unsigned int m_SamplingRate;

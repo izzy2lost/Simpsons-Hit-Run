@@ -83,7 +83,8 @@ struct NISSoundPlaybackCompleteCallback
 enum SoundMode
 {
     SOUND_MONO,
-    SOUND_STEREO
+    SOUND_STEREO,
+    SOUND_SURROUND
 };
 
 //=============================================================================
@@ -313,6 +314,7 @@ class SoundManager : public EventListener,
             float sfxVolume;
             float carVolume;
             float dialogVolume;
+            bool isSurround;
         };
         
         // Sound loading subsystem

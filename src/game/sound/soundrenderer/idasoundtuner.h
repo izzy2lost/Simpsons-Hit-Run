@@ -103,7 +103,8 @@ struct IDaSoundTuner : public IDaSoundWiring
     enum SoundOutputMode
     {
         MONO,
-        STEREO
+        STEREO,
+        SURROUND
     };
     virtual void SetSoundOutputMode
     (

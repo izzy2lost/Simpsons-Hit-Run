@@ -16,10 +16,6 @@
 #ifndef GUISCREENSOUND_H
 #define GUISCREENSOUND_H
 
-#if defined( RAD_PS2 )
-    #define INCLUDE_SOUND_MODE
-#endif
-
 //===========================================================================
 // Nested Includes
 //===========================================================================
@@ -65,7 +61,16 @@ private:
         MENU_ITEM_EFFECTS,
         MENU_ITEM_ENGINE,
         MENU_ITEM_VOICE,
+        MENU_ITEM_SURROUND_SOUND,
         NUM_MENU_ITEMS
+    };
+
+    enum eMenuItemSurroundSound
+    {
+        MONO_SOUND,
+        STEREO_SOUND,
+        SURROUND_SOUND,
+        NUM_SOUND_SETTINGS
     };
 
     CGuiMenu* m_pMenu;

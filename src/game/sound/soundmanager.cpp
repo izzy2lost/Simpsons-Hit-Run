@@ -1608,7 +1608,7 @@ void SoundManager::LoadData( const GameDataByte* dataBuffer, unsigned int numByt
     else
     {
         this->SetDialogueVolume( soundSettings.dialogVolume );
-        loadedSoundMode = SOUND_STEREO;
+        loadedSoundMode = (soundSettings.isSurround) ? SOUND_SURROUND : SOUND_STEREO;
     }
 
     this->SetSoundMode( loadedSoundMode );
@@ -1641,7 +1641,11 @@ void SoundManager::SaveData( GameDataByte* dataBuffer, unsigned int numBytes )
         // Horrible stinky hack explained in LoadData()
         //
         soundSettings.dialogVolume += 100.0f;
+        soundSettings.isSurround = false;
     }
+
+    // easier then the else if else crap
+    soundSettings.isSurround = (mode == SOUND_SURROUND) ? true : false;
 
     memcpy( dataBuffer, &soundSettings, sizeof( soundSettings ) );
 }
@@ -1682,6 +1686,7 @@ void SoundManager::ResetData()
     SetAmbienceVolume( settings->GetAmbienceVolume() );
     SetDialogueVolume( settings->GetDialogueVolume() );
     SetCarVolume( settings->GetCarVolume() );
+    SetSoundMode(SOUND_SURROUND);
 }
 
 #ifdef RAD_WIN32
@@ -1850,6 +1855,10 @@ void SoundManager::SetSoundMode( SoundMode mode )
     else if( m_soundMode == SOUND_STEREO )
     {
         radSoundMode = radSoundOutputMode_Stereo;
+    }
+    else
+    {
+        radSoundMode = radSoundOutputMode_Surround;
     }
 
     ::radSoundHalSystemGet()->SetOutputMode( radSoundMode );
