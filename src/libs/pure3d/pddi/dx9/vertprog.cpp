@@ -12,13 +12,6 @@
 #include "../base/debug.hpp"
 #include "resource.h"
 
-#ifdef VSH_TEST
-#include "vsh/skin.h"
-#include "vsh/skin_onebone.h"
-#include "vsh/skin_hktoon.h"
-#include "vsh/skin_onebone_hktoon.h"
-#endif
-
 #define DEF_TEMPLATE(x,y) { vsTemplates[nTemplates].name = Hash(x); vsTemplates[nTemplates].tokens = y; vsTemplates[nTemplates ].nPrograms = 0; nTemplates++;}
 #define ADD_DECL(x,y)  {decl[curDecl++] = x; stride += y;}
 
@@ -45,28 +38,18 @@ d3dVertexProgramManager::d3dVertexProgramManager(d3dContext* c)
     context = c;
     nTemplates = 0;
 
-#ifdef VSH_TEST   
-    DEF_TEMPLATE( "", 0 );
-    DEF_TEMPLATE("skin", skinVertexShaderTokens);
-    DEF_TEMPLATE("skin_onebone", skin_oneboneVertexShaderTokens);
-    DEF_TEMPLATE("skin_hktoon", skin_hktoonVertexShaderTokens);
-    DEF_TEMPLATE("skin_onebone_hktoon", skin_onebone_hktoonVertexShaderTokens);
-#else
     AssembleVertexShader( NULL );    
     AssembleVertexShader( "skin" );
-#endif
 
     PDDIASSERT(nTemplates <= maxTemplates);
 }
 
 d3dVertexProgramManager::~d3dVertexProgramManager()
 {   
-#ifndef VSH_TEST
     for(unsigned i = 0; i < nTemplates; i++){
         if( vsTemplates[ i ].tokens )
             vsTemplates[ i ].tokens->Release( );
     }   
-#endif
 }
 
 
@@ -82,7 +65,6 @@ void d3dVertexProgramManager::AssembleVertexShader( const char * vsName )
         //resource name is the same as vertex shader name
         vsTemplates[ nTemplates ].name = Hash( vsName ); 
         HMODULE hr = GetModuleHandle( "pddidx9d" );
-#ifndef VSH_TEST
 /*
         LPD3DXBUFFER error;
         HRSRC hvsh = FindResource( hr, MAKEINTRESOURCE(IDR_VSH3), "vsh" );
@@ -97,10 +79,6 @@ void d3dVertexProgramManager::AssembleVertexShader( const char * vsName )
             msg = (char*) error->GetBufferPointer( );
 
 */
-
-        DDVERIFY( D3DXAssembleShaderFromFile( "D:\\personal_branch\\development\\hongzhi\\pure3d\\pddi\\dx8\\vsh\\skin.vsh", 
-            0, NULL, &(vsTemplates[nTemplates].tokens), NULL ) );  // assemble shader code
-#endif
         vsTemplates[ nTemplates ].nPrograms = 0; 
         nTemplates++;
     }
@@ -234,16 +212,12 @@ d3dVertexProgram* d3dVertexProgramManager::GetVertexProgram(const char* name, pd
     }
 
 /*
-#ifndef VSH_TEST
     if( base->tokens ){
         LPVOID stream = base->tokens->GetBufferPointer( );
         DDVERIFY(context->GetDisplay()->GetD3DDevice()->CreateVertexShader(decl,  (DWORD*)(stream), &vs, usage));
     }
     else
         DDVERIFY(context->GetDisplay()->GetD3DDevice()->CreateVertexShader(decl,  NULL, &vs, usage));
-#else
-    DDVERIFY(context->GetDisplay()->GetD3DDevice()->CreateVertexShader(decl,  (unsigned long*)base->tokens, &vs, usage));
-#endif
 */
     program->SetData(primType, vertexMask, aux, stride, vs);
     program->SetVsData( decl, (unsigned long*)base->tokens, usage );

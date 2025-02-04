@@ -11,9 +11,6 @@
 #include "context.hpp"
 #include "display.hpp"
 
-
-#define VSH_TEST
-
 class d3dContext;
 class d3dShader;
 
@@ -97,11 +94,7 @@ protected:
     struct Template
     {
         unsigned name;
-#ifndef  VSH_TEST
         LPD3DXBUFFER tokens;
-#else
-        void * tokens;
-#endif
         int nPrograms;
         d3dVertexProgram programs[maxPrograms];
     } vsTemplates[maxTemplates];
