@@ -65,7 +65,7 @@ D3DSHADEMODE d3dState::shadeTable[2] =
         D3DSHADE_GOURAUD
 };
 
-d3dState::d3dState(d3dContext* c, LPDIRECT3DDEVICE8 device)
+d3dState::d3dState(d3dContext* c, LPDIRECT3DDEVICE9 device)
 {
     context = c;
 
@@ -138,13 +138,16 @@ void d3dState::LoadAll(void)
             d3d->SetTexture(i, NULL);
         }
 
-        d3d->SetTextureStageState(i, D3DTSS_MINFILTER, filterTable[filter[i]].minFilter);
-        d3d->SetTextureStageState(i, D3DTSS_MAGFILTER, filterTable[filter[i]].magFilter);
-        d3d->SetTextureStageState(i, D3DTSS_MIPFILTER, filterTable[filter[i]].mipFilter);
+        // https://gamedev.net/forums/topic/402248-d3dtss_magfilter-d3dtss_minfilter/3671344/
+        // TODO(3ur): ^ should other things be changed to use SetSamplerState?
+
+        d3d->SetSamplerState(i, D3DSAMP_MINFILTER, filterTable[filter[i]].minFilter);
+        d3d->SetSamplerState(i, D3DSAMP_MAGFILTER, filterTable[filter[i]].magFilter);
+        d3d->SetSamplerState(i, D3DSAMP_MIPFILTER, filterTable[filter[i]].mipFilter);
         d3d->SetTextureStageState(i, D3DTSS_TEXCOORDINDEX, i);
-        d3d->SetTextureStageState(i, D3DTSS_ADDRESSU, uvTable[uvMode[i]]);
-        d3d->SetTextureStageState(i, D3DTSS_ADDRESSV, uvTable[uvMode[i]]);
-        d3d->SetTextureStageState(i, D3DTSS_ADDRESSW, uvTable[uvMode[i]]);
+        d3d->SetSamplerState(i, D3DSAMP_ADDRESSU, uvTable[uvMode[i]]);
+        d3d->SetSamplerState(i, D3DSAMP_ADDRESSV, uvTable[uvMode[i]]);
+        d3d->SetSamplerState(i, D3DSAMP_ADDRESSW, uvTable[uvMode[i]]);
 
         d3d->SetTextureStageState(i, D3DTSS_COLORARG1, colourArg1[i]);
         d3d->SetTextureStageState(i, D3DTSS_COLOROP,   colourOp[i]);

@@ -30,7 +30,7 @@ public:
         NUM_STAGES = 4
     };
 
-    d3dState(d3dContext* c, LPDIRECT3DDEVICE8 device);
+    d3dState(d3dContext* c, LPDIRECT3DDEVICE9 device);
     ~d3dState();
 
     void SetDefault(void);
@@ -95,9 +95,10 @@ public:
         if(uvMode[stage] != mode)
         {
             uvMode[stage] = mode;
-            d3d->SetTextureStageState(stage, D3DTSS_ADDRESSU, uvTable[mode]);
-            d3d->SetTextureStageState(stage, D3DTSS_ADDRESSV, uvTable[mode]);
-            d3d->SetTextureStageState(stage, D3DTSS_ADDRESSW, uvTable[mode]);
+            // https://gamedev.net/forums/topic/402248-d3dtss_magfilter-d3dtss_minfilter/3671344/
+            d3d->SetSamplerState(stage, D3DSAMP_ADDRESSU, uvTable[mode]);
+            d3d->SetSamplerState(stage, D3DSAMP_ADDRESSV, uvTable[mode]);
+            d3d->SetSamplerState(stage, D3DSAMP_ADDRESSW, uvTable[mode]);
         }
     }
 
@@ -106,13 +107,14 @@ public:
         if(filter[stage] != mode)
         {
             filter[stage] = mode;
-            d3d->SetTextureStageState(stage, D3DTSS_MINFILTER, filterTable[mode].minFilter);
-            d3d->SetTextureStageState(stage, D3DTSS_MAGFILTER, filterTable[mode].magFilter);
-            d3d->SetTextureStageState(stage, D3DTSS_MIPFILTER, filterTable[mode].mipFilter);
+            // https://gamedev.net/forums/topic/402248-d3dtss_magfilter-d3dtss_minfilter/3671344/
+            d3d->SetSamplerState(stage, D3DSAMP_MINFILTER, filterTable[mode].minFilter);
+            d3d->SetSamplerState(stage, D3DSAMP_MAGFILTER, filterTable[mode].magFilter);
+            d3d->SetSamplerState(stage, D3DSAMP_MIPFILTER, filterTable[mode].mipFilter);
         }
     }
 
-    void SetPixelShader(unsigned p)
+    void SetPixelShader(IDirect3DPixelShader9* p)
     {
         if(pixelShader != p)
         {
@@ -307,7 +309,7 @@ public:
             d3d->SetRenderState(D3DRS_LIGHTING, TRUE);
             d3d->SetRenderState(D3DRS_SPECULARENABLE, (info->shininess > 0.0f));
 
-            D3DMATERIAL8 material;
+            D3DMATERIAL9 material;
             d3dColourValue(info->diffuse, &material.Diffuse);
             d3dColourValue(info->ambient, &material.Ambient);
             d3dColourValue(info->specular, &material.Specular);
@@ -395,7 +397,7 @@ protected:
 
 
     d3dContext* context;
-    LPDIRECT3DDEVICE8 d3d;
+    LPDIRECT3DDEVICE9 d3d;
 
     pddiTexture*   textures[NUM_STAGES];
     unsigned       uvMap[NUM_STAGES];
@@ -430,7 +432,7 @@ protected:
 
     DWORD alphaRef;
 
-    unsigned pixelShader;
+    IDirect3DPixelShader9* pixelShader;
 
     float envMat[4];
 };
