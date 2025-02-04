@@ -67,8 +67,9 @@ enum radSoundAuxMode
 
 enum radSoundOutputMode
 {
-	radSoundOutputMode_Mono,    // radsound mixes to mono (PS2 only)
-	radSoundOutputMode_Stereo,  // radsound mixes to stereo (PS2 only)
+	radSoundOutputMode_Mono,    // radsound mixes to mono
+	radSoundOutputMode_Stereo,  // radsound mixes to stereo
+    radSoundOutputMode_Surround // radsound mixes to surround
 };
 
 //============================================================================
