@@ -7,7 +7,7 @@
 #define _VERTPROG_HPP_
 
 #include "../pddienum.hpp"
-#include "d3dx8core.h"
+#include "d3dx9core.h"
 #include "context.hpp"
 #include "display.hpp"
 

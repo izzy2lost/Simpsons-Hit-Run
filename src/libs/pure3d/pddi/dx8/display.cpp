@@ -453,7 +453,7 @@ bool d3dDisplay::InitDisplay(const pddiDisplayInit* init)
         // Get the initial gamma ramp.
         if( d3dDevice != NULL )
         {
-            d3dDevice->GetGammaRamp(&initialGammaRamp);
+            d3dDevice->GetGammaRamp(0, &initialGammaRamp);
             for(int i = 0; i < 256; i++)
             {
                 initialGammaRamp.red[i] = (int(initialGammaRamp.red[i]) << 8) | 0xff;
@@ -485,12 +485,12 @@ bool d3dDisplay::InitDisplay(const pddiDisplayInit* init)
 	if(init->enableSnapshot)
     {
 
-		LPDIRECT3DSURFACE8 pRenderTarget;
-		d3dDevice->GetRenderTarget(&pRenderTarget);
+		LPDIRECT3DSURFACE9 pRenderTarget;
+		d3dDevice->GetRenderTarget(0, &pRenderTarget); // maybe not 0? idk what the index is for
 		D3DSURFACE_DESC descRenderTarget;
 		pRenderTarget->GetDesc(&descRenderTarget);
     
-        DDVERIFY(d3dDevice->CreateTexture(descRenderTarget.Width, descRenderTarget.Height, 1, D3DUSAGE_RENDERTARGET, /*descRenderTarget.Format*/D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &snapshot));
+        DDVERIFY(d3dDevice->CreateTexture(descRenderTarget.Width, descRenderTarget.Height, 1, D3DUSAGE_RENDERTARGET, /*descRenderTarget.Format*/D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &snapshot, 0));
         pRenderTarget->Release();
 
         D3DDEVICE_CREATION_PARAMETERS dcp;
@@ -603,11 +603,13 @@ unsigned d3dDisplay::Screenshot(pddiColour* buffer, int nBytes, const pddiRect& 
 
         // grab the back buffer
         LPDIRECT3DSURFACE9 src;
-        DDVERIFY( d3dDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &src) );
+        DDVERIFY( d3dDevice->GetBackBuffer( 0, 0, D3DBACKBUFFER_TYPE_MONO, &src) );
 
         // suck the bits out of the back buffer
         POINT origin = {0,0};
-        HRESULT res = d3dDevice->CopyRects( src, &rect, 1, dest, &origin );
+        //HRESULT res = d3dDevice->CopyRects( src, &rect, 1, dest, &origin );
+        // https://learn.microsoft.com/en-us/windows/win32/api/d3d9helper/nf-d3d9helper-idirect3ddevice9-updatesurface?redirectedfrom=MSDN
+        HRESULT res = d3dDevice->UpdateSurface( src, &rect, dest, &origin );
 
         // copy the bits across to the supplied colour buffer
         D3DLOCKED_RECT lock;
@@ -645,8 +647,7 @@ unsigned d3dDisplay::Screenshot(pddiColour* buffer, int nBytes, const pddiRect& 
         DDVERIFY(d3dDevice->CreateOffscreenPlainSurface(dm.Width, dm.Height, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &src, nullptr));
 
         // this copies the bits from the front buffer
-//        DDVERIFY(d3dDevice->GetFrontBuffer(src));
-		d3dDevice->GetFrontBuffer(src);
+		DDVERIFY(d3dDevice->GetFrontBufferData(0, src));
 
         // get real location in windowed mode
         if(displayMode == PDDI_DISPLAY_WINDOW)
@@ -729,57 +730,45 @@ void d3dDisplay::SetGamma(float r, float g, float b)
         gamma.blue[i] =  (WORD)(65535.0 * __min(1.0, gcb));
     }
 
-    d3dDevice->SetGammaRamp(D3DSGR_CALIBRATE, &gamma);
+    d3dDevice->SetGammaRamp(0, D3DSGR_CALIBRATE, &gamma);
 }
 
 
 void d3dDisplay::Snapshot(void)
 {
-    if(snapshot)
-    {      
+    if (snapshot)
+    {
 
-		POINT upperLeft;
+        POINT upperLeft;
 
-		upperLeft.x = upperLeft.y = 0;
-        
+        upperLeft.x = upperLeft.y = 0;
+
         // this copies the bits from the front buffer
-//        DDVERIFY(d3dDevice->GetFrontBuffer(src));
-		d3dDevice->GetFrontBuffer( frontTmpBuffer );
+        DDVERIFY(d3dDevice->GetFrontBufferData(0, frontTmpBuffer));
 
-		RECT rect; 
-		rect.top = 0;
-		rect.left = 0;
-		rect.bottom = 480;
-		rect.right = 640;
+        RECT rect;
+        rect.top = 0;
+        rect.left = 0;
+        rect.bottom = 480;
+        rect.right = 640;
 
 
-		POINT corner;
-		corner.x = corner.y = 0;
+        POINT corner;
+        corner.x = corner.y = 0;
 
         // get real location in windowed mode
-        if(displayMode == PDDI_DISPLAY_WINDOW)
+        if (displayMode == PDDI_DISPLAY_WINDOW)
         {
             ClientToScreen(hWnd, &upperLeft);
             OffsetRect(&rect, upperLeft.x, upperLeft.y);
         }
 
-        LPDIRECT3DSURFACE8 snapshotSurface;     
-        snapshot->GetSurfaceLevel(0, &snapshotSurface);
-
-		d3dDevice->CopyRects( frontTmpBuffer, &rect, 1, snapshotSurface, &corner );
-	     snapshotSurface->Release();		
-
-/*		
-        LPDIRECT3DSURFACE9 renderTarget;
         LPDIRECT3DSURFACE9 snapshotSurface;
-        d3dDevice->GetRenderTarget(&renderTarget);
         snapshot->GetSurfaceLevel(0, &snapshotSurface);
 
-        d3dDevice->CopyRects(renderTarget, NULL, 0, snapshotSurface, NULL); 
-
-        renderTarget->Release();
+        //d3dDevice->CopyRects(frontTmpBuffer, &rect, 1, snapshotSurface, &corner);
+        // https://learn.microsoft.com/en-us/windows/win32/api/d3d9helper/nf-d3d9helper-idirect3ddevice9-updatesurface?redirectedfrom=MSDN
+        d3dDevice->UpdateSurface(frontTmpBuffer, &rect, snapshotSurface, &corner);
         snapshotSurface->Release();
-*/
     }
-
 }
