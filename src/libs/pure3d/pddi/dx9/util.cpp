@@ -10,7 +10,7 @@
 #include "direct3d.hpp"
 #include "../base/debug.hpp"
 
-// TODO: move somewhere else later
+// todo(3ur): move somewhere else later
 #include <DxErr.h>
 #pragma comment(lib, "dxerr.lib")
 

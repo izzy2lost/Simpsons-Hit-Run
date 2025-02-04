@@ -53,7 +53,7 @@ public:
 private:
     friend class d3dPrimBufferStream;
 
-    LPDIRECT3DDEVICE8 d3d;
+    LPDIRECT3DDEVICE9 d3d;
     D3DPRIMITIVETYPE primitiveType;
     pddiPrimType primTypePDDI;
     unsigned vertexMask;
@@ -61,8 +61,8 @@ private:
     int maxIndex;
     int nIndex;
     int useSize;
-    LPDIRECT3DINDEXBUFFER8 indices;
-    LPDIRECT3DVERTEXBUFFER8 buffer;
+    LPDIRECT3DINDEXBUFFER9 indices;
+    LPDIRECT3DVERTEXBUFFER9 buffer;
 
     bool lockedVertex;
     bool lockedIndex;

@@ -58,7 +58,7 @@ static D3DCULL cullTable[] =
 };
 
 // pddiStencilMode
-static D3DSTENCILOP_KEEP stencilTable[] =
+static D3DSTENCILOP stencilTable[] =
 {
     D3DSTENCILOP_KEEP,
     D3DSTENCILOP_ZERO,
@@ -458,12 +458,12 @@ public:
         pddiMatrix tmp, transpose;
         tmp.Mult(*m, *context->GetMatrix(PDDI_MATRIX_MODELVIEW));
 
-        LPDIRECT3DDEVICE8 m_pd3dDevice = context->GetDisplay()->GetD3DDevice();
+        LPDIRECT3DDEVICE9 m_pd3dDevice = context->GetDisplay()->GetD3DDevice();
 
         transpose.Transpose(tmp);
 
         PDDIASSERT("A single vertex buffer may not have more than 25 bones. Use 'p3dprimgroup -m 25' one to split up prim groups" && ((17 + (index*3) + 2) < 96));
-        m_pd3dDevice->SetVertexShaderConstant(17 + (index*3), &transpose,   3 );
+        m_pd3dDevice->SetVertexShaderConstantF(17 + (index * 3), (float*)&transpose,   3 );
     }
 
     void Begin(void)
@@ -716,12 +716,14 @@ void d3dContext::DrawSync(void)
 
 void d3dContext::DetectSkinVertexProcessor(  )
 {
+    /*
+    todo(3ur): may be safe to remove this? in d3d9 it is auto detected unlike d3d8
     DWORD value;
     d3d->GetRenderState( D3DRS_SOFTWAREVERTEXPROCESSING, &value );
     if( !IsHardwareVertexShader( ) && !value ){
         d3d->SetRenderState( D3DRS_SOFTWAREVERTEXPROCESSING, true );
         d3d->GetRenderState( D3DRS_SOFTWAREVERTEXPROCESSING, &value );
-    }
+    }*/
 }
 void d3dContext::LoadHardwareMatrix(pddiMatrixType id)
 {
@@ -908,7 +910,7 @@ void d3dContext::UploadLights(void)
         ADD_STAT(PDDI_STAT_LIGHT_OPS, 1);
 
         D3DCOLORVALUE black = {0,0,0,0};
-        D3DLIGHT8 light;
+        D3DLIGHT9 light;
         light.Type = lightTable[state.lightingState->light[handle].type];
         d3dColourValue(state.lightingState->light[handle].colour, &light.Diffuse);
         light.Specular = light.Diffuse;
@@ -1111,7 +1113,7 @@ void d3dContext::SetZWrite(bool write)
 void d3dContext::SetZBias(float bias)
 {
     pddiBaseContext::SetZBias(bias);
-    d3d->SetRenderState(D3DRS_ZBIAS, (int)bias);
+    d3d->SetRenderState(D3DRS_DEPTHBIAS, (int)bias); // todo(3ur): may need to do D3DRS_SLOPESCALEDEPTHBIAS too if this causes issues https://gamedev.stackexchange.com/questions/28244/unexpected-results-with-d3d9-depth-bias
 }
 
 void d3dContext::SetZRange(float n, float f)
@@ -1183,25 +1185,27 @@ void d3dContext::SetFog(pddiColour colour, float start, float end)
 
 unsigned d3dContext::SetRenderTarget(pddiTexture* texture)
 {
-    IDirect3DSurface8* depth;
+    IDirect3DSurface9* depth;
     d3d->GetDepthStencilSurface(&depth);
 
     if (!texture)
     {
-        LPDIRECT3DSURFACE8 backBuffer = NULL;
-        d3d->GetBackBuffer(0,D3DBACKBUFFER_TYPE_MONO,&backBuffer);
-        d3d->SetRenderTarget(backBuffer,depth);
+        LPDIRECT3DSURFACE9 backBuffer = NULL;
+        d3d->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO,&backBuffer);
+        d3d->SetRenderTarget(0,backBuffer);
+        d3d->SetDepthStencilSurface(depth);
         backBuffer->Release();
     }
     else
     {
         d3dTexture* tex = (d3dTexture*)texture;
         PDDIASSERT(tex->IsRenderTarget());
-        LPDIRECT3DSURFACE8 surface;
+        LPDIRECT3DSURFACE9 surface;
         tex->GetTexture()->GetSurfaceLevel(0, &surface);
         if (surface)
         {
-            d3d->SetRenderTarget(surface,depth);
+            d3d->SetRenderTarget(0,surface);
+            d3d->SetDepthStencilSurface(depth);
         }
         surface->Release();
     }
@@ -1257,12 +1261,12 @@ void d3dContext::LoadSkinConstants(pddiShader* shader)
 {
     UploadLights(); // TODO : use pddi light info, not D3D
 
-    LPDIRECT3DDEVICE8 m_pd3dDevice = GetDisplay()->GetD3DDevice();
+    LPDIRECT3DDEVICE9 m_pd3dDevice = GetDisplay()->GetD3DDevice();
 
     // Some basic constants
     float constants[4] = {0.f, 1.f, 256.0f,0.5f};
 
-    D3DLIGHT8 light0, light1, light2, light3;
+    D3DLIGHT9 light0, light1, light2, light3;
     d3dShaderInfo info;
 
     int pick[4];
@@ -1303,19 +1307,19 @@ void d3dContext::LoadSkinConstants(pddiShader* shader)
     matProjTranspose.Transpose(matProj);
 
     // Set the vertex shader constants
-    m_pd3dDevice->SetVertexShaderConstant(  0, &constants,    1 );
-    m_pd3dDevice->SetVertexShaderConstant(  2, &matProjTranspose, 4 );
-    m_pd3dDevice->SetVertexShaderConstant(  6, &diffuse, 1 );
-    m_pd3dDevice->SetVertexShaderConstant(  7, &specular, 1 );
-    m_pd3dDevice->SetVertexShaderConstant(  8, &emissive,  1 );
-    m_pd3dDevice->SetVertexShaderConstant(  9, &light0.Direction,   1 );
-    m_pd3dDevice->SetVertexShaderConstant(  10, (pick[0] == -1) ? &black : &light0.Diffuse, 1 );
-    m_pd3dDevice->SetVertexShaderConstant(  11, &light1.Direction,   1 );
-    m_pd3dDevice->SetVertexShaderConstant(  12, (pick[1] == -1) ? &black : &light1.Diffuse, 1 );
-    m_pd3dDevice->SetVertexShaderConstant(  13, &light2.Direction,   1 );
-    m_pd3dDevice->SetVertexShaderConstant(  14, (pick[2] == -1) ? &black : &light2.Diffuse, 1 );
-    m_pd3dDevice->SetVertexShaderConstant(  15, &light3.Direction,   1 );
-    m_pd3dDevice->SetVertexShaderConstant(  16, (pick[3] == -1) ? &black : &light3.Diffuse, 1 );          
+    m_pd3dDevice->SetVertexShaderConstantF(  0, constants, 1  );
+    m_pd3dDevice->SetVertexShaderConstantF(  2, (float*)&matProjTranspose, 4  );
+    m_pd3dDevice->SetVertexShaderConstantF(  6, (float*)&diffuse, 1  );
+    m_pd3dDevice->SetVertexShaderConstantF(  7, (float*)&specular, 1  );
+    m_pd3dDevice->SetVertexShaderConstantF(  8, (float*)&emissive, 1  );
+    m_pd3dDevice->SetVertexShaderConstantF(  9, (float*)&light0.Direction, 1  );
+    m_pd3dDevice->SetVertexShaderConstantF(  10, (pick[0] == -1) ? (float*)&black : (float*)&light0.Diffuse, 1  );
+    m_pd3dDevice->SetVertexShaderConstantF(  11, (float*)&light1.Direction, 1);
+    m_pd3dDevice->SetVertexShaderConstantF(  12, (pick[1] == -1) ? (float*)&black : (float*)&light1.Diffuse, 1  );
+    m_pd3dDevice->SetVertexShaderConstantF(  13, (float*)&light2.Direction, 1);
+    m_pd3dDevice->SetVertexShaderConstantF(  14, (pick[2] == -1) ? (float*)&black : (float*)&light2.Diffuse, 1  );
+    m_pd3dDevice->SetVertexShaderConstantF(  15, (float*)&light3.Direction, 1);
+    m_pd3dDevice->SetVertexShaderConstantF(  16, (pick[3] == -1) ? (float*)&black : (float*)&light3.Diffuse, 1  );
 }
 
 

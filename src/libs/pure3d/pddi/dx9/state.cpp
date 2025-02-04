@@ -112,7 +112,7 @@ void d3dState::SetDefault(void)
     textureFactor = 0;
     alphaRef = 0;
 
-    pixelShader = true;
+    pixelShader = NULL;
 
     envMat[0] = 1.0f;
     envMat[1] = 0.0f;

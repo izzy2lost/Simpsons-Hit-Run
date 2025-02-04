@@ -6,6 +6,6 @@
 #ifndef _SHADERSETUP_HPP_
 #define _SHADERSETUP_HPP_
 
-void d3dShaderSetup(LPDIRECT3D8 d3d);
+void d3dShaderSetup(LPDIRECT3D9 d3d);
 
 #endif 

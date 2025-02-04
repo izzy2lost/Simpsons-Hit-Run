@@ -130,9 +130,9 @@ private:
     d3dDevCaps devCaps;
     d3dShader* defaultShader;
 
-    LPDIRECT3DDEVICE8 d3d;
-    LPDIRECT3DSURFACE8 zBuffer;
-    D3DVIEWPORT8 viewPort;
+    LPDIRECT3DDEVICE9 d3d;
+    LPDIRECT3DSURFACE9 zBuffer;
+    D3DVIEWPORT9 viewPort;
     D3DFORMAT validTextures[MAX_TEXTUREFORMATS];
 
     d3dPrimStream* stream;

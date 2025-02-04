@@ -396,14 +396,17 @@ void d3dPrimBuffer::SetNumVertices(int count)
 
     DWORD usage = D3DUSAGE_WRITEONLY;
 
-    if( ( vertexMask & PDDI_V_INDICES ) & (!context->IsHardwareVertexShader( )) )          //skin
+    if ((vertexMask & PDDI_V_INDICES) && (!context->IsHardwareVertexShader()))          //skin
         usage |= D3DUSAGE_SOFTWAREPROCESSING;
 
-    HRESULT res = d3d->CreateVertexBuffer(vertexProgram->GetStride() * maxVertex,
-                                                      usage,
-                                                      0,
-                                                      D3DPOOL_MANAGED,
-                                                      &buffer);
+    HRESULT res = d3d->CreateVertexBuffer(
+        vertexProgram->GetStride() * maxVertex,
+        usage,
+        0,
+        D3DPOOL_MANAGED,
+        &buffer,
+        nullptr
+    );
     pddiMemRegAlloc(buffer, vertexProgram->GetStride() * maxVertex);
     DDVERIFY(res);
 }
@@ -425,10 +428,17 @@ void d3dPrimBuffer::SetNumIndices(int count)
     {
         DWORD usage = D3DUSAGE_WRITEONLY;
 
-        if( ( vertexMask & PDDI_V_INDICES ) & (!context->IsHardwareVertexShader( )) )          //skin
+        if ((vertexMask & PDDI_V_INDICES) && (!context->IsHardwareVertexShader()))          //skin
             usage |= D3DUSAGE_SOFTWAREPROCESSING;
 
-        HRESULT res = d3d->CreateIndexBuffer(count * sizeof(unsigned short), usage, D3DFMT_INDEX16, D3DPOOL_MANAGED, &indices);
+        HRESULT res = d3d->CreateIndexBuffer(
+            count * sizeof(unsigned short), 
+            usage, 
+            D3DFMT_INDEX16, 
+            D3DPOOL_MANAGED, 
+            &indices,
+            nullptr
+        );
         DDVERIFY(res);
         pddiMemRegAlloc(indices, count * sizeof(unsigned short));
     }
@@ -437,7 +447,7 @@ void d3dPrimBuffer::SetNumIndices(int count)
 pddiPrimBufferStream* d3dPrimBuffer::Lock()
 {
     unsigned char* basePtr = 0;
-    HRESULT res = buffer->Lock(0,0,&basePtr, 0);
+    HRESULT res = buffer->Lock(0, 0, &basePtr, 0);
     DDVERIFY(res);
     lockedVertex = true;
     d3dPrimBufferStream* stream =  GetPrimBufferStream();
@@ -483,7 +493,7 @@ void* d3dPrimBuffer::LockMemImage(unsigned int size)
     PDDIASSERT(size == GetMemImageLength());
 
     unsigned char* basePtr;
-    HRESULT res = buffer->Lock(0,0,&basePtr, 0);
+    HRESULT res = buffer->Lock(0, 0, &basePtr, 0);
     DDVERIFY(res);
 
     lockedMemImage = true;
@@ -544,7 +554,7 @@ void d3dPrimBuffer::Display()
 
     if(nIndex > 0)
     {
-        d3d->SetIndices(indices, 0);
+        d3d->SetIndices(indices);
         d3d->SetVertexShader(vertexProgram->GetD3DVS());
         d3d->SetStreamSource(0, buffer, vertexProgram->GetStride());
         HRESULT res = d3d->DrawIndexedPrimitive(primitiveType, 0, maxVertex, 0, VertsToPrims(primTypePDDI, nIndex));
