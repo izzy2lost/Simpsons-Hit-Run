@@ -133,7 +133,7 @@ d3dTexture::d3dTexture(d3dContext* ctx)
 }
 
 //-------------------------------------------------------------------
-d3dTexture::d3dTexture(d3dContext* ctx, LPDIRECT3DBASETEXTURE8 f)
+d3dTexture::d3dTexture(d3dContext* ctx, LPDIRECT3DBASETEXTURE9 f)
 {
     context = ctx;
     //context->AddRef();
@@ -218,7 +218,7 @@ d3dTexture::~d3dTexture()
     }
 }
 
-void d3dTexture::ChangeForgedTexture(LPDIRECT3DTEXTURE8 f)
+void d3dTexture::ChangeForgedTexture(LPDIRECT3DTEXTURE9 f)
 {
     if(f)
         f->AddRef();
@@ -331,9 +331,18 @@ bool d3dTexture::Create(int xSize, int ySize, int reqBPP, int reqAlphaDepth, int
 
     linear = (type == PDDI_TEXTYPE_LINEAR);
  
-    LPDIRECT3DDEVICE8 d3d = context->GetDisplay()->GetD3DDevice();
+    LPDIRECT3DDEVICE9 d3d = context->GetDisplay()->GetD3DDevice();
 
-    DDVERIFY(d3d->CreateTexture(xSize, ySize, numMipMaps+1, d3dUsage, format, pool, &texture2d));
+    DDVERIFY(d3d->CreateTexture(
+        xSize, 
+        ySize, 
+        numMipMaps+1, 
+        d3dUsage, 
+        format, 
+        pool, 
+        &texture2d,
+        nullptr
+    ));
 
     // Get surface description
     D3DSURFACE_DESC sd;
@@ -435,9 +444,19 @@ bool d3dTexture::CreateVolume(int xSize, int ySize, int zSize, int reqBPP, int r
 
     linear = (type == PDDI_TEXTYPE_LINEAR);
  
-    LPDIRECT3DDEVICE8 d3d = context->GetDisplay()->GetD3DDevice();
+    LPDIRECT3DDEVICE9 d3d = context->GetDisplay()->GetD3DDevice();
 
-    DDVERIFY(d3d->CreateVolumeTexture(xSize, ySize, zSize, numMipMaps+1, usageHint, format, D3DPOOL_MANAGED, &texture3d));
+    DDVERIFY(d3d->CreateVolumeTexture(
+        xSize,
+        ySize, 
+        zSize, 
+        numMipMaps+1, 
+        usageHint, 
+        format,
+        D3DPOOL_MANAGED, 
+        &texture3d,
+        nullptr
+    ));
 
     // Get surface description
     D3DVOLUME_DESC vd;

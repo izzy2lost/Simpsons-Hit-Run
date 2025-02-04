@@ -21,7 +21,7 @@ class d3dTexture : public pddiTexture
 {
 public:
     d3dTexture(d3dContext* context);
-    d3dTexture(d3dContext* context, LPDIRECT3DBASETEXTURE8);
+    d3dTexture(d3dContext* context, LPDIRECT3DBASETEXTURE9);
     virtual ~d3dTexture();
     
     bool Create(int xSize, int ySize, int bpp, int alphaDepth, int nMip, pddiTextureType type = PDDI_TEXTYPE_RGB, pddiTextureUsageHint usageHint = PDDI_USAGE_STATIC);
@@ -50,19 +50,19 @@ public:
 
     bool IsRenderTarget()   { return rendertarget; }
 
-    void ChangeForgedTexture(LPDIRECT3DTEXTURE8);
+    void ChangeForgedTexture(LPDIRECT3DTEXTURE9);
 
-    LPDIRECT3DTEXTURE8 GetTexture(void) { return texture2d;}
-    LPDIRECT3DVOLUMETEXTURE8 GetVolumeTexture(void) { return texture3d;}
+    LPDIRECT3DTEXTURE9 GetTexture(void) { return texture2d;}
+    LPDIRECT3DVOLUMETEXTURE9 GetVolumeTexture(void) { return texture3d;}
     void SetTexture(int stage);
 
 private:
     d3dContext* context;
 
-    LPDIRECT3DBASETEXTURE8 forged;
+    LPDIRECT3DBASETEXTURE9 forged;
 
-    LPDIRECT3DTEXTURE8 texture2d;
-    LPDIRECT3DVOLUMETEXTURE8 texture3d;
+    LPDIRECT3DTEXTURE9 texture2d;
+    LPDIRECT3DVOLUMETEXTURE9 texture3d;
     D3DLOCKED_RECT lock2d;
     D3DLOCKED_BOX lock3d;
     D3DSURFACE_DESC sd;
