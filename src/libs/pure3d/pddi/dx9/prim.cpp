@@ -446,7 +446,7 @@ void d3dPrimBuffer::SetNumIndices(int count)
 
 pddiPrimBufferStream* d3dPrimBuffer::Lock()
 {
-    unsigned char* basePtr = 0;
+    void* basePtr = 0;
     HRESULT res = buffer->Lock(0, 0, &basePtr, 0);
     DDVERIFY(res);
     lockedVertex = true;
@@ -464,10 +464,10 @@ void d3dPrimBuffer::Unlock(pddiPrimBufferStream* stream)
     buffer->Unlock();
 }
 
-unsigned char* d3dPrimBuffer::LockIndexBuffer()
+void* d3dPrimBuffer::LockIndexBuffer()
 {
     PDDIASSERT(maxIndex>0);
-    unsigned char* indexData;
+    void* indexData;
     HRESULT rc = indices->Lock(0, maxIndex * sizeof(unsigned short), &indexData, 0);
     DDVERIFY(rc);
     lockedIndex = true;
@@ -492,7 +492,7 @@ void* d3dPrimBuffer::LockMemImage(unsigned int size)
 { 
     PDDIASSERT(size == GetMemImageLength());
 
-    unsigned char* basePtr;
+    void* basePtr;
     HRESULT res = buffer->Lock(0, 0, &basePtr, 0);
     DDVERIFY(res);
 
@@ -521,7 +521,7 @@ void d3dPrimBuffer::SetMemImageParam(unsigned param, unsigned value)
 void d3dPrimBuffer::SetIndices(unsigned short* id, int count)
 {
     PDDIASSERT(maxIndex >= count);
-    unsigned char* indexData;
+    void* indexData;
 
     HRESULT rc = indices->Lock(0, count * sizeof(unsigned short), &indexData, 0);
     DDVERIFY(rc);

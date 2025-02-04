@@ -32,7 +32,7 @@ public:
     pddiPrimBufferStream* Lock();
     void Unlock(pddiPrimBufferStream* stream);
 
-    unsigned char* LockIndexBuffer();
+    void* LockIndexBuffer();
     void UnlockIndexBuffer(int count);
 
     bool CheckMemImageVersion(int version);
