@@ -3,6 +3,7 @@
     "ffmpeg",
     "libpng",
     "openal-soft",
-    "opengl"
+    "opengl",
+    "sdl2"
   ]
 }
