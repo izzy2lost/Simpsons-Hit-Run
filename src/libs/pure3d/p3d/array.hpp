@@ -111,6 +111,9 @@ public:
     tDynamicArray(unsigned s) : tArray<T>(s) {  /* */ }
     tDynamicArray(unsigned s, T* d) : tArray<T>(s,d) {  /* */ }
 
+    using tArray<T>::size;
+    using tArray<T>::data;
+
     void Shrink(unsigned newSize)
     {
         if(size > newSize)
@@ -146,65 +149,68 @@ public:
 template <class T> class tPtrArray : public tArray<T>
 {
 public:
-   // construct an empty array    
-   tPtrArray( ) : tArray<T>( ){ /* void */ }   //we do allow to construct null array
-   tPtrArray(unsigned s) : tArray<T>( s ) 
-   {  
-       for( unsigned i = 0; i < size; ++i )
-           data[ i ] = 0;
-   }
+    using tArray<T>::size;
+    using tArray<T>::data;
+    
+    // construct an empty array    
+    tPtrArray( ) : tArray<T>( ){ /* void */ }   //we do allow to construct null array
+    tPtrArray(unsigned s) : tArray<T>( s ) 
+    {  
+        for( unsigned i = 0; i < size; ++i )
+            data[ i ] = 0;
+    }
 
-   // construct from a standard C array and size
-   tPtrArray(unsigned s, T* d) : tArray<T>( s, d ){  /* void */ }
+    // construct from a standard C array and size
+    tPtrArray(unsigned s, T* d) : tArray<T>( s, d ){  /* void */ }
 
-   bool SetSize( int nSize )
-   {
-       bool result = tArray<T>::SetSize( nSize );
+    bool SetSize( int nSize )
+    {
+        bool result = tArray<T>::SetSize( nSize );
 
-       if( result ){
-           for( int i = 0; i < nSize; ++i )
-               data[ i ] = 0;
+        if( result ){
+            for( int i = 0; i < nSize; ++i )
+                data[ i ] = 0;
+        }
+
+        return result;
+    }
+
+    // compact the list so that all unsed elements are at the end
+    // only works on objects where !t is defined, and means that object is unused, i,e, pointers
+    // returns number of elements in compacted list
+    unsigned Compact(void)
+    {
+       unsigned compactDistance = 0;
+       unsigned count = 0;
+
+       for(unsigned i = 0; i < size; i++){
+          if(!data[i])
+             compactDistance++;
+
+          else{
+             count++;
+             if(compactDistance){
+                data[i - compactDistance] = data[i];
+                data[i] = 0;
+             }
+          }
        }
+       return count;
+    }
 
-       return result;
-   }
-
-   // compact the list so that all unsed elements are at the end
-   // only works on objects where !t is defined, and means that object is unused, i,e, pointers
-   // returns number of elements in compacted list
-   unsigned Compact(void)
-   {
-      unsigned compactDistance = 0;
-      unsigned count = 0;
-
-      for(unsigned i = 0; i < size; i++){
-         if(!data[i])
-            compactDistance++;
-
-         else{
-            count++;
-            if(compactDistance){
-               data[i - compactDistance] = data[i];
-               data[i] = 0;
-            }
-         }
-      }
-      return count;
-   }
-
-   // add element to array in empty spot 
-   // only works on objects where !t is defined, and means that object is unused, i,e, pointers
-   unsigned Add(T t)
-   {
-      for(unsigned i = 0; i < size; i++){
-         if(!data[i]){
-            data[i] = t;
-            return i;
-         }
-      }
-      return -1;
-      // assert(0);
-   }
+    // add element to array in empty spot 
+    // only works on objects where !t is defined, and means that object is unused, i,e, pointers
+    unsigned Add(T t)
+    {
+       for(unsigned i = 0; i < size; i++){
+          if(!data[i]){
+             data[i] = t;
+             return i;
+          }
+       }
+       return -1;
+       // assert(0);
+    }
 };
 
 template <class T> class tPtrDynamicArray : public tPtrArray<T>
@@ -213,6 +219,9 @@ public:
     tPtrDynamicArray( ) : tPtrArray<T>( ){ /* void */ }
     tPtrDynamicArray(unsigned s) : tPtrArray<T>(s) {  /* */ }
     tPtrDynamicArray(unsigned s, T* d) : tPtrArray<T>(s,d) {  /* */ }
+
+    using tPtrArray<T>::size;
+    using tPtrArray<T>::data;
 
     void Shrink(unsigned newSize)
     {
@@ -255,7 +264,7 @@ public:
                 return i;
             }
         }
-        Grow(Size()*2);
+        Grow(this->Size()*2);
         data[oldSize] = t;
         return oldSize;
 
