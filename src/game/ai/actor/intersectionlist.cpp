@@ -13,7 +13,7 @@
 // Includes
 //===========================================================================
 
-#include <ai\actor\intersectionlist.h>
+#include <ai/actor/intersectionlist.h>
 #include <simcollision\proximitydetection.hpp>
 #include <simcollision\collisionvolume.hpp>
 #include <simcollision\collisionobject.hpp>
