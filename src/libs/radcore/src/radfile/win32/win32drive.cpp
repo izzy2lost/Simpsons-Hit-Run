@@ -23,8 +23,12 @@
 //=============================================================================
 
 #include "pch.hpp"
+#include <algorithm>
 #include <limits.h>
 #include "win32drive.hpp"
+#include <filesystem>
+#include <fstream>
+#include <SDL.h>
 
 //=============================================================================
 // Public Functions 
@@ -69,11 +73,8 @@ radWin32Drive::radWin32Drive( const char* pdrivespec, radMemoryAllocator alloc )
     : 
     radDrive( ),
     m_OpenFiles( 0 ),
-    m_SerialNumber( 0 ),
     m_pMutex( NULL )
 {
-    m_OldErrorSetting = ::SetErrorMode( SEM_NOOPENFILEERRORBOX | SEM_FAILCRITICALERRORS );
-
     //
     // Create a mutex for lock/unlock
     //
@@ -89,26 +90,15 @@ radWin32Drive::radWin32Drive( const char* pdrivespec, radMemoryAllocator alloc )
     //
     // Copy the drivename
     //
-    strncpy( m_DriveName, pdrivespec, radFileDrivenameMax );
-    m_DriveName[ radFileDrivenameMax ] = '\0';
-
-    //
-    // Determine the type of drive and set our capabities under Win32
-    //
-    UINT dType = ::GetDriveType( pdrivespec );
- 
-    if( dType == DRIVE_CDROM )
+    radGetDefaultDrive( m_DriveName );
+    if ( strcmp(m_DriveName, pdrivespec ) != 0 )
     {
-        m_Capabilities = ( radDriveRemovable | radDriveEnumerable | radDriveFile );
+        strncpy( m_DriveName, pdrivespec, radFileDrivenameMax );
+        m_DriveName[radFileDrivenameMax] = '\0';
+        m_DrivePath = SDL_strlwr( m_DriveName );
+        SDL_strupr( m_DriveName );
     }
-    else if( dType == DRIVE_REMOVABLE )
-    {
-        m_Capabilities = ( radDriveRemovable | radDriveEnumerable | radDriveWriteable | radDriveDirectory | radDriveFile);
-    }
-    else 
-    {
-        m_Capabilities = ( radDriveEnumerable | radDriveWriteable | radDriveDirectory | radDriveFile );
-    }
+    m_Capabilities = ( radDriveEnumerable | radDriveWriteable | radDriveDirectory | radDriveFile );
 }
 
 //=============================================================================
@@ -119,7 +109,6 @@ radWin32Drive::~radWin32Drive( void )
 {
     m_pMutex->Release( );
     m_pDriveThread->Release( );
-    SetErrorMode( m_OldErrorSetting );
 }
 
 //=============================================================================
@@ -162,7 +151,7 @@ unsigned int radWin32Drive::GetCapabilities( void )
 }
 
 //=============================================================================
-// Function:    radWin32Drive::GetDriveName
+// Function:    radGcnDVDDrive::GetDriveName
 //=============================================================================
 
 const char* radWin32Drive::GetDriveName( void )
@@ -176,22 +165,7 @@ const char* radWin32Drive::GetDriveName( void )
 
 radDrive::CompletionStatus radWin32Drive::Initialize( void )
 {
-    if ( m_OpenFiles != 0 )
-    {
-        //
-        // Check if there was a media change
-        //
-        if ( SetMediaInfo( ) != m_SerialNumber )
-        {
-            m_LastError = m_MediaInfo.m_MediaState == IRadDrive::MediaInfo::MediaNotPresent ? NoMedia : WrongMedia;
-            return Error;
-        }
-    }
-    else
-    {
-        SetMediaInfo( );
-        m_SerialNumber = 0;
-    }
+    SetMediaInfo();
 
     //
     // Success
@@ -212,61 +186,59 @@ radDrive::CompletionStatus radWin32Drive::OpenFile
     radFileHandle*      pHandle, 
     unsigned int*       pSize 
 )
-{    
-    //
-    // Build the full filename
-    //
-    char fullName[ radFileFilenameMax + 1 ];
-    BuildFileSpec( fileName, fullName, radFileFilenameMax + 1 );
+{
+    std::error_code error;
+    std::string tmp(fileName);
+    std::replace(tmp.begin(), tmp.end(), '\\', '/');
+    std::filesystem::path path;
+    if( m_DrivePath.empty() )
+        path = std::filesystem::current_path() / tmp;
+    else
+        path = m_DrivePath.string() + tmp;
+    path.make_preferred();
+    if (std::filesystem::exists(path, error))
+    {
+        if (!error)
+            *pSize = std::filesystem::file_size(path, error);
+        if (error)
+        {
+            m_LastError = TranslateError(error);
+            return Error;
+        }
+    }
+    else
+    {
+        *pSize = 0;
+        if (flags == OpenExisting)
+        {
+            m_LastError = FileNotFound;
+            return Error;
+        }
+    }
 
     //
-    // Translate flags to windows
+    // Translate flags to stl
     //
-    DWORD accessFlag = writeAccess ? GENERIC_READ | GENERIC_WRITE : GENERIC_READ;
-    DWORD sharingFlag = writeAccess ? FILE_SHARE_READ | FILE_SHARE_WRITE : FILE_SHARE_READ;                
-    DWORD createFlags;    
-    switch( flags )
-    {
-    case OpenExisting:
-        createFlags = OPEN_EXISTING;
-        break;
-    case OpenAlways:
-        createFlags = OPEN_ALWAYS;
-        break;
-    case CreateAlways:
-        createFlags = CREATE_ALWAYS;
-        break;
-    default:
-        rAssertMsg( false, "radFileSystem: win32drive: attempting to open file with unknown flag" );
-    }
+    std::ios_base::openmode mode = std::ios::binary | std::ios::in;
+    if (writeAccess)
+        mode |= std::ios::out;
+    if (flags == CreateAlways)
+        mode |= std::ios::trunc;
 
     //
     // Right now using buffered reads, change it later for performance.
     //
-    *pHandle = ::CreateFile( fullName, accessFlag, sharingFlag, NULL, 
-                             createFlags, FILE_ATTRIBUTE_NORMAL, NULL );
+    *pHandle = new std::fstream(path, mode);
 
-    if ( *pHandle != INVALID_HANDLE_VALUE )
+    if ( (*pHandle)->good() )
     {
-        //
-        // Success! Set file size.
-        //
-        if ( m_OpenFiles == 0 )
-        {
-            //
-            // This is the first file to be opened, so set up the serial number.
-            //
-            m_SerialNumber = SetMediaInfo( );
-        }
-
         m_OpenFiles++;
-        *pSize = ::GetFileSize( *pHandle, NULL );
         m_LastError = Success;
         return Complete;
     }
     else
     {
-        m_LastError = TranslateError( ::GetLastError( ) );
+        m_LastError = FileNotFound;
         return Error;
     }
 }
@@ -277,7 +249,7 @@ radDrive::CompletionStatus radWin32Drive::OpenFile
 
 radDrive::CompletionStatus radWin32Drive::CloseFile( radFileHandle handle, const char* fileName )
 {
-    ::CloseHandle( handle );
+    delete handle;
     m_OpenFiles--;
     return Complete;
 }
@@ -304,9 +276,11 @@ radDrive::CompletionStatus radWin32Drive::ReadFile
     //
     // set file pointer
     //
-    if ( ::SetFilePointer( handle, (LONG) position, NULL, FILE_BEGIN ) == (DWORD) position )
+    handle->seekg(position);
+    if (handle->good())
     {
-        if ( ::ReadFile( handle, pData, bytesToRead, (unsigned long*) bytesRead, NULL ) )
+        handle->read((char*)pData, bytesToRead);
+        if (!handle->bad())
         {
             //
             // Successful read!
@@ -324,7 +298,7 @@ radDrive::CompletionStatus radWin32Drive::ReadFile
     //
     // Failed!
     //
-    m_LastError = TranslateError( ::GetLastError( ) );
+    m_LastError = FileNotFound;
     return Error;
 }
 
@@ -353,27 +327,22 @@ radDrive::CompletionStatus radWin32Drive::WriteFile
 
     rAssertMsg( pDataSpace == radMemorySpace_Local, 
                 "radFileSystem: radWin32Drive: External memory not supported for reads." );
-    
-    //
-    // presize the write
-    //
-    if ( position + bytesToWrite > *pSize )
-    {
-        ::SetFilePointer( handle, (LONG) position + bytesToWrite, NULL, FILE_BEGIN );
-        ::SetEndOfFile( handle );
-    }
 
     //
     // do the write
     //
-    if ( ::SetFilePointer( handle, (LONG) position, NULL, FILE_BEGIN ) == (DWORD) position )
+    handle->seekp(position);
+    if (handle->good())
     {
-        if ( ::WriteFile( handle, pData, bytesToWrite, (unsigned long*) bytesWritten, NULL ) )
+        handle->write((char*)pData, bytesToWrite);
+        if (!handle->bad())
         {
             //
             // Sucessful write
             //
-            *pSize = ::GetFileSize( handle, NULL );
+            handle->seekp(0, std::ios_base::end);
+            *bytesWritten = bytesToWrite;
+            *pSize = handle->tellp();
             m_LastError = Success;
             return Complete;
         }
@@ -382,7 +351,7 @@ radDrive::CompletionStatus radWin32Drive::WriteFile
     //
     // Failed!
     //
-    m_LastError = TranslateError( ::GetLastError( ) );
+    m_LastError = FileNotFound;
     return Error;
 }
 
@@ -399,36 +368,24 @@ radDrive::CompletionStatus radWin32Drive::FindFirst
 )
 {
     //
-    // Build the full filename
-    //
-    char fullSpec[ radFileFilenameMax + 1 ];
-    BuildFileSpec( searchSpec, fullSpec, radFileFilenameMax + 1 );
-
-    //
-    // Close this search if it already exists
-    //
-    if ( !firstSearch && *pHandle != INVALID_HANDLE_VALUE )
-    {
-        ::FindClose( *pHandle );
-    }
-
-    //
     // Find first
     //
-    WIN32_FIND_DATA FindData;
-    *pHandle = ::FindFirstFile( fullSpec, &FindData );
+    std::error_code error;
+    *pHandle = std::filesystem::directory_iterator(searchSpec, error);
 
     //
     // Fill in our directory info structure
     //
-    m_LastError = TranslateDirInfo( pDirectoryInfo, &FindData, pHandle );
+    TranslateDirInfo( pDirectoryInfo, **pHandle, pHandle );
 
-    if ( m_LastError == Success )
+    if (!error)
     {
+        m_LastError = Success;
         return Complete;
     }
     else
     {
+        m_LastError = TranslateError(error);
         return Error;
     }
 }
@@ -442,7 +399,7 @@ radDrive::CompletionStatus radWin32Drive::FindNext( radFileDirHandle* pHandle, I
     //
     // If we don't have a handle, return file not found.
     //
-    if ( *pHandle == INVALID_HANDLE_VALUE )
+    if (*pHandle == std::filesystem::directory_iterator())
     {
         m_LastError = FileNotFound;
         return Error;
@@ -451,23 +408,18 @@ radDrive::CompletionStatus radWin32Drive::FindNext( radFileDirHandle* pHandle, I
     //
     // Find the next entry
     //
-    WIN32_FIND_DATA FindData;
-    if ( !::FindNextFile( *pHandle, &FindData ) )
-    {
-        radFileDirHandle h = INVALID_HANDLE_VALUE;
-        m_LastError = TranslateDirInfo( pDirectoryInfo, &FindData, &h );
-    }
-    else
-    {
-        m_LastError = TranslateDirInfo( pDirectoryInfo, &FindData, pHandle );
-    }
+    std::error_code error;
+    pHandle->increment(error);
+    TranslateDirInfo( pDirectoryInfo, **pHandle, pHandle);
 
-    if ( m_LastError == Success )
+    if (!error)
     {
+        m_LastError = Success;
         return Complete;
     }
     else
     {
+        m_LastError = TranslateError(error);
         return Error;
     }
 }
@@ -478,8 +430,7 @@ radDrive::CompletionStatus radWin32Drive::FindNext( radFileDirHandle* pHandle, I
 
 radDrive::CompletionStatus radWin32Drive::FindClose( radFileDirHandle* pHandle )
 {
-    ::FindClose( *pHandle );
-    *pHandle = INVALID_HANDLE_VALUE;
+    *pHandle = std::filesystem::directory_iterator();
 
     return Complete;
 }
@@ -493,20 +444,15 @@ radDrive::CompletionStatus radWin32Drive::CreateDir( const char* pName )
     rWarningMsg( m_Capabilities & radDriveDirectory, 
         "This drive does not support the CreateDir function." );
 
-    //
-    // Build the full filename
-    //
-    char fullSpec[ radFileFilenameMax + 1 ];
-    BuildFileSpec( pName, fullSpec, radFileFilenameMax + 1 );
-
-    if ( ::CreateDirectory( fullSpec, NULL ) )
+    std::error_code error;
+    if (std::filesystem::create_directory(pName, error))
     {
         m_LastError = Success;
         return Complete;
     }
     else
     {
-        m_LastError = TranslateError( ::GetLastError( ) );
+        m_LastError = TranslateError(error);
         return Error;
     }
 }
@@ -520,20 +466,21 @@ radDrive::CompletionStatus radWin32Drive::DestroyDir( const char* pName )
     rWarningMsg( m_Capabilities & radDriveDirectory,
         "This drive does not support the DestroyDir function." );
 
-    //
-    // Build the full filename
-    //
-    char fullSpec[ radFileFilenameMax + 1 ];
-    BuildFileSpec( pName, fullSpec, radFileFilenameMax + 1 );
-
-    if ( ::RemoveDirectory( fullSpec ) )
+    std::error_code error;
+    std::filesystem::path path( pName );
+    if( m_DrivePath.empty() )
+        path = std::filesystem::current_path() / path;
+    else
+        path = m_DrivePath / path;
+    if (std::filesystem::is_directory(path, error) &&
+        std::filesystem::remove(path, error))
     {
         m_LastError = Success;
         return Complete;
     }
     else
     {
-        m_LastError = TranslateError( ::GetLastError( ) );
+        m_LastError = TranslateError(error);
         return Error;
     }
 }
@@ -550,20 +497,21 @@ radDrive::CompletionStatus radWin32Drive::DestroyFile( const char* filename )
     // Someday check if the file is open!
     //
 
-    //
-    // Build the full filename
-    //
-    char fullSpec[ radFileFilenameMax + 1 ];
-    BuildFileSpec( filename, fullSpec, radFileFilenameMax + 1 );
-
-    if ( ::DeleteFile( fullSpec ) )
+    std::error_code error;
+    std::filesystem::path path( filename );
+    if( m_DrivePath.empty() )
+        path = std::filesystem::current_path() / path;
+    else
+        path = m_DrivePath / path;
+    if (!std::filesystem::is_directory(path, error) &&
+        std::filesystem::remove(path, error))
     {
         m_LastError = Success;
         return Complete;
     }
     else
     {
-        m_LastError = TranslateError( ::GetLastError( ) );
+        m_LastError = TranslateError(error);
         return Error;
     }
 }
@@ -576,82 +524,42 @@ radDrive::CompletionStatus radWin32Drive::DestroyFile( const char* filename )
 // Function:    radWin32Drive::SetMediaInfo
 //=============================================================================
 
-DWORD radWin32Drive::SetMediaInfo( void )
+void radWin32Drive::SetMediaInfo( void )
 {
     //
     // Get volume information.
     //
     const char* realDriveName = m_DriveName;
 
-    char Drive[ 4 ];
-    rAssert( strlen( realDriveName ) == 2 );
-    strcpy( Drive, realDriveName );
-    strcat( Drive, "\\");
+    //rAssert( strlen( realDriveName ) == 2 );
+    strcpy(m_MediaInfo.m_VolumeName, realDriveName );
+    //strcat(m_MediaInfo.m_VolumeName, "\\");
+
+    m_MediaInfo.m_SectorSize = WIN32_DEFAULT_SECTOR_SIZE;
     
-    DWORD snum;
-    if( ::GetVolumeInformation( Drive, m_MediaInfo.m_VolumeName, sizeof( m_MediaInfo.m_VolumeName ),
-        &snum, NULL, NULL, NULL, 0 ) )
+    std::error_code error;
+    std::filesystem::space_info space = std::filesystem::space(realDriveName, error);
+    if (!error)
     {
+        m_MediaInfo.m_MediaState = IRadDrive::MediaInfo::MediaPresent;
+        m_MediaInfo.m_FreeSpace = space.free;
+
         //
-        // Got media info, so fill in the structure
+        // No file limit, so set it to the available space
         //
-        m_MediaInfo.m_VolumeName[ sizeof( m_MediaInfo.m_VolumeName) - 1 ] = '\0';
-        m_MediaInfo.m_MediaState = IRadDrive::MediaInfo::MediaPresent; 
-        
-        ULARGE_INTEGER FreeBytesAvailableToCaller; 
-        ULARGE_INTEGER TotalNumberOfBytes; 
-        ULARGE_INTEGER TotalNumberOfFreeBytes; 
-        
-        ::GetDiskFreeSpaceEx( Drive, &FreeBytesAvailableToCaller,          
-            &TotalNumberOfBytes, &TotalNumberOfFreeBytes );
-        
-        if( FreeBytesAvailableToCaller.HighPart != 0 )
-        {
-            m_MediaInfo.m_FreeSpace = UINT_MAX;
-        }
-        else
-        {
-            m_MediaInfo.m_FreeSpace = FreeBytesAvailableToCaller.LowPart;
-        }        
+        m_MediaInfo.m_FreeFiles = space.available / m_MediaInfo.m_SectorSize;
+        m_LastError = Success;
     }
     else
     {
         //
-        // Don't have media info, so fill structure in with 0s
+        // Don't have media info, so fill structure in with dummy info
         //
-        snum = 0;
-        m_MediaInfo.m_MediaState = IRadDrive::MediaInfo::MediaNotPresent;
-        m_MediaInfo.m_FreeSpace = 0;
-        m_MediaInfo.m_VolumeName[ 0 ] = '\0';
+        m_MediaInfo.m_MediaState = IRadDrive::MediaInfo::MediaPresent;
+        m_MediaInfo.m_FreeSpace = UINT_MAX;
+        m_MediaInfo.m_FreeFiles = m_MediaInfo.m_FreeSpace / m_MediaInfo.m_SectorSize;
+        m_LastError = Success;
     }
-
-    m_MediaInfo.m_SectorSize = WIN32_DEFAULT_SECTOR_SIZE;
-
-    //
-    // No file limit, so set it to the same as free space
-    //
-    m_MediaInfo.m_FreeFiles = m_MediaInfo.m_FreeSpace / m_MediaInfo.m_SectorSize;
-
-    return snum;
-}
-
-
-//=============================================================================
-// Function:    radWin32Drive::BuildFileSpec
-//=============================================================================
-
-void radWin32Drive::BuildFileSpec( const char* fileName, char* fullName, unsigned int size )
-{
-    char fileWithDrive[ radFileFilenameMax + 1 ];
-    char* pFile = NULL;
-
-    int len = strlen( m_DriveName );
-    strcpy( fileWithDrive, m_DriveName );
-    strncpy( fileWithDrive + len, fileName, radFileFilenameMax - len );
-    fileWithDrive[ radFileFilenameMax ] ='\0';
-    
-    ::GetFullPathName( fileWithDrive, size - 1, fullName, &pFile );
-    fullName[ size - 1 ] = '\0';
 }
 
 //=============================================================================
@@ -664,44 +572,26 @@ void radWin32Drive::BuildFileSpec( const char* fileName, char* fullName, unsigne
 // Returns:     Our error code
 //------------------------------------------------------------------------------
 
-radFileError radWin32Drive::TranslateError( DWORD windowsError )
+radFileError radWin32Drive::TranslateError( std::error_code error )
 {
     //
     // we shouldn't have success here. If we do we made a mistake earlier.
     //
-    switch( windowsError )
+    switch( (std::errc)error.default_error_condition().value() )
     {
-    case ERROR_SUCCESS:
-        rAssertMsg( false, "radFileSystem: internal error\n" );
-        return( Success );
-
-    case ERROR_FILE_NOT_FOUND :
-    case ERROR_PATH_NOT_FOUND :
-    case ERROR_INVALID_DRIVE :
+    case std::errc::no_such_file_or_directory:
+    case std::errc::no_such_device:
         return( FileNotFound );
 
-    case ERROR_WRONG_DISK :
-    case ERROR_NOT_SAME_DEVICE :
+    case std::errc::cross_device_link:
         return( WrongMedia );
 
-    case ERROR_NOT_READY :
+    case std::errc::device_or_resource_busy:
+    case std::errc::resource_unavailable_try_again:
         return( ShellOpen );
 
-    case ERROR_BAD_FORMAT :
-    case ERROR_SECTOR_NOT_FOUND :
-        return( MediaNotFormatted );
-
-    case ERROR_DISK_FULL:
+    case std::errc::no_space_on_device:
         return ( NoFreeSpace );
-
-    case ERROR_UNRECOGNIZED_VOLUME:
-        return ( MediaCorrupt );
-
-    case ERROR_NOT_DOS_DISK:
-        return ( MediaInvalid );
-
-    case ERROR_DEVICE_NOT_CONNECTED:
-        return( NoMedia );
 
     default:
         return( HardwareFailure );
@@ -712,8 +602,8 @@ radFileError radWin32Drive::TranslateError( DWORD windowsError )
 // Function:    radWin32Drive::TranslateDirInfo
 //=============================================================================
 // Description: Translate the directory info and return an error status. A handle
-//              with value INVALID_HANDLE_VALUE means the find_first/next call
-//              failed and needs to be checked if something went wrong or of the
+//              with value directory_iterator() means the find_first/next call
+//              failed and needs to be checked if something went wrong or if the
 //              search just ended.
 //
 // Parameters:  
@@ -721,42 +611,26 @@ radFileError radWin32Drive::TranslateError( DWORD windowsError )
 // Returns:     
 //------------------------------------------------------------------------------
 
-radFileError radWin32Drive::TranslateDirInfo
+void radWin32Drive::TranslateDirInfo
 ( 
     IRadDrive::DirectoryInfo*   pDirectoryInfo, 
-    const WIN32_FIND_DATA*      pFindData,
+    const std::filesystem::path directoryEntry,
     const radFileDirHandle*     pHandle
 )
 {
-    if ( *pHandle == INVALID_HANDLE_VALUE )
+    if (*pHandle == std::filesystem::directory_iterator())
     {
         //
         // Either we failed or we're out of games.
         //
-        DWORD error = ::GetLastError( );
-        if ( error == ERROR_NO_MORE_FILES || error == ERROR_FILE_NOT_FOUND )
-        {
-            pDirectoryInfo->m_Name[0] = '\0';
-            pDirectoryInfo->m_Type = IRadDrive::DirectoryInfo::IsDone;
-        }
-        else
-        {
-            return TranslateError( error );
-        }
+        pDirectoryInfo->m_Name[0] = '\0';
+        pDirectoryInfo->m_Type = IRadDrive::DirectoryInfo::IsDone;
     }
     else
     {
-        strncpy( pDirectoryInfo->m_Name, pFindData->cFileName, radFileFilenameMax );
+        std::string filename = directoryEntry.filename().u8string();
+        strncpy( pDirectoryInfo->m_Name, filename.c_str(), radFileFilenameMax);
         pDirectoryInfo->m_Name[ radFileFilenameMax ] = '\0';
-
-        if ( pFindData->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
-        {
-            pDirectoryInfo->m_Type = IRadDrive::DirectoryInfo::IsDirectory;
-        }
-        else
-        {
-            pDirectoryInfo->m_Type = IRadDrive::DirectoryInfo::IsFile;
-        }
+        pDirectoryInfo->m_Type = (*pHandle)->is_directory() ? IRadDrive::DirectoryInfo::IsDirectory : IRadDrive::DirectoryInfo::IsFile;
     }
-    return Success;
 }
