@@ -325,7 +325,10 @@ void radSoundClip::SetState( IRadSoundClip::State state )
 // radSoundClip::OnBufferLoadComplete
 //======================================================================
 
-/* virtual */ void radSoundClip::OnBufferLoadComplete( unsigned framesLoaded )
+/* virtual */ void radSoundClip::OnBufferLoadComplete(
+	IRadSoundHalBuffer* pBuffer,
+	unsigned int actualBytesRead
+)
 {
 	rAssert( framesLoaded == m_xIRadSoundHalBuffer->GetSizeInFrames( ) );
 
@@ -333,10 +336,10 @@ void radSoundClip::SetState( IRadSoundClip::State state )
 }
 
 //======================================================================
-// radSoundClip::OnBufferLoadComplete
+// radSoundClip::OnBufferClearComplete
 //======================================================================
 
-/* virtual */ void radSoundClip::OnBufferClearComplete( void )
+/* virtual */ void radSoundClip::OnBufferClearComplete( IRadSoundHalBuffer* pBuffer )
 {
 	SetState( IRadSoundClip::Initialized );
 }

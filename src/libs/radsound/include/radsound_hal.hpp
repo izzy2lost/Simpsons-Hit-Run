@@ -227,7 +227,10 @@ struct IRadSoundHalDataSource : public IRefCount
 
 struct IRadSoundHalBufferLoadCallback :	public IRefCount
 {
-	virtual void OnBufferLoadComplete( unsigned int dataSourceFrames ) = 0;
+    virtual void OnBufferLoadComplete(
+        IRadSoundHalBuffer* pIRadSoundHalBuffer,
+        unsigned int dataSourceFrames
+    ) = 0;
 };
 
 //============================================================================
@@ -239,7 +242,7 @@ struct IRadSoundHalBufferLoadCallback :	public IRefCount
 
 struct IRadSoundHalBufferClearCallback : public IRefCount
 {
-    virtual void OnBufferClearComplete( void ) = 0;
+    virtual void OnBufferClearComplete( IRadSoundHalBuffer* pIRadSoundHalBuffer ) = 0;
 };
 
 //======================================================================
@@ -328,7 +331,8 @@ struct IRadSoundHalVoice : public IRefCount
     virtual unsigned int GetPriority( void ) = 0;
         
     virtual void SetBuffer( IRadSoundHalBuffer * pIRadSoundHalBuffer ) = 0;
-    virtual IRadSoundHalBuffer * GetBuffer( void ) = 0;
+    virtual void QueueBuffer( IRadSoundHalBuffer * pIRadSoundHalBuffer ) = 0;
+    virtual int GetQueuedBuffers( void ) = 0;
 
     virtual void Play( void ) = 0;
     virtual void Stop( void ) = 0;

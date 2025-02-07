@@ -12,7 +12,6 @@
 #include "buffer.hpp"
 #include "bufferloader.hpp"
 #include "system.hpp"
-#include "radinprogext.hpp"
 
 const unsigned int RADSOUNDHAL_BUFFER_CHANNEL_ALIGNMENT = 1;
 
@@ -20,8 +19,8 @@ const unsigned int RADSOUNDHAL_BUFFER_CHANNEL_ALIGNMENT = 1;
 // Static Initialization
 //============================================================================
 
-template<> radSoundHalBufferWin * radLinkedClass<radSoundHalBufferWin>::s_pLinkedClassHead = NULL;
-template<> radSoundHalBufferWin * radLinkedClass<radSoundHalBufferWin>::s_pLinkedClassTail = NULL;
+radSoundHalBufferWin * radSoundHalBufferWin::s_pLinkedClassHead = NULL;
+radSoundHalBufferWin * radSoundHalBufferWin::s_pLinkedClassTail = NULL;
 
 //========================================================================
 // radSoundHalBufferWin::~radSoundHalBufferWin
@@ -79,23 +78,10 @@ void radSoundHalBufferWin::Initialize
     m_Streaming = streaming;
     m_SizeInFrames = sizeInFrames;
 
-    alGenBuffers( 1, &m_Buffer );
-    rAssert( alGetError() == AL_NO_ERROR );
-    if( streaming )
+    if (!m_Streaming)
     {
-        ALenum format = AL_FORMAT_MONO8;
-        if( m_refIRadSoundHalAudioFormat->GetNumberOfChannels() > 1 )
-            format = m_refIRadSoundHalAudioFormat->GetBitResolution() == 8 ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16;
-        else
-            format = m_refIRadSoundHalAudioFormat->GetBitResolution() == 8 ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
-
-        radBufferStorageSOFT( m_Buffer, format,
-            pIRadMemoryObject->GetMemoryAddress(),
-            pIRadMemoryObject->GetMemorySize(),
-            m_refIRadSoundHalAudioFormat->GetSampleRate(),
-            AL_MAP_WRITE_BIT_SOFT | AL_MAP_PERSISTENT_BIT_SOFT
-        );
-        rAssert( alGetError() == AL_NO_ERROR );
+        alGenBuffers(1, &m_Buffer);
+        rAssert(alGetError() == AL_NO_ERROR);
     }
 }
 
@@ -119,55 +105,36 @@ void radSoundHalBufferWin::ClearAsync
 	IRadSoundHalBufferClearCallback * pIRadSoundHalBufferClearCallback
 )
 {
+    rAssert(startPositionInFrames < m_SizeInFrames );
+    rAssert( ( startPositionInFrames + numberOfFrames ) <= m_SizeInFrames );
+
+    unsigned int offsetInBytes = m_refIRadSoundHalAudioFormat->FramesToBytes( startPositionInFrames );
+    unsigned int sizeInBytes = m_refIRadSoundHalAudioFormat->FramesToBytes( numberOfFrames );  
+
+    unsigned char fillChar = ( m_refIRadSoundHalAudioFormat->GetBitResolution( ) == 8 ) ? 128 : 0;
+
+    ::memset(static_cast<char*>(m_refIRadMemoryObject->GetMemoryAddress()) + offsetInBytes, fillChar, sizeInBytes);
+
     if ( m_Buffer != 0 )
     {
-        rAssert(startPositionInFrames < m_SizeInFrames );
-        rAssert( ( startPositionInFrames + numberOfFrames ) <= m_SizeInFrames );
-
-        unsigned int offsetInBytes = m_refIRadSoundHalAudioFormat->FramesToBytes( startPositionInFrames );
-        unsigned int sizeInBytes = m_refIRadSoundHalAudioFormat->FramesToBytes( numberOfFrames );  
-
-        unsigned char fillChar = ( m_refIRadSoundHalAudioFormat->GetBitResolution( ) == 8 ) ? 128 : 0;
-
-        if( m_Streaming == true )
-        {
-            void* dataPtr = radMapBufferSOFT( m_Buffer, offsetInBytes, sizeInBytes, AL_MAP_WRITE_BIT_SOFT | AL_MAP_PERSISTENT_BIT_SOFT );
-
-            rAssertMsg( alGetError() == AL_NO_ERROR, "radSoundHalBufferWin::Clear - Lock Failed.\n" );
-
-            if( dataPtr )
-            {
-                ::memset( dataPtr, fillChar, sizeInBytes );
-
-                radUnmapBufferSOFT( m_Buffer );
-
-                rAssertMsg( alGetError() == AL_NO_ERROR, "radSoundHalBufferWin::Clear - UnLock Failed.\n" );
-            }
-        }
+        ALenum format = AL_FORMAT_MONO8;
+        if (m_refIRadSoundHalAudioFormat->GetNumberOfChannels() > 1)
+            format = m_refIRadSoundHalAudioFormat->GetBitResolution() == 8 ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16;
         else
-        {
+            format = m_refIRadSoundHalAudioFormat->GetBitResolution() == 8 ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
 
-            ::memset( static_cast<char*>(m_refIRadMemoryObject->GetMemoryAddress()) + offsetInBytes, fillChar, sizeInBytes );
+        alBufferData(m_Buffer, format,
+            m_refIRadMemoryObject->GetMemoryAddress(),
+            m_refIRadMemoryObject->GetMemorySize(),
+            m_refIRadSoundHalAudioFormat->GetSampleRate()
+        );
 
-            ALenum format = AL_FORMAT_MONO8;
-            if( m_refIRadSoundHalAudioFormat->GetNumberOfChannels() > 1 )
-                format = m_refIRadSoundHalAudioFormat->GetBitResolution() == 8 ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16;
-            else
-                format = m_refIRadSoundHalAudioFormat->GetBitResolution() == 8 ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
-
-            alBufferData( m_Buffer, format,
-                m_refIRadMemoryObject->GetMemoryAddress(),
-                m_refIRadMemoryObject->GetMemorySize(),
-                m_refIRadSoundHalAudioFormat->GetSampleRate()
-            );
-
-            rAssertMsg( alGetError() == AL_NO_ERROR, "radSoundHalBufferWin::Clear Failed.\n" );
-        }
+        rAssertMsg(alGetError() == AL_NO_ERROR, "radSoundHalBufferWin::Clear Failed.\n");
     }
 
 	if ( pIRadSoundHalBufferClearCallback != NULL )
 	{
-		pIRadSoundHalBufferClearCallback->OnBufferClearComplete( );
+		pIRadSoundHalBufferClearCallback->OnBufferClearComplete( this );
 	}
 }
 
@@ -195,7 +162,26 @@ bool radSoundHalBufferWin::IsStreaming( void )
 
 ALuint radSoundHalBufferWin::GetBuffer( void )
 {
-    rAssert(m_Buffer != 0);
+    rAssert(m_Streaming || m_Buffer != 0);
+    if (m_Streaming)
+    {
+        ALenum format = AL_FORMAT_MONO8;
+        if (m_refIRadSoundHalAudioFormat->GetNumberOfChannels() > 1)
+            format = m_refIRadSoundHalAudioFormat->GetBitResolution() == 8 ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16;
+        else
+            format = m_refIRadSoundHalAudioFormat->GetBitResolution() == 8 ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
+
+        ALuint pBuffer;
+        alGenBuffers(1, &pBuffer);
+        alBufferData(pBuffer, format,
+            m_refIRadMemoryObject->GetMemoryAddress(),
+            m_refIRadMemoryObject->GetMemorySize(),
+            m_refIRadSoundHalAudioFormat->GetSampleRate()
+        );
+
+        rAssertMsg(alGetError() == AL_NO_ERROR, "radSoundHalBufferWin::Clear Failed.\n");
+        return pBuffer;
+    }
     return m_Buffer;
 }
 
@@ -237,21 +223,8 @@ void radSoundHalBufferWin::LoadAsync
     m_LoadStartInBytes = m_refIRadSoundHalAudioFormat->FramesToBytes( bufferStartInFrames );
     m_refIRadSoundHalBufferLoadCallback = pIRadSoundHalBufferLoadCallback;
 
-    if( m_Streaming == true )
-    {
-        rAssert( m_pLockedLoadBuffer == NULL );
-
-        m_LockedLoadBytes = m_refIRadSoundHalAudioFormat->FramesToBytes( numberOfFrames );
-        m_pLockedLoadBuffer = radMapBufferSOFT( m_Buffer, m_LoadStartInBytes, m_LockedLoadBytes,
-            AL_MAP_WRITE_BIT_SOFT | AL_MAP_PERSISTENT_BIT_SOFT );
-        ALenum error = alGetError();
-        rAssert( error == AL_NO_ERROR );
-    }
-    else
-    {
-        m_pLockedLoadBuffer = static_cast<char*>(m_refIRadMemoryObject->GetMemoryAddress()) + m_LoadStartInBytes;
-        m_LockedLoadBytes = m_refIRadSoundHalAudioFormat->FramesToBytes( numberOfFrames );
-    }
+    m_pLockedLoadBuffer = static_cast< char* >(m_refIRadMemoryObject->GetMemoryAddress()) + m_LoadStartInBytes;
+    m_LockedLoadBytes = m_refIRadSoundHalAudioFormat->FramesToBytes( numberOfFrames );
 
     new( "radSoundBufferLoaderWin", RADMEMORY_ALLOC_TEMP ) radSoundBufferLoaderWin(
         static_cast< IRadSoundHalBuffer * >( this ),
@@ -278,34 +251,34 @@ bool radSoundHalBufferWin::IsLooping
 // radSoundHalBufferWin::OnBufferLoadComplete
 //========================================================================
 
-void radSoundHalBufferWin::OnBufferLoadComplete( unsigned int dataSourceFrames )
+void radSoundHalBufferWin::OnBufferLoadComplete(
+    IRadSoundHalBuffer* pIRadSoundHalBuffer,
+    unsigned int dataSourceFrames )
 {
     rAssert( m_refIRadSoundHalBufferLoadCallback != NULL );
 
-    ALenum format = AL_FORMAT_MONO8;
-    if (m_refIRadSoundHalAudioFormat->GetNumberOfChannels() > 1)
-        format = m_refIRadSoundHalAudioFormat->GetBitResolution() == 8 ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16;
-    else
-        format = m_refIRadSoundHalAudioFormat->GetBitResolution() == 8 ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
 
-    if( m_Streaming == false )
+    // Clear bytes that were not loaded
+    unsigned int offsetInBytes = m_refIRadSoundHalAudioFormat->FramesToBytes(dataSourceFrames);
+    unsigned int sizeInBytes = m_LockedLoadBytes - offsetInBytes;
+    unsigned char fillChar = (m_refIRadSoundHalAudioFormat->GetBitResolution() == 8) ? 128 : 0;
+
+    ::memset(static_cast<char*>(m_pLockedLoadBuffer) + offsetInBytes, fillChar, sizeInBytes);
+
+    if (!m_Streaming)
     {
-        alBufferData( m_Buffer, format,
+        ALenum format = AL_FORMAT_MONO8;
+        if (m_refIRadSoundHalAudioFormat->GetNumberOfChannels() > 1)
+            format = m_refIRadSoundHalAudioFormat->GetBitResolution() == 8 ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16;
+        else
+            format = m_refIRadSoundHalAudioFormat->GetBitResolution() == 8 ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
+
+        alBufferData(m_Buffer, format,
             m_pLockedLoadBuffer,
             m_LockedLoadBytes,
             m_refIRadSoundHalAudioFormat->GetSampleRate()
         );
-        rAssert( alGetError() == AL_NO_ERROR );
-    }
-    else
-    {
-        // For streaming sounds we'll have to unlock the direct sound buffer before calling back
-
-        radUnmapBufferSOFT( m_Buffer );
-        rAssert( alGetError() == AL_NO_ERROR );
-
-        m_pLockedLoadBuffer = NULL;
-        m_LockedLoadBytes = 0;
+        rAssert(alGetError() == AL_NO_ERROR);
     }
 
     m_pLockedLoadBuffer = NULL;
@@ -313,7 +286,7 @@ void radSoundHalBufferWin::OnBufferLoadComplete( unsigned int dataSourceFrames )
 
     if( m_refIRadSoundHalBufferLoadCallback != NULL )
     {
-        m_refIRadSoundHalBufferLoadCallback->OnBufferLoadComplete( dataSourceFrames );
+        m_refIRadSoundHalBufferLoadCallback->OnBufferLoadComplete( pIRadSoundHalBuffer, dataSourceFrames );
         m_refIRadSoundHalBufferLoadCallback = NULL;
     }
 }
@@ -328,12 +301,6 @@ void radSoundHalBufferWin::CancelAsyncOperations( void )
 
     if( m_refIRadSoundHalBufferLoadCallback != NULL )
     {
-        if( m_Streaming == true )
-        {
-            radUnmapBufferSOFT( m_Buffer );
-            rAssert( alGetError() == AL_NO_ERROR );
-        }
-
         m_pLockedLoadBuffer = NULL;
         m_LockedLoadBytes = 0;
         m_refIRadSoundHalBufferLoadCallback = NULL;

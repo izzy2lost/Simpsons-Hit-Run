@@ -59,8 +59,11 @@ class radSoundHalBufferWin
 
         // IRadSoundHalBufferLoadCallback
 
-        virtual void OnBufferLoadComplete( unsigned int dataSourceFrames );
-
+		virtual void OnBufferLoadComplete(
+			IRadSoundHalBuffer* pIRadSoundHalBuffer,
+			unsigned int dataSourceFrames
+		);
+		
 		// Internal
 
 		radSoundHalBufferWin( void );
