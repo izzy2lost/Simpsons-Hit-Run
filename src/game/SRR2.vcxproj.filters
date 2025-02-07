@@ -3708,6 +3708,5 @@
     <ClInclude Include="supersprint\supersprintmanager.h">
       <Filter>Source Files\supersprint</Filter>
     </ClInclude>
-    <ClInclude Include="..\resources\win\resource.h" />
   </ItemGroup>
 </Project>
