@@ -75,10 +75,9 @@ public:
       mpData   = ipData;
    }
    
-
-   bool CanAbsorbR( SubArray<T>& irAdjArray )
+   bool CanAbsorbR( SubArray<T>& orAdjArray )
    {
-      if( mpData+mSize == orSplitArray.mpData )
+      if( mpData+mSize == orAdjArray.mpData )
          return true;
       else
          return false;
