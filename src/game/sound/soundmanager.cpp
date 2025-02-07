@@ -108,8 +108,6 @@ SoundManager* SoundManager::CreateInstance( bool muteSound, bool noMusic,
     spInstance = new(GMA_PERSISTENT) SoundManager( muteSound, noMusic, noEffects, noDialogue );
     rAssert( spInstance );
 
-    spInstance->initialize();
-
     MEMTRACK_POP_GROUP( "Sound" );
 
     return spInstance;
@@ -1954,7 +1952,7 @@ SoundManager::~SoundManager()
 }
 
 //=============================================================================
-// SoundManager::initialize
+// SoundManager::Initialize
 //=============================================================================
 // Description: Do some class member initialization tasks that we can't really 
 //              do in the constructor.
@@ -1964,7 +1962,7 @@ SoundManager::~SoundManager()
 // Return:      void 
 //
 //=============================================================================
-void SoundManager::initialize()
+void SoundManager::Initialize()
 {
     if( m_isMuted )
     {

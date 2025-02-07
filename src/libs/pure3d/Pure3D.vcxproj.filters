@@ -68,12 +68,6 @@
     <Filter Include="Pddi Headers\gl">
       <UniqueIdentifier>{f35bb267-cc9c-49e5-88ff-834a8f763337}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Pddi Source\dx9">
-      <UniqueIdentifier>{87eca145-e625-4e45-9247-1cde64ee953c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pddi Headers\dx9">
-      <UniqueIdentifier>{d67f1d2c-e913-45ec-9e8f-0d269fb4851e}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="p3d\anim\animate.cpp">
@@ -387,33 +381,6 @@
     </ClCompile>
     <ClCompile Include="pddi\base\pddiobj.cpp">
       <Filter>Pddi Source\base</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx9\context.cpp">
-      <Filter>Pddi Source\dx9</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx9\device.cpp">
-      <Filter>Pddi Source\dx9</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx9\display.cpp">
-      <Filter>Pddi Source\dx9</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx9\prim.cpp">
-      <Filter>Pddi Source\dx9</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx9\primstream.cpp">
-      <Filter>Pddi Source\dx9</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx9\state.cpp">
-      <Filter>Pddi Source\dx9</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx9\texture.cpp">
-      <Filter>Pddi Source\dx9</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx9\util.cpp">
-      <Filter>Pddi Source\dx9</Filter>
-    </ClCompile>
-    <ClCompile Include="pddi\dx9\vertprog.cpp">
-      <Filter>Pddi Source\dx9</Filter>
     </ClCompile>
     <ClCompile Include="pddi\gl\glcon.cpp">
       <Filter>Pddi Source\gl</Filter>
@@ -809,36 +776,6 @@
     </ClInclude>
     <ClInclude Include="pddi\base\romans.h">
       <Filter>Pddi Headers\base</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx9\context.hpp">
-      <Filter>Pddi Headers\dx9</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx9\device.hpp">
-      <Filter>Pddi Headers\dx9</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx9\direct3d.hpp">
-      <Filter>Pddi Headers\dx9</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx9\display.hpp">
-      <Filter>Pddi Headers\dx9</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx9\prim.hpp">
-      <Filter>Pddi Headers\dx9</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx9\primstream.hpp">
-      <Filter>Pddi Headers\dx9</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx9\state.hpp">
-      <Filter>Pddi Headers\dx9</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx9\texture.hpp">
-      <Filter>Pddi Headers\dx9</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx9\util.hpp">
-      <Filter>Pddi Headers\dx9</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\dx9\vertprog.hpp">
-      <Filter>Pddi Headers\dx9</Filter>
     </ClInclude>
     <ClInclude Include="pddi\gl\glcon.hpp">
       <Filter>Pddi Headers\gl</Filter>
