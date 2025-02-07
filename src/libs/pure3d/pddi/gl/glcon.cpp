@@ -24,6 +24,7 @@
 #include <pddi/base/debug.hpp>
 #include <math.h>
 #include <string.h>
+#include <SDL.h>
 
 // vertex arrays rendering
 GLenum primTypeTable[5] =
@@ -43,15 +44,21 @@ static inline void FillGLColour(pddiColour c, float* f)
     f[3] = float(c.Alpha()) / 255;
 }
 
-
 // extensions
 class pglExtContext : public pddiExtGLContext 
 {
 public:
     pglExtContext(pglDisplay* d) : display(d) {}
 
-    void BeginContext() {display->BeginContext();}
-    void EndContext() {display->EndContext();}
+    void BeginContext()
+    {
+        display->BeginContext();
+    }
+
+    void EndContext()
+    {
+        display->EndContext();
+    }
 
 private:
     pglDisplay* display;
@@ -78,7 +85,9 @@ pglContext::pglContext(pglDevice* dev, pglDisplay* disp) : pddiBaseContext((pddi
     display->AddRef();
     disp->SetContext(this);
 
+    display->BeginContext();
     DefaultState();
+    display->EndContext();
     contextID = 0;
 
     extContext = new pglExtContext(display);
@@ -86,8 +95,6 @@ pglContext::pglContext(pglDevice* dev, pglDisplay* disp) : pddiBaseContext((pddi
 
     defaultShader = new pglMat(this);
     defaultShader->AddRef();
-
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize);
 }
 
 pglContext::~pglContext()
@@ -107,6 +114,10 @@ void pglContext::BeginFrame()
 {
     pddiBaseContext::BeginFrame();
 
+    extContext->BeginContext();
+
+    SDL_GL_SetSwapInterval(display->GetForceVSync() ? 1 : 0);
+
     if(display->HasReset())
     {
         contextID++;
@@ -121,7 +132,7 @@ void pglContext::BeginFrame()
 
         if(display->CheckExtension("GL_EXT_separate_specular_color"))
         {
-            glLightModeli(LIGHT_MODEL_COLOR_CONTROL_EXT,SEPARATE_SPECULAR_COLOR_EXT);
+            glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL_EXT, GL_SEPARATE_SPECULAR_COLOR_EXT);
         }
 
         SyncState(0xffffffff);
@@ -138,7 +149,9 @@ void pglContext::BeginFrame()
 
 void pglContext::EndFrame()
 {
-     pddiBaseContext::EndFrame();
+    extContext->EndContext();
+
+    pddiBaseContext::EndFrame();
 }
 
 // buffer clearing
@@ -882,9 +895,10 @@ void pglContext::SetFog(pddiColour colour, float start, float end)
     glFogf(GL_FOG_END, end);
 }
 
-
 int pglContext::GetMaxTextureDimension(void)
 {
+    int maxTexSize;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize);
     return maxTexSize;
 }
 
@@ -922,6 +936,3 @@ float pglContext::EndTiming(void)
 {
     return display->EndTiming();
 }
-
-
-
