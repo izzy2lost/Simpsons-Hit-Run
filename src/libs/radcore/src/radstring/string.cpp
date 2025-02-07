@@ -398,7 +398,7 @@ class radString
     {
         if ( IsNull( ) == false )
         {
-            strlwr( m_pBuffer );
+            SDL_strlwr( m_pBuffer );
         }
     }
 
