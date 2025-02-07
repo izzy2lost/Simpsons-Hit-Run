@@ -78,6 +78,7 @@ class radSoundHalVoiceWin
 		void SetVolumeInternal( void );
 		void SetPitchInternal( void );
 
+		unsigned int m_Priority;
 		unsigned int m_SourceSamplesPlayed;
 
 		float m_Pitch;
