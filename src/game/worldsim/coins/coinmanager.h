@@ -120,18 +120,11 @@ protected:
         ActiveCoin() : State( CS_Inactive ) {};
         union
         {
-            struct
-            {
-                rmt::Vector Velocity;
-            };
-
-            struct
-            {
-                tUID Sector;
-                short PersistentObjectID;
-            };
+            rmt::Vector Velocity;
+            tUID Sector;
         };
         
+        short PersistentObjectID;
         rmt::Vector Position;
         float HeadingCos;
         float HeadingSin;
