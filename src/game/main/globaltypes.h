@@ -15,17 +15,8 @@
 //
 // define 64 bit integer for all platforms
 //
-#ifdef RAD_PS2
-typedef unsigned long simpsonsUInt64;
-#endif
 
-#if defined RAD_XBOX
-typedef unsigned __int64 simpsonsUInt64;
-#endif
-
-#if defined RAD_WIN32
 #include <cstdint>
 typedef uint64_t simpsonsUInt64;
-#endif
 
 #endif //GLOBALTYPES_H
