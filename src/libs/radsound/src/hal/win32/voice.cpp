@@ -82,7 +82,6 @@ void radSoundHalVoiceWin::SetBuffer( IRadSoundHalBuffer * pIRadSoundHalBuffer )
     Stop( );
 
     m_xRadSoundHalBufferWin = NULL;
-    m_SourceSamplesPlayed = 0;
 
 	radRef< IRadSoundHalAudioFormat > pOldIRadSoundHalAudioFormat = m_xIRadSoundHalAudioFormat;
     m_xIRadSoundHalAudioFormat = NULL;
@@ -224,6 +223,8 @@ void radSoundHalVoiceWin::Stop( void )
 #endif // RAD_DEBUG
 
         alSourceStop(m_Source);
+
+        m_SourceSamplesPlayed = 0;
 
         if (m_xRadSoundHalBufferWin->IsStreaming())
         {
