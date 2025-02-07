@@ -357,8 +357,8 @@ inline int IsNan( const float n )
     return isnanf(n);
 #elif defined( RAD_GAMECUBE )
     return isnan(n);
-#else //RAD_XBOX
-    return _isnan(n);
+#else
+    return std::isnan(n);
 #endif
 }
 
