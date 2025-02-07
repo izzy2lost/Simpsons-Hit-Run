@@ -24,15 +24,7 @@
 // Include Files
 //=============================================================================
 
-#ifdef RAD_WIN32
-    #include <windows.h>
-#endif
-#ifdef RAD_XBOX
-    #include <xtl.h>
-#endif
-#ifdef RAD_PS2
-    #include <eekernel.h>
-#endif
+#include <SDL.h>
 
 #include <radobject.hpp>
 #include <radmemory.hpp>
@@ -91,26 +83,7 @@ class radThreadMutex : public IRadThreadMutex,
     //
     unsigned int m_ReferenceCount;    
 
-    //
-    // Windows and XBOX this is implemented using the critcal section primitive.
-    //
-    #if defined(RAD_WIN32) || defined(RAD_XBOX)
-    CRITICAL_SECTION    m_CriticalSection;
-    #endif
-
-    //
-    // PS2 we us a semaphore. We need to use extra members since the os primitive
-    // does not allow same thread to own the critical section more than once.
-    //
-    #ifdef RAD_PS2
-    
-    int             m_Semaphore;        
-    int             m_CurrentOwner;
-    unsigned int    m_OwnedCount;
-
-    #endif
+    SDL_mutex* m_Mutex;
 };
 
 #endif
-
-
