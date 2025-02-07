@@ -19,8 +19,9 @@
 // Include Files
 //============================================================================
 
-#include <SDL.h>
 #include "pch.hpp"
+
+#include <SDL.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
