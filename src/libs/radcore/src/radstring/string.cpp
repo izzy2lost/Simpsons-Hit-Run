@@ -19,6 +19,7 @@
 // Include Files
 //============================================================================
 
+#include <SDL.h>
 #include "pch.hpp"
 #include <stdio.h>
 #include <string.h>
@@ -405,7 +406,7 @@ class radString
     {
         if( IsNull( ) == false )
         {
-            strupr( m_pBuffer );
+            SDL_strupr( m_pBuffer );
         }
     }
 

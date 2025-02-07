@@ -156,8 +156,6 @@ private:
     Resolution mResolution;
     int mbpp;
     bool mFullscreen;
-    int mScreenWidth;
-    int mScreenHeight;
     char mRenderer[ConfigString::MaxLength];
 };
 

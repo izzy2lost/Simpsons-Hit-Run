@@ -1166,14 +1166,6 @@ Win32Platform::Win32Platform() :
     mRenderer("gl")
 {
     mFullscreen = false;
-
-    mScreenWidth = GetSystemMetrics(SM_CXSCREEN);
-    mScreenHeight = GetSystemMetrics(SM_CYSCREEN);
-
-    while (mScreenWidth > 1600 ) // probably multimonitor
-    {
-        mScreenWidth /= 2;
-    }
 }
 
 

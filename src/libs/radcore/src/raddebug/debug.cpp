@@ -27,7 +27,7 @@
 #include <radstring.hpp>
 #include <raddebug.hpp>
 
-#ifdef RAD_WIN32
+#ifdef WIN32
 #include <windows.h>
 #endif
 #ifdef RAD_XBOX
@@ -49,8 +49,10 @@
 
 int rDebugVsnPrintf( char *buffer, size_t count, const char *format, va_list argptr )
 {
-    #if defined (RAD_WIN32) || defined (RAD_XBOX)
+    #if defined (RAD_XBOX)
         return _vsnprintf( buffer, count, format, argptr );
+    #elif defined (RAD_WIN32)
+        return vsnprintf( buffer, count, format, argptr );
     #elif defined (RAD_PS2)
         return vsprintf( buffer, format, argptr );
     #endif
@@ -74,7 +76,7 @@ int rDebugSnPrintf( char *buffer, size_t count, const char *format ... )
 	return retval;
 }
 
-#ifdef RAD_WIN32
+#ifdef WIN32
 //=============================================================================
 // Function:    rAssertThreadProc
 //=============================================================================
@@ -193,7 +195,7 @@ bool rDebugAssertFail_Implementation
     //
     // Windows implementation display message box
     //
-#ifdef RAD_WIN32
+#ifdef WIN32
     {
         int retval = rErrorMessageBox(text);
 
@@ -210,7 +212,7 @@ bool rDebugAssertFail_Implementation
     }
 #else
 	return true;
-#endif // RAD_WIN32
+#endif // WIN32
 }
 
 //=============================================================================
@@ -292,7 +294,7 @@ void rDebugValidFail_Implementation
     //
     // Display message box and check for response
     //
-    #ifdef RAD_WIN32
+    #ifdef WIN32
     {
         int retval = rErrorMessageBox(text);
 
@@ -313,7 +315,7 @@ void rDebugValidFail_Implementation
          // (retval == IDIGNORE) continues.
         }
     }
-    #endif // RAD_WIN32
+    #endif // WIN32
 }
 
 //=============================================================================
@@ -333,19 +335,14 @@ int rDebugValidPointer_Implementation
     void *p
 )
 {
-    #if defined( RAD_WIN32 ) || defined( RAD_XBOX )
+    #if defined( WIN32 ) || defined( RAD_XBOX )
 
 	return( !( IsBadReadPtr( p, 1) || IsBadWritePtr( p,1) ) );
 
-    #endif
+    #else
 
-    #ifdef RAD_PS2
-
-    // to be completed
-
-	(void) p;
-
-	return( true );
+        (void)p;
+        return true;
 
     #endif
 }
@@ -384,20 +381,15 @@ int rDebugValidPointer32_Implementation
         return( 0 );
     }
 
-#if defined( RAD_WIN32 ) || defined( RAD_XBOX )
+#if defined( WIN32 ) || defined( RAD_XBOX )
 
     return !(IsBadReadPtr(p,1) || IsBadWritePtr(p,1));
 
-#endif
+#else
 
-#ifdef RAD_PS2
-
-    // to be completed
-
-    return( true );
+    return true;
 
 #endif
-
 }
 
 //=============================================================================
@@ -447,7 +439,7 @@ void rDebuggerString_Implementation( const char* string )
         return;
     }
 
-   #if defined( RAD_WIN32 ) || defined( RAD_XBOX )
+   #if defined( WIN32 ) || defined( RAD_XBOX )
     {
  
         //
@@ -482,13 +474,9 @@ void rDebuggerString_Implementation( const char* string )
             }
         }
     }
-    #endif
 
-    #if defined( RAD_PS2 )
+    #else
     
-    //
-    // On the PS2 we display the string on the using printf. 
-    //
     printf( "%s", string );
     fflush( stdout );
 
@@ -585,7 +573,7 @@ void rDebugChannelPrintf( const char * pChannel, const char *fmt, ... )
 // Debug Channel Globals
 //=============================================================================
 
-static radRef< IRadObjectList > g_xIOl_EnabledChannels;
+static ref< IRadObjectList > g_xIOl_EnabledChannels;
 static radMemoryAllocator g_DebugChannelAllocator = RADMEMORY_ALLOC_DEFAULT;
 static unsigned int g_DebugChannelInitializeCount = 0;
 
@@ -704,4 +692,3 @@ void rDebugSetOutputHandler( radDebugOutputHandler * pOutputProc )
         g_pDebugHandler = rDebuggerString_Implementation;
     }
 }
-
