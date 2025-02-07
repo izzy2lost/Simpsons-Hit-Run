@@ -23,15 +23,7 @@
 //=============================================================================
 
 #include "pch.hpp"
-#ifdef RAD_WIN32
-    #include <windows.h>
-#endif
-#ifdef RAD_XBOX
-    #include <xtl.h>
-#endif
-#ifdef RAD_PS2
-    #include <eekernel.h>
-#endif
+#include <SDL.h>
 
 #include <raddebug.hpp>
 #include <radthread.hpp>
@@ -54,12 +46,7 @@ static bool g_SystemInitialized = false;
 //
 // Need an exclusion object for each of the various platforms.
 //
-#if defined(RAD_WIN32) || defined(RAD_XBOX)
-    static CRITICAL_SECTION g_ExclusionObject;
-#endif
-#ifdef RAD_PS2
-    static int              g_ExclusionObject;        
-#endif
+static SDL_mutex* g_ExclusionObject = nullptr;
 
 //=============================================================================
 // Public Functions
@@ -86,16 +73,7 @@ void radThreadInitialize( unsigned int milliseconds )
     // To manage our threading objects we in a thread safe manner, we need 
     // OS exculision objects for our own use. Create them here.
     //
-#if defined(RAD_WIN32) || defined(RAD_XBOX)
-    InitializeCriticalSection( &g_ExclusionObject );
-#endif
-
-#ifdef RAD_PS2
-  	struct SemaParam semaphoreParam;
-    semaphoreParam.maxCount = 1;
-    semaphoreParam.initCount = 1;
-    g_ExclusionObject = CreateSema( &semaphoreParam );
-#endif
+    g_ExclusionObject = SDL_CreateMutex();
 
     g_SystemInitialized = true;
 
@@ -131,13 +109,7 @@ void radThreadTerminate( void )
     // Free up the exclusion object using the appropriate platform specific 
     // function.
     //
-#if defined(RAD_WIN32) || defined(RAD_XBOX)
-    DeleteCriticalSection( &g_ExclusionObject );
-#endif
-
-#ifdef RAD_PS2   
-    DeleteSema( g_ExclusionObject );
-#endif
+    SDL_DestroyMutex(g_ExclusionObject);
 
     g_SystemInitialized = false;
 }
@@ -161,14 +133,7 @@ void radThreadInternalLock( void )
     //
     // Just perform the OS specific implementation.
     //
-#if defined(RAD_WIN32) || defined(RAD_XBOX)
-    EnterCriticalSection( &g_ExclusionObject );
-#endif
-
-#ifdef RAD_PS2   
-    WaitSema( g_ExclusionObject );
-#endif
-
+    SDL_LockMutex(g_ExclusionObject);
 }
 
 //=============================================================================
@@ -190,12 +155,5 @@ void radThreadInternalUnlock( void )
     //
     // Just perform the OS specific implementation.
     //
-#if defined(RAD_WIN32) || defined(RAD_XBOX)
-    LeaveCriticalSection( &g_ExclusionObject );
-#endif
-
-#ifdef RAD_PS2   
-    SignalSema( g_ExclusionObject );
-#endif
-
+    SDL_UnlockMutex(g_ExclusionObject);
 }
