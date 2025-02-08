@@ -89,7 +89,7 @@
       <PreprocessorDefinitions>_DEBUG;RAD_DEBUG;WIN32;_LIB;RAD_WIN32;RAD_PC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling />
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <SmallerTypeCheck>true</SmallerTypeCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
