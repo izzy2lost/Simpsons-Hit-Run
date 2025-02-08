@@ -15,8 +15,6 @@
 #include <radfile.hpp>
 #include <raddebug.hpp>
 
-#include <SDL2/SDL.h>
-
 #include <string.h>
 
 //-----------------------------------------------------------------------------
@@ -1177,7 +1175,7 @@ stream_functions debug_printf_stream_functions = { debug_printf_write, debug_pri
 
 int VsnPrintf( char *buffer, size_t count, const char *format, va_list argptr )
 {
-    return SDL_vsnprintf(buffer, count, format, argptr);
+    return vsnprintf(buffer, count, format, argptr);
 }
     
 bool stream_printf( stream_info * p_si, const char * fmt, ... )
