@@ -16,7 +16,9 @@
 //========================================
 #include <radcontroller.hpp>
 #include <list>
-using namespace std;
+
+// commented because https://cplusplus.com/forum/general/282167/
+//using namespace std;
 
 //========================================
 // Nested Includes
