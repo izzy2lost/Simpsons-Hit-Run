@@ -108,16 +108,16 @@ MessageCallback(GLenum source,
 {
     switch(severity)
     {
-        case GL_DEBUG_SEVERITY_HIGH_KHR:
+        case GL_DEBUG_SEVERITY_HIGH:
             SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", message);
             break;
-        case GL_DEBUG_SEVERITY_MEDIUM_KHR:
+        case GL_DEBUG_SEVERITY_MEDIUM:
             SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "%s", message);
             break;
-        case GL_DEBUG_SEVERITY_LOW_KHR:
+        case GL_DEBUG_SEVERITY_LOW:
             SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "%s", message);
             break;
-        case GL_DEBUG_SEVERITY_NOTIFICATION_KHR:
+        case GL_DEBUG_SEVERITY_NOTIFICATION:
             SDL_LogVerbose(SDL_LOG_CATEGORY_APPLICATION, "%s", message);
             break;
     }
@@ -170,11 +170,9 @@ bool pglDisplay ::InitDisplay(const pddiDisplayInit* init)
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     else
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
-#ifndef RAD_VITA
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, SDL_TRUE);
 #ifdef RAD_DEBUG
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
-#endif
 #endif
 
     prevRC = SDL_GL_GetCurrentContext();
@@ -226,9 +224,9 @@ bool pglDisplay ::InitDisplay(const pddiDisplayInit* init)
 
     SDL_Log("OpenGL - Vendor: %s, Renderer: %s, Version: %s",glVendor,glRenderer,glVersion);
 
-#if defined RAD_DEBUG && !defined RAD_VITA
-    glEnable(GL_DEBUG_OUTPUT_KHR);
-    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_KHR);
+#if defined RAD_DEBUG
+    glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
     glDebugMessageCallback(MessageCallback, NULL);
 #endif
 

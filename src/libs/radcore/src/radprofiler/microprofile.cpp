@@ -1,5 +1,8 @@
+#include "pch.hpp"
+
 #define MICROPROFILE_IMPL
 #include "microprofile.h"
+
 #if MICROPROFILE_ENABLED
 
 #define BREAK_SKIP() __builtin_trap()

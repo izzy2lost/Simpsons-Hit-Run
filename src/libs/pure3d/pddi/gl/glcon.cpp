@@ -119,7 +119,7 @@ void pglContext::BeginFrame()
 
         if(display->CheckExtension("GL_EXT_separate_specular_color"))
         {
-            glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL_EXT, GL_SEPARATE_SPECULAR_COLOR_EXT);
+            glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
         }
 #endif
 

@@ -183,7 +183,6 @@
     </ClCompile>
     <ClCompile Include="src\rad1394\win32lib\rad1394master.cpp" />
     <ClCompile Include="src\radcontroller\directinputcontroller.cpp" />
-    <ClCompile Include="src\radcontroller\xboxcontroller.cpp" />
     <ClCompile Include="src\raddebugcommunication\host.cpp" />
     <ClCompile Include="src\raddebugcommunication\host1394socket.cpp" />
     <ClCompile Include="src\raddebugcommunication\hostchannel.cpp" />
@@ -325,10 +324,8 @@
     <ClInclude Include="src\radmemory\twowayallocator.hpp" />
     <ClInclude Include="src\radobjectbtree\objectavltree.hpp" />
     <ClInclude Include="src\radobjectbtree\objectbtree.hpp" />
-    <ClInclude Include="src\radprofiler\microprofile_html.h" />
     <ClInclude Include="src\radprofiler\profiler.hpp" />
     <ClInclude Include="src\radprofiler\profilesample.hpp" />
-    <ClInclude Include="src\radprofiler\stb\stb_sprintf.h" />
     <ClInclude Include="src\radprotocols\debugconsoleprotocol.hpp" />
     <ClInclude Include="src\radprotocols\debugwatchprotocol.hpp" />
     <ClInclude Include="src\radprotocols\fileprotocol.hpp" />

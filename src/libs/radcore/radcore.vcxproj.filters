@@ -305,9 +305,6 @@
     <ClCompile Include="src\radprofiler\microprofile.cpp">
       <Filter>src\radprofiler</Filter>
     </ClCompile>
-    <ClCompile Include="src\radcontroller\xboxcontroller.cpp">
-      <Filter>src\radcontroller</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\raddispatch\dispatcher.hpp">
@@ -584,12 +581,6 @@
       <Filter>inc</Filter>
     </ClInclude>
     <ClInclude Include="include\microprofile.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="src\radprofiler\microprofile_html.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="src\radprofiler\stb\stb_sprintf.h">
       <Filter>inc</Filter>
     </ClInclude>
   </ItemGroup>

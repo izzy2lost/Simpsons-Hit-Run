@@ -430,9 +430,6 @@
     <ClInclude Include="pddi\gl\glmat.hpp" />
     <ClInclude Include="pddi\gl\gltex.hpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="pddi\gl\display_win32\pddigl.rc" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

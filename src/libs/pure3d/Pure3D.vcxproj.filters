@@ -808,9 +808,4 @@
       <Filter>Pddi Headers\gl\display_win32</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="pddi\gl\display_win32\pddigl.rc">
-      <Filter>Pddi Headers\gl\display_win32</Filter>
-    </ResourceCompile>
-  </ItemGroup>
 </Project>

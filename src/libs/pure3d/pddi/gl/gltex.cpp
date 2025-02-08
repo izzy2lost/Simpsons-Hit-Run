@@ -13,6 +13,30 @@
 
 #include <microprofile.h>
 
+// bruh
+#define GL_COMPRESSED_RGB_S3TC_DXT1_EXT   0x83F0
+#define GL_COMPRESSED_RGBA_S3TC_DXT1_EXT  0x83F1
+#define GL_COMPRESSED_RGBA_S3TC_DXT3_EXT  0x83F2
+#define GL_COMPRESSED_RGBA_S3TC_DXT5_EXT  0x83F3
+#define GL_SHARED_TEXTURE_PALETTE_EXT     0x81FB
+#define GL_COLOR_INDEX1_EXT               0x80E2
+#define GL_COLOR_INDEX2_EXT               0x80E3
+#define GL_COLOR_INDEX4_EXT               0x80E4
+#define GL_COLOR_INDEX8_EXT               0x80E5
+#define GL_COLOR_INDEX12_EXT              0x80E6
+#define GL_COLOR_INDEX16_EXT              0x80E7
+#define GL_TEXTURE_INDEX_SIZE_EXT         0x80ED
+#define GL_COLOR_TABLE_FORMAT_EXT         0x80D8
+#define GL_COLOR_TABLE_WIDTH_EXT_EXT_EXT  0x80D9
+#define GL_COLOR_TABLE_RED_SIZE_EXT_EXT   0x80DA
+#define GL_COLOR_TABLE_GREEN_SIZE_EXT_EXT 0x80DB
+#define GL_COLOR_TABLE_BLUE_SIZE_EXT_EXT  0x80DC
+#define GL_COLOR_TABLE_ALPHA_SIZE_EXT_EXT 0x80DD
+#define GL_COLOR_TABLE_LUMINANCE_SIZE_EXT 0x80DE
+#define GL_COLOR_TABLE_INTENSITY_SIZE_EXT 0x80DF
+#define GL_BGR_EXT                        0x80E0
+#define GL_BGRA_EXT                       0x80E1
+
 static inline GLenum PickPixelFormat(pddiPixelFormat format)
 {
     switch (format)
