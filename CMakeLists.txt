@@ -4,17 +4,24 @@ project(SimpsonsHitRun)
 # Set the C++ standard to use (adjust based on the project's needs)
 set(CMAKE_CXX_STANDARD 17)
 
-# Specify the source files to be compiled (add all your source files here)
-set(SOURCE_FILES
-    src/main.cpp  # Example: Replace with the actual source file paths
-    # Add other source files as needed
-)
+# Automatically find all .cpp files in the src/ directory and its subdirectories
+file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
+
+# Add SDL2 include and library directories
+include_directories(${PROJECT_SOURCE_DIR}/include/SDL2)
+link_directories(${PROJECT_SOURCE_DIR}/lib/SDL2)
+
+# Find OpenGL package (required for OpenGL-based rendering)
+find_package(OpenGL REQUIRED)
 
 # Add executable target
 add_executable(SimpsonsHitRun ${SOURCE_FILES})
 
-# If using external libraries, link them here (for example, SDL2 or OpenAL)
-# target_link_libraries(SimpsonsHitRun SDL2 OpenAL)
+# Link libraries (SDL2 and OpenGL)
+target_link_libraries(SimpsonsHitRun SDL2 OpenGL::GL)
 
-# Set the installation location (optional)
+# Optional: Link OpenAL if needed
+# target_link_libraries(SimpsonsHitRun OpenAL::OpenAL)
+
+# Optional: Install the executable
 # install(TARGETS SimpsonsHitRun DESTINATION bin)
