@@ -2,22 +2,12 @@
 // Copyright (c) 2002 Radical Games Ltd.  All rights reserved.
 //=============================================================================
 
-
+#include <pddi/gl/gl.hpp>
 #include <pddi/gl/gldev.hpp>
+#include <pddi/gl/gldisplay.hpp>
 #include <pddi/gl/glcon.hpp>
 #include <pddi/gl/gltex.hpp>
 #include <pddi/gl/glmat.hpp>
-
-#ifdef RAD_WIN32
-    #include <pddi/gl/display_win32/gldisplay.hpp>
-    #include <pddi/gl/display_win32/gl.hpp>
-#endif
-
-#ifdef RAD_LINUX
-    #include <pddi/gl/display_linux/gldisplay.hpp>
-    #include <pddi/gl/display_linux/gl.hpp>
-#endif
-
 
 #include <stdio.h>
 #include <string.h>
@@ -32,7 +22,7 @@ static pglDevice gblDevice;
 
 char libName [] = "OpenGL";
 
-DLLEXPORT int pddiCreate(int versionMajor, int versionMinor, pddiDevice** device)
+int pddiCreate(int versionMajor, int versionMinor, pddiDevice** device)
 {
     if((versionMajor != PDDI_VERSION_MAJOR) || (versionMinor != PDDI_VERSION_MINOR))
     {
@@ -69,6 +59,7 @@ void pglDevice::GetLibraryInfo(pddiLibInfo* info)
     info->versionMinor = PDDI_VERSION_MINOR;
     info->versionBuild = PDDI_GL_BUILD;
     info->libID = PDDI_LIBID_OPENGL;
+    strcpy( info->description, libName );
 }
 
 unsigned pglDevice::GetCaps()
@@ -193,3 +184,4 @@ void pglDevice::AddCustomShader(const char* name, const char* aux)
 void pglDevice::Release(void)
 {
 }
+

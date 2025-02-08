@@ -1,8 +1,11 @@
 
+
 #ifndef _SIMMATH_HPP_
 #define _SIMMATH_HPP_
 
 // basic p3d and radlib include  
+
+#include <algorithm>
 
 #include <radmath/radmath.hpp>
 #include <raddebug.hpp>
@@ -46,8 +49,8 @@ template <class TYPE>
     inline TYPE ClampBetween( TYPE val, const TYPE minv, const TYPE maxv)
 {
     rAssert(minv<=maxv);
-    val = Min(val,maxv);
-    return Max(val,minv);
+    val = std::min(val,maxv);
+    return std::max(val,minv);
 }
 
 inline float ACosSafe(float a)
@@ -136,5 +139,3 @@ rmt::Vector float2Vec(const float*);
 } // sim
 
 #endif // _simmath_HPP_
-
-

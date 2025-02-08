@@ -2,18 +2,9 @@
 // Copyright (c) 2002 Radical Games Ltd.  All rights reserved.
 //=============================================================================
 
-
-#ifdef RAD_WIN32
-    #include <pddi/gl/display_win32/gldisplay.hpp>
-    #include <pddi/gl/display_win32/gl.hpp>
-#endif
-
-#ifdef RAD_LINUX
-    #include <pddi/gl/display_linux/gldisplay.hpp>
-    #include <pddi/gl/display_linux/gl.hpp>
-#endif
-
+#include <pddi/gl/gl.hpp>
 #include <pddi/gl/glcon.hpp>
+#include <pddi/gl/gldisplay.hpp>
 #include <pddi/base/debug.hpp>
 #include <SDL2/SDL.h>
 
@@ -21,7 +12,7 @@
 #include<string.h>
 #include<math.h>
 
-bool pglDisplay::CheckExtension( char *extName )
+bool pglDisplay::CheckExtension( const char *extName )
 {
     return SDL_GL_ExtensionSupported(extName) == SDL_TRUE;
 }
@@ -41,13 +32,14 @@ pglDisplay ::pglDisplay(pddiDisplayInfo* info)
     prevRC = NULL;
 
     extBGRA = false;
+#ifdef RAD_GLES
+    extBlend = false;
+#endif
 
     gammaR = gammaG = gammaB = 1.0f;
 
     reset = true;
 	m_ForceVSync = false;
-
-    mutex = SDL_CreateMutex();
 }
 
 pglDisplay ::~pglDisplay()
@@ -55,7 +47,6 @@ pglDisplay ::~pglDisplay()
     /* release and free the device context and rendering context */
     SDL_GL_DeleteContext(hRC);
     SDL_SetWindowGammaRamp(win, initialGammaRamp[0], initialGammaRamp[1], initialGammaRamp[2]);
-    SDL_DestroyMutex(mutex);
 }
 
 #define KEYPRESSED(x) (GetKeyState((x)) & (1<<(sizeof(int)*8)-1))
@@ -65,8 +56,7 @@ long pglDisplay ::ProcessWindowMessage(SDL_Window* win, const SDL_WindowEvent* e
     switch (event->event)
     {
         case SDL_WINDOWEVENT_SIZE_CHANGED:
-            winWidth = event->data1;
-            winHeight = event->data2;
+            SDL_GL_GetDrawableSize( win, &winWidth, &winHeight );
             break;
 
         case SDL_WINDOWEVENT_CLOSE:
@@ -119,16 +109,16 @@ MessageCallback(GLenum source,
     switch(severity)
     {
         case GL_DEBUG_SEVERITY_HIGH_KHR:
-            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, message);
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", message);
             break;
         case GL_DEBUG_SEVERITY_MEDIUM_KHR:
-            SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, message);
+            SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "%s", message);
             break;
         case GL_DEBUG_SEVERITY_LOW_KHR:
-            SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, message);
+            SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "%s", message);
             break;
         case GL_DEBUG_SEVERITY_NOTIFICATION_KHR:
-            SDL_LogVerbose(SDL_LOG_CATEGORY_APPLICATION, message);
+            SDL_LogVerbose(SDL_LOG_CATEGORY_APPLICATION, "%s", message);
             break;
     }
 }
@@ -156,7 +146,11 @@ bool pglDisplay ::InitDisplay(const pddiDisplayInit* init)
     if (pDisplayMode)
         SDL_SetWindowDisplayMode(win, pDisplayMode);
 
+#ifndef __SWITCH__
     SDL_SetWindowFullscreen(win, mode == PDDI_DISPLAY_FULLSCREEN ? SDL_WINDOW_FULLSCREEN : 0);
+#endif
+    SDL_GL_GetDrawableSize( win, &winWidth, &winHeight );
+    winBitDepth = bpp;
 
     if (hRC)
         return true;
@@ -164,18 +158,38 @@ bool pglDisplay ::InitDisplay(const pddiDisplayInit* init)
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE, bpp == 16 ? 5 : 8);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, bpp == 16 ? 6 : 8);
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, bpp == 16 ? 5 : 8);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 32);
+    if (init->bufferMask & PDDI_BUFFER_DEPTH)
+#ifdef __SWITCH__
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, init->bufferMask & PDDI_BUFFER_STENCIL ? 24 : 32);
+#else
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+#endif
+    else
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
+    if (init->bufferMask & PDDI_BUFFER_STENCIL)
+        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    else
+        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
+#ifndef RAD_VITA
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, SDL_TRUE);
 #ifdef RAD_DEBUG
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
 #endif
+#endif
 
     prevRC = SDL_GL_GetCurrentContext();
     hRC = SDL_GL_CreateContext(win);
+    if (!hRC)
+        SDL_Log("SDL_GL_CreateContext() error: %s", SDL_GetError());
     PDDIASSERT(hRC);
 
-    if (!gladLoadGL())
+#ifdef RAD_GLES
+    if (!gladLoadGLES1Loader( (GLADloadproc)SDL_GL_GetProcAddress ))
         return false;
+#else
+    if (!gladLoadGLLoader( (GLADloadproc)SDL_GL_GetProcAddress ))
+        return false;
+#endif
 
     char* glVendor   = (char*)glGetString(GL_VENDOR);
     char* glRenderer = (char*)glGetString(GL_RENDERER);
@@ -197,26 +211,26 @@ bool pglDisplay ::InitDisplay(const pddiDisplayInit* init)
             if(*walk == ' ')
             {
                 *walk = 0;
-                SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, last);
+                SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "%s", last);
                 last = walk+1;
             }
             walk++;
         }
-        SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION,last);
+        SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "%s", last);
     }
 
-    extBGRA = CheckExtension("GL_EXT_bgra");
+    extBGRA = CheckExtension("GL_EXT_bgra") || CheckExtension("GL_EXT_texture_format_BGRA8888");
+#ifdef RAD_GLES
+    extBlend = CheckExtension("GL_OES_blend_equation_separate");
+#endif
 
-    //sprintf(userDisplayInfo[0].description,"OpenGL - Vendor: %s, Renderer: %s, Version: %s",glVendor,glRenderer,glVersion);
+    SDL_Log("OpenGL - Vendor: %s, Renderer: %s, Version: %s",glVendor,glRenderer,glVersion);
 
-#ifdef RAD_DEBUG
+#if defined RAD_DEBUG && !defined RAD_VITA
     glEnable(GL_DEBUG_OUTPUT_KHR);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_KHR);
     glDebugMessageCallback(MessageCallback, NULL);
 #endif
-
-    int error = SDL_GL_MakeCurrent(win, NULL);
-    PDDIASSERT(!error);
 
     return true;
 }
@@ -298,22 +312,23 @@ void pglDisplay::SetGamma(float r, float g, float b)
 
 void pglDisplay::SwapBuffers(void)
 {
-    BeginContext();
     SDL_GL_SwapWindow(win);
-    EndContext();
     reset = false;
 }
 
     
 unsigned pglDisplay::Screenshot(pddiColour* buffer, int nBytes)
 {
-
     if(nBytes < (winHeight * winWidth * 4))
         return 0;
 
+#ifndef RAD_GLES
     glReadBuffer(GL_FRONT);
-    glReadPixels(0, 0,  winWidth, winHeight, GL_BGRA, GL_UNSIGNED_BYTE, buffer);  
+#endif
+    glReadPixels(0, 0,  winWidth, winHeight, GL_BGRA, GL_UNSIGNED_BYTE, buffer);
+#ifndef RAD_GLES
     glReadBuffer(GL_BACK);
+#endif
 
     unsigned tmp[2048];
     PDDIASSERT(winWidth < 2048);
@@ -363,8 +378,8 @@ float pglDisplay::EndTiming()
 
 void pglDisplay::BeginContext(void)
 {
-    SDL_LockMutex(mutex);
     prevRC = SDL_GL_GetCurrentContext();
+    PDDIASSERT(prevRC != hRC);
     int error = SDL_GL_MakeCurrent(win, hRC);
     PDDIASSERT(!error);
 }
@@ -373,5 +388,5 @@ void pglDisplay::EndContext(void)
 {
     int error = SDL_GL_MakeCurrent(win, prevRC);
     PDDIASSERT(!error);
-    SDL_UnlockMutex(mutex);
 }
+

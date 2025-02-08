@@ -654,7 +654,7 @@ void IntersectManager::FindAnimPhysElems
     ReserveArray<AnimCollisionEntityDSG*>& orList 
 )
 {
-#ifndef RAD_RELEASE
+#ifdef PROFILER_ENABLED
     char temp[100];
     sprintf(temp, "::FindAnimPhysElems %f", iRadius);
 #endif

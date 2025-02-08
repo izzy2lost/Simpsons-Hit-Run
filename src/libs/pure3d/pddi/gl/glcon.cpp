@@ -2,22 +2,10 @@
 // Copyright (c) 2002 Radical Games Ltd.  All rights reserved.
 //=============================================================================
 
-
-
-
-#ifdef RAD_WIN32
-    #include <pddi/gl/display_win32/gldisplay.hpp>
-    #include <pddi/gl/display_win32/gl.hpp>
-#endif
-
-#ifdef RAD_LINUX
-    #include <pddi/gl/display_linux/gldisplay.hpp>
-    #include <pddi/gl/display_linux/gl.hpp>
-#endif
-
-
+#include <pddi/gl/gl.hpp>
 #include <pddi/gl/glcon.hpp>
 #include <pddi/gl/gldev.hpp>
+#include <pddi/gl/gldisplay.hpp>
 #include <pddi/gl/gltex.hpp>
 #include <pddi/gl/glmat.hpp>
 
@@ -25,6 +13,8 @@
 #include <math.h>
 #include <string.h>
 #include <SDL2/SDL.h>
+
+#include <microprofile.h>
 
 // vertex arrays rendering
 GLenum primTypeTable[5] =
@@ -85,9 +75,8 @@ pglContext::pglContext(pglDevice* dev, pglDisplay* disp) : pddiBaseContext((pddi
     display->AddRef();
     disp->SetContext(this);
 
-    display->BeginContext();
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize);
     DefaultState();
-    display->EndContext();
     contextID = 0;
 
     extContext = new pglExtContext(display);
@@ -114,26 +103,25 @@ void pglContext::BeginFrame()
 {
     pddiBaseContext::BeginFrame();
 
-    extContext->BeginContext();
-
     SDL_GL_SetSwapInterval(display->GetForceVSync() ? 1 : 0);
 
     if(display->HasReset())
     {
         contextID++;
 
-        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_FRONT);
-        glColor3f(1,1,1);
+        glColor4f(1,1,1,1);
 
+#if !defined RAD_GLES
         glEnable(GL_DITHER);
 
         if(display->CheckExtension("GL_EXT_separate_specular_color"))
         {
             glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL_EXT, GL_SEPARATE_SPECULAR_COLOR_EXT);
         }
+#endif
 
         SyncState(0xffffffff);
     }
@@ -149,8 +137,6 @@ void pglContext::BeginFrame()
 
 void pglContext::EndFrame()
 {
-    extContext->EndContext();
-
     pddiBaseContext::EndFrame();
 }
 
@@ -259,6 +245,151 @@ void pglContext::SetScissor(pddiRect* rect)
     }
 }
 
+#ifdef RAD_GLES
+#include <vector>
+class pglPrimStream : public pddiPrimStream
+{
+public:
+    std::vector<pddiVector> coords;
+    std::vector<pddiVector> normals;
+    std::vector<GLubyte> colours;
+    std::vector<pddiVector2> uvs;
+
+    GLenum primitive;
+
+    void Coord(float x, float y, float z)  
+    {
+        coords.push_back( pddiVector{ x, y, z } );
+    }
+
+    void Normal(float x, float y, float z) 
+    {
+        normals.push_back( pddiVector{ x, y, z } );
+    }
+
+    void Colour(pddiColour colour, int channel = 0)
+    {
+        colours.push_back( colour.Red() );
+        colours.push_back( colour.Green() );
+        colours.push_back( colour.Blue() );
+        colours.push_back( colour.Alpha() );
+    }
+
+    void UV(float u, float v, int channel = 0) 
+    { 
+        if(channel == 0)
+        {
+            uvs.push_back( pddiVector2{ u, v } );
+        }
+    }
+
+    void Specular(pddiColour colour) 
+    {
+        //
+    }
+
+    void Vertex(pddiVector* v, pddiColour c) 
+    {
+        colours.push_back( c.Red() );
+        colours.push_back( c.Green() );
+        colours.push_back( c.Blue() );
+        colours.push_back( c.Alpha() );
+        coords.push_back( *v );
+    }
+
+    void Vertex(pddiVector* v, pddiVector* n)
+    {
+        normals.push_back( *n );
+        coords.push_back( *v );
+    }
+
+    void Vertex(pddiVector* v, pddiVector2* uv)
+    {
+        uvs.push_back( *uv );
+        coords.push_back( *v );
+    }
+
+    void Vertex(pddiVector* v, pddiColour c, pddiVector2* uv)
+    {
+        colours.push_back( c.Red() );
+        colours.push_back( c.Green() );
+        colours.push_back( c.Blue() );
+        colours.push_back( c.Alpha() );
+        uvs.push_back( *uv );
+        coords.push_back( *v );
+    }
+
+    void Vertex(pddiVector* v, pddiVector* n, pddiVector2* uv)
+    {
+        normals.push_back( *n );
+        uvs.push_back( *uv );
+        coords.push_back( *v );
+    }
+
+} thePrimStream;
+
+pddiPrimStream* pglContext::BeginPrims(pddiShader* mat, pddiPrimType primType, unsigned vertexType, int vertexCount, unsigned pass)
+{
+    if(!mat)
+        mat = defaultShader;
+
+    pddiBaseContext::BeginPrims(mat, primType, vertexType, vertexCount);
+    pddiBaseShader* material = (pddiBaseShader*)mat;
+    ADD_STAT( PDDI_STAT_MATERIAL_OPS, !material->IsCurrent() );
+    material->SetMaterial();
+    thePrimStream.primitive = primTypeTable[primType];
+    return &thePrimStream;
+}
+
+void pglContext::EndPrims(pddiPrimStream* stream)
+{
+    MICROPROFILE_SCOPEI("SRR2", "pglContext::EndPrims", MP_RED);
+
+    pddiBaseContext::EndPrims(stream);
+    pglPrimStream* glstream = (pglPrimStream*)stream;
+
+    glBindBuffer( GL_ARRAY_BUFFER, 0 );
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+    glVertexPointer( 3, GL_FLOAT, 0, glstream->coords.data() );
+
+    if( !glstream->normals.empty() )
+    {
+        glEnableClientState( GL_NORMAL_ARRAY );
+        glNormalPointer( GL_FLOAT, 0, glstream->normals.data() );
+    }
+    else
+    {
+        glDisableClientState( GL_NORMAL_ARRAY );
+    }
+
+    if( !glstream->colours.empty() )
+    {
+        glEnableClientState( GL_COLOR_ARRAY );
+        glColorPointer( 4, GL_UNSIGNED_BYTE, 0, glstream->colours.data() );
+    }
+    else
+    {
+        glDisableClientState( GL_COLOR_ARRAY );
+    }
+
+    if( !glstream->uvs.empty() )
+    {
+        glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+        glTexCoordPointer( 2, GL_FLOAT, 0, glstream->uvs.data() );
+    }
+    else
+    {
+        glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+    }
+
+    glDrawArrays( glstream->primitive, 0, glstream->coords.size() );
+
+    glstream->coords.clear();
+    glstream->normals.clear();
+    glstream->colours.clear();
+    glstream->uvs.clear();
+}
+#else
 class pglPrimStream : public pddiPrimStream
 {
 public:
@@ -343,7 +474,7 @@ void pglContext::EndPrims(pddiPrimStream* stream)
     pddiBaseContext::EndPrims(stream);
     glEnd();
 }
-
+#endif
 
 class pglPrimBufferStream : public pddiPrimBufferStream
 {
@@ -500,6 +631,9 @@ pglPrimBuffer::pglPrimBuffer(pglContext* c, pddiPrimType type, unsigned vertexFo
     strips = NULL;
     indices = NULL;
 
+    valid = false;
+    vertexBuffer = indexBuffer = 0;
+
     primType = type;
     vertexType = vertexFormat;
 
@@ -532,15 +666,11 @@ pglPrimBuffer::pglPrimBuffer(pglContext* c, pddiPrimType type, unsigned vertexFo
     if(indexCount) 
         indices = new unsigned short[indexCount];
 
-    mem += nIndex * 2;
-
     nStrips = 0;
     strips = NULL;
 
-    mem /= 1024.0f;
-
     context->ADD_STAT(PDDI_STAT_BUFFERED_COUNT, 1);
-    context->ADD_STAT(PDDI_STAT_BUFFERED_ALLOC, mem);
+    context->ADD_STAT(PDDI_STAT_BUFFERED_ALLOC, mem / 1024.0f);
 }
 
 pglPrimBuffer::~pglPrimBuffer()
@@ -555,7 +685,7 @@ pglPrimBuffer::~pglPrimBuffer()
     delete [] colour;
 
     context->ADD_STAT(PDDI_STAT_BUFFERED_COUNT, -1);
-    context->ADD_STAT(PDDI_STAT_BUFFERED_ALLOC, -mem);
+    context->ADD_STAT(PDDI_STAT_BUFFERED_ALLOC, -mem / 1024.0f);
 }
 
 pddiPrimBufferStream* pglPrimBuffer::Lock()
@@ -577,6 +707,8 @@ void pglPrimBuffer::Unlock(pddiPrimBufferStream* stream)
 
     if(colour)
         colour -= total * 4;
+
+    valid = false;
 }
 
 unsigned char* pglPrimBuffer::LockIndexBuffer()
@@ -594,16 +726,37 @@ void pglPrimBuffer::SetIndices(unsigned short* i, int count)
 {
     PDDIASSERT(count <= (int)indexCount);
     memcpy(indices, i, count * sizeof(unsigned short));
+    valid = false;
 }
 
 void pglPrimBuffer::Display(void)
 {
-    glVertexPointer(3,GL_FLOAT,0,coord);
+    MICROPROFILE_SCOPEI("PDDI", "pglPrimBuffer::Display", MP_RED);
+
+    if(!vertexBuffer)
+    {
+        glGenBuffers(1, &vertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+        glBufferData(GL_ARRAY_BUFFER, mem, NULL, GL_DYNAMIC_DRAW);
+    }
+    else
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    }
+    
+    GLintptr offset = 0;
+    if( !valid )
+        glBufferSubData( GL_ARRAY_BUFFER, offset, allocated*12, coord );
+    glVertexPointer(3,GL_FLOAT,0,(void*)offset);
+    offset += allocated*12;
 
     if(vertexType & PDDI_V_NORMAL)
     {
+        if(!valid)
+            glBufferSubData(GL_ARRAY_BUFFER,offset,allocated*12,normal);
         glEnableClientState(GL_NORMAL_ARRAY);
-        glNormalPointer(GL_FLOAT,0,normal);
+        glNormalPointer(GL_FLOAT,0,(void*)offset);
+        offset += allocated*12;
     }
     else
     {
@@ -612,8 +765,11 @@ void pglPrimBuffer::Display(void)
 
     if(vertexType & PDDI_V_COLOUR)
     {
+        if(!valid)
+            glBufferSubData(GL_ARRAY_BUFFER,offset,allocated*4,colour);
         glEnableClientState(GL_COLOR_ARRAY);
-        glColorPointer(4,GL_UNSIGNED_BYTE,0,colour);
+        glColorPointer(4,GL_UNSIGNED_BYTE,0,(void*)offset);
+        offset += allocated*4;
     }
     else
     {
@@ -622,8 +778,11 @@ void pglPrimBuffer::Display(void)
 
     if(vertexType & 0xf)
     {
+        if(!valid)
+            glBufferSubData(GL_ARRAY_BUFFER,offset,allocated*8,uv);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glTexCoordPointer(2,GL_FLOAT,0, uv);
+        glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
+        offset += allocated*8;
     }
     else
     {
@@ -632,12 +791,28 @@ void pglPrimBuffer::Display(void)
 
     if(indexCount && indices)
     {
-        glDrawElements(primTypeTable[primType],indexCount,GL_UNSIGNED_SHORT,indices);
+        if(!indexBuffer)
+        {
+            glGenBuffers(1, &indexBuffer);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,indexBuffer);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER,indexCount*sizeof(unsigned short),NULL,GL_DYNAMIC_DRAW);
+        }
+        else
+        {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,indexBuffer);
+        }
+
+        if(!valid)
+            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER,0,indexCount*sizeof(unsigned short),indices);
+        glDrawElements(primTypeTable[primType],indexCount,GL_UNSIGNED_SHORT,0);
     }
     else
     {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
         glDrawArrays(primTypeTable[primType], 0, total);
     }
+
+    valid = true;
 }
 
 /*
@@ -682,9 +857,9 @@ void pglContext::SetupHardwareLight(int handle)
     else
         glDisable(h);
 
-    glLightf(h, GL_CONSTANT_ATTENUATION, state.lightingState->light[handle].attenA);
-    glLightf(h, GL_LINEAR_ATTENUATION, state.lightingState->light[handle].attenB);
-    glLightf(h, GL_QUADRATIC_ATTENUATION, state.lightingState->light[handle].attenC);
+    glLightfv(h, GL_CONSTANT_ATTENUATION, &state.lightingState->light[handle].attenA);
+    glLightfv(h, GL_LINEAR_ATTENUATION, &state.lightingState->light[handle].attenB);
+    glLightfv(h, GL_QUADRATIC_ATTENUATION, &state.lightingState->light[handle].attenC);
     
 
     float c[4];
@@ -759,6 +934,12 @@ GLenum compTable[8] = {
     GL_EQUAL,
     GL_NOTEQUAL,
 };
+
+void pglContext::SetColourWrite( bool red, bool green, bool blue, bool alpha )
+{
+    pddiBaseContext::SetColourWrite(red, green, blue, alpha);
+    glColorMask(red, green, blue, alpha);
+}
 
 void pglContext::EnableZBuffer(bool enable)
 {
@@ -847,6 +1028,12 @@ void pglContext::SetStencilOp(pddiStencilOp failOp, pddiStencilOp zFailOp, pddiS
     glStencilOp(stencilTable[failOp],stencilTable[zFailOp],stencilTable[zPassOp]);
 }
 
+#ifdef RAD_GLES
+void pglContext::SetFillMode(pddiFillMode mode)
+{
+    pddiBaseContext::SetFillMode(mode);
+}
+#else
 // polygon fill
 GLenum fillTable[3] =
 {
@@ -860,6 +1047,7 @@ void pglContext::SetFillMode(pddiFillMode mode)
     pddiBaseContext::SetFillMode(mode);
     glPolygonMode(GL_FRONT_AND_BACK, fillTable[mode]);
 }
+#endif
 
 // fog
 void pglContext::EnableFog(bool enable)
@@ -897,8 +1085,6 @@ void pglContext::SetFog(pddiColour colour, float start, float end)
 
 int pglContext::GetMaxTextureDimension(void)
 {
-    int maxTexSize;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize);
     return maxTexSize;
 }
 
@@ -936,3 +1122,6 @@ float pglContext::EndTiming(void)
 {
     return display->EndTiming();
 }
+
+
+

@@ -148,7 +148,7 @@ void pddiBaseContext::DefaultState()
     state.viewState->zBias = 0.0f;
     state.viewState->zRange[0] = 0.0f;
     state.viewState->zRange[1] = 1.0f;   
-    state.viewState->scissor.Set(0, 0, 320, 200); // TODO<- should be screen size
+    state.viewState->scissor.Set(0, 0, display->GetWidth(), display->GetHeight());
     memset(state.viewState->clipPlane, 0, sizeof(pddiPlane) * PDDI_MAX_CLIP_PLANES);
     
     // renderState
@@ -311,7 +311,7 @@ void pddiBaseContext::DisplayStats()
         "tex cache: %.0f hit, %.0f miss (%.1f KB)\n"
         "Skin XformVtx: %d  BPV: %.2f  XForm: %.3fms"
         "\n", 
-            
+
         stats[PDDI_STAT_CURRENT_FRAME],
         stats[PDDI_STAT_FRAME_TIME], 1000.0f / stats[PDDI_STAT_FRAME_TIME],
 
@@ -459,7 +459,7 @@ unsigned pddiBaseContext::GetClearStencil(void)
 void pddiBaseContext::Clear(unsigned bufferMask)
 {
     // for warning
-    bufferMask;
+    (void)bufferMask;
 }
 
 void pddiBaseContext::IdentityMatrix(pddiMatrixType id)
@@ -1180,7 +1180,7 @@ bool pddiAssertFailed(const char *file, int line, const char *cond, const char *
     }
     else
     {
-        printf(msgbuf);
+        printf("%s", msgbuf);
     }
     return true;
 }
@@ -1205,4 +1205,3 @@ bool pddiBaseContext::VerifyExtension(unsigned id)
     }
     return false;
 }
-

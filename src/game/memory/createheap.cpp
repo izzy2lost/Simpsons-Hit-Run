@@ -37,7 +37,7 @@ HeapCreationData g_HeapCreationData[] =
 {
     { HEAP_TYPE_DOUG_LEA, GMA_DEFAULT, "Default"              },      
     { HEAP_TYPE_DOUG_LEA, GMA_DEFAULT, "Temp"                 },      
-    { HEAP_TYPE_NONE,     GMA_DEFAULT, "Gamecube VMM"         }, // wtf is this
+    { HEAP_TYPE_NONE,     GMA_DEFAULT, "Gamecube VMM"         }, // wtf is this TODO(3ur): can this be removed?
 #ifdef RAD_WIN32
     { HEAP_TYPE_TRACKING, GMA_DEFAULT, "Persistent"           },  // no static heap for pc
 #else

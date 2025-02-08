@@ -72,7 +72,7 @@ const int PDDI_LIBID_VECTREX    = 12;
 #define PDDI_TEX_TOO_BIG      201
 #define PDDI_TEX_BADFORMAT    202
 
-#ifndef RAD_CONSOLE
+#if defined( RAD_WIN32 )
 // code used for library initialisation on a PC
 
 // video mode information
@@ -232,7 +232,7 @@ protected:
 class pddiDevice : public pddiObject
 {
 public:
-#ifndef RAD_CONSOLE
+#if defined( RAD_WIN32 )
     PDDI_INTERFACE int GetDisplayInfo(pddiDisplayInfo** info) PDDI_PURE;
 #endif
     PDDI_INTERFACE void GetLibraryInfo(pddiLibInfo* info) PDDI_PURE;
@@ -302,11 +302,9 @@ class pddiDisplay : public pddiObject
 {
 public:
 
-#ifndef RAD_CONSOLE
-#ifdef RAD_WIN32
+#if defined( RAD_WIN32 )
    PDDI_INTERFACE long ProcessWindowMessage(SDL_Window* win, const SDL_WindowEvent* event) PDDI_PURE;
    PDDI_INTERFACE void SetWindow(SDL_Window* win) PDDI_PURE;
-#endif
    PDDI_INTERFACE pddiDisplayInfo* GetDisplayInfo(void) PDDI_PURE;
 #endif
    PDDI_INTERFACE bool InitDisplay(int x, int y, int bpp) PDDI_PURE;
@@ -326,7 +324,7 @@ public:
    // amb nov29/2001 : return the current front buffer
    PDDI_INTERFACE unsigned Screenshot(pddiColour* buffer, int nBytes) PDDI_PURE;
 
-   PDDI_INTERFACE bool IsWidescreen(void) {return false; };
+   PDDI_INTERFACE bool IsWidescreen(void) {return GetWidth() * 3 > GetHeight() * 4; };
 
    PDDI_INTERFACE void SetForceVSync(bool IsForceVSync, bool only60 = false) {m_ForceVSync = IsForceVSync; m_only60 = only60;}
    PDDI_INTERFACE bool GetForceVSync(void) {return m_ForceVSync;}

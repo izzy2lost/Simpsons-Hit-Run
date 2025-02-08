@@ -2,19 +2,13 @@
 // Copyright (c) 2002 Radical Games Ltd.  All rights reserved.
 //=============================================================================
 
-
+#include <pddi/gl/gl.hpp>
 #include <pddi/gl/glmat.hpp>
 #include <pddi/gl/gltex.hpp>
 #include <pddi/gl/glcon.hpp>
+#include <pddi/gl/gldisplay.hpp>
 
-#ifdef RAD_WIN32
-    #include <pddi/gl/display_win32/gl.hpp>
-#endif
-
-#ifdef RAD_LINUX
-    #include <pddi/gl/display_linux/gl.hpp>
-#endif
-
+#include <microprofile.h>
 
 pddiShadeColourTable pglMat::colourTable[] = 
 {
@@ -40,12 +34,15 @@ pddiShadeIntTable pglMat::intTable[] =
     {PDDI_SP_BLENDMODE , SHADE_INT(&pglMat::SetBlendMode)},
     {PDDI_SP_ALPHATEST , SHADE_INT(&pglMat::EnableAlphaTest)},
     {PDDI_SP_ALPHACOMPARE , SHADE_INT(&pglMat::SetAlphaCompare)},
+    {PDDI_SP_TWOSIDED , SHADE_INT(&pglMat::SetTwoSided)},
+    {PDDI_SP_EMISSIVEALPHA , SHADE_INT(&pglMat::SetEmissiveAlpha)},
     {PDDI_SP_NULL , NULL}
 };
 
 pddiShadeFloatTable pglMat::floatTable[] = 
 {
     {PDDI_SP_SHININESS , SHADE_FLOAT(&pglMat::SetShininess)},
+    {PDDI_SP_ALPHACOMPARE_THRESHOLD , SHADE_FLOAT(&pglMat::SetAlphaRef)},
     {PDDI_SP_NULL , NULL}
 };
 
@@ -81,8 +78,8 @@ GLenum texBlendTable[6] =
 GLenum uvTable[3] =
 {
     GL_REPEAT,
-    GL_CLAMP,
-    GL_CLAMP
+    GL_CLAMP_TO_EDGE,
+    GL_CLAMP_TO_EDGE
 };
 
 GLenum alphaCompareTable[8] =
@@ -97,16 +94,16 @@ GLenum alphaCompareTable[8] =
     GL_NOTEQUAL
 };
 
-GLenum alphaBlendTable[8][2] =
+GLenum alphaBlendTable[8][3] =
 {
-    { GL_ONE, GL_ZERO },                       //PDDI_BLEND_NONE,
-    { GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA },  //PDDI_BLEND_ALPHA
-    { GL_ONE, GL_ONE },                        //PDDI_BLEND_ADD
-    { GL_ONE, GL_ZERO },                       //PDDI_BLEND_SUBTRACT
-    { GL_DST_COLOR, GL_ZERO },                 //PDDI_BLEND_MODULATE,
-    { GL_DST_COLOR, GL_SRC_COLOR},             //PDDI_BLEND_MODULATE2,
-    { GL_ONE, GL_SRC_ALPHA},                   //PDDI_BLEND_ADDMODULATEALPHA,
-    { GL_SRC_ALPHA, GL_SRC_ALPHA}              //PDDI_BLEND_SUBMODULATEALPHA - won't work! no sub blending
+    { GL_FUNC_ADD, GL_ONE, GL_ZERO },                       //PDDI_BLEND_NONE,
+    { GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA },  //PDDI_BLEND_ALPHA
+    { GL_FUNC_ADD, GL_ONE, GL_ONE },                        //PDDI_BLEND_ADD
+    { GL_FUNC_REVERSE_SUBTRACT, GL_ONE, GL_ONE },           //PDDI_BLEND_SUBTRACT
+    { GL_FUNC_ADD, GL_DST_COLOR, GL_ZERO },                 //PDDI_BLEND_MODULATE,
+    { GL_FUNC_ADD, GL_DST_COLOR, GL_SRC_COLOR},             //PDDI_BLEND_MODULATE2,
+    { GL_FUNC_ADD, GL_ONE, GL_SRC_ALPHA},                   //PDDI_BLEND_ADDMODULATEALPHA,
+    { GL_FUNC_REVERSE_SUBTRACT, GL_SRC_ALPHA, GL_SRC_ALPHA} //PDDI_BLEND_SUBMODULATEALPHA
 };
 
 static inline void FillGLColour(pddiColour c, float* f)
@@ -131,6 +128,7 @@ pglMat::pglMat(pglContext* c)
         texEnv[i].filterMode = PDDI_FILTER_BILINEAR;
 
         texEnv[i].lit = false;
+        texEnv[i].twoSided = false;
         texEnv[i].shadeMode = PDDI_SHADE_GOURAUD;
         texEnv[i].ambient.Set(255,255,255);
         texEnv[i].diffuse.Set(255,255,255);
@@ -142,8 +140,9 @@ pglMat::pglMat(pglContext* c)
     //   destBlend = PDDI_BF_ZERO;
 
         texEnv[i].alphaTest = false;
-        texEnv[i].alphaCompareMode = PDDI_COMPARE_GREATER;
+        texEnv[i].alphaCompareMode = PDDI_COMPARE_GREATEREQUAL;
         texEnv[i].alphaBlendMode = PDDI_BLEND_NONE;
+        texEnv[i].alphaRef = 0.5f;
     }
     texEnv[0].enabled = true;
     pass = 0;
@@ -202,6 +201,11 @@ void pglMat::SetShadeMode(int shade)
     texEnv[pass].shadeMode = (pddiShadeMode)shade;
 }
 
+void pglMat::SetTwoSided(int b)
+{
+    texEnv[pass].twoSided = b != 0;
+}
+
 void pglMat::EnableLighting(int b)
 {
     texEnv[pass].lit = b != 0;
@@ -225,6 +229,24 @@ void pglMat::SetSpecular(pddiColour c)
 void pglMat::SetEmissive(pddiColour c) 
 {
     texEnv[pass].emissive = c;
+    SetEmissiveAlpha(c.Alpha());
+}
+
+void pglMat::SetEmissiveAlpha(int alpha)
+{
+    texEnv[pass].diffuse.SetAlpha(alpha);
+    if(alpha < 255)
+    {
+        texEnv[pass].specular.SetAlpha(0);
+        texEnv[pass].ambient.SetAlpha(0);
+        texEnv[pass].emissive.SetAlpha(0);
+    }
+    else
+    {
+        texEnv[pass].specular.SetAlpha(255);
+        texEnv[pass].ambient.SetAlpha(255);
+        texEnv[pass].emissive.SetAlpha(255);
+    }
 }
 
 void pglMat::SetShininess(float power) 
@@ -259,7 +281,7 @@ int pglMat::CountDevPasses(void)
 
 void pglMat::SetDevPass(unsigned pass)
 {
-    glColor3ub(255,255,255);//PDDI_GETR(diffuse),PDDI_GETG(diffuse),PDDI_GETB(diffuse));
+    MICROPROFILE_SCOPEI( "PDDI", "pglMat::SetDevPass", MP_RED );
 
     int i = 0;
 
@@ -296,7 +318,13 @@ void pglMat::SetDevPass(unsigned pass)
     else
     {
         glEnable(GL_BLEND);
-        glBlendFunc(alphaBlendTable[texEnv[i].alphaBlendMode][0],alphaBlendTable[texEnv[i].alphaBlendMode][1]);
+#ifdef RAD_GLES
+        if(context->GetDisplay()->ExtBlend())
+            glBlendEquationSeparateOES(alphaBlendTable[texEnv[i].alphaBlendMode][0],alphaBlendTable[texEnv[i].alphaBlendMode][0]);
+#else
+        glBlendEquation(alphaBlendTable[texEnv[i].alphaBlendMode][0]);
+#endif
+        glBlendFunc(alphaBlendTable[texEnv[i].alphaBlendMode][1],alphaBlendTable[texEnv[i].alphaBlendMode][2]);
     }
  
     if(texEnv[i].lit)
@@ -324,6 +352,15 @@ void pglMat::SetDevPass(unsigned pass)
     {
         glDisable(GL_LIGHTING);
         glDisableClientState(GL_NORMAL_ARRAY);
+    }
+
+    if( texEnv[i].twoSided || context->GetCullMode() == PDDI_CULL_NONE )
+    {
+        glDisable(GL_CULL_FACE);
+    }
+    else
+    {
+        glEnable(GL_CULL_FACE);
     }
 }
 

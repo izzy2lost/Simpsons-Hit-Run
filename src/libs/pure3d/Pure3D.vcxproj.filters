@@ -403,6 +403,9 @@
     <ClCompile Include="pddi\gl\display_win32\gldisplay.cpp">
       <Filter>Pddi Source\gl\display_win32</Filter>
     </ClCompile>
+    <ClCompile Include="pddi\gl\decompress.cpp">
+      <Filter>Pddi Source\gl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="p3d\anim\animatedobject.hpp">
@@ -798,14 +801,16 @@
     <ClInclude Include="pddi\gl\gltex.hpp">
       <Filter>Pddi Headers\gl</Filter>
     </ClInclude>
-    <ClInclude Include="pddi\gl\display_win32\gl.hpp">
-      <Filter>Pddi Headers\gl\display_win32</Filter>
-    </ClInclude>
-    <ClInclude Include="pddi\gl\display_win32\gldisplay.hpp">
-      <Filter>Pddi Headers\gl\display_win32</Filter>
+    <ClInclude Include="pddi\gl\decompress.h">
+      <Filter>Pddi Headers\gl</Filter>
     </ClInclude>
     <ClInclude Include="pddi\gl\display_win32\resource.h">
       <Filter>Pddi Headers\gl\display_win32</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="pddi\gl\display_win32\pddigl.rc">
+      <Filter>Pddi Headers\gl\display_win32</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
