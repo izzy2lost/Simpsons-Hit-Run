@@ -184,6 +184,11 @@ int radSoundHalVoiceWin::GetQueuedBuffers( void )
     return buffersQueued;
 }
 
+IRadSoundHalBuffer * radSoundHalVoiceWin::GetBuffer( void )
+{
+    return m_xRadSoundHalBufferWin;
+}
+
 void radSoundHalVoiceWin::Play( )
 {
     if (IsHardwarePlaying( ) == false)
