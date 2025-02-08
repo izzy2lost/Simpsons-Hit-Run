@@ -478,9 +478,6 @@
     <ClInclude Include="src\radstats\statmanager.hpp">
       <Filter>src\radstats</Filter>
     </ClInclude>
-    <ClInclude Include="src\radtextdisplay\font.hpp">
-      <Filter>src\radtextdisplay</Filter>
-    </ClInclude>
     <ClInclude Include="src\radtextdisplay\textdisplay.hpp">
       <Filter>src\radtextdisplay</Filter>
     </ClInclude>
