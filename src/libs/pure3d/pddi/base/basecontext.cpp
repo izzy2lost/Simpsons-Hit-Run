@@ -94,7 +94,7 @@ pddiBaseContext::pddiBaseContext(pddiDisplay* disp, pddiDevice* dev)
     BuildMatrixStacks();
     BuildStateStacks();
 
-    font = new pddiFont(this); 
+    font = new pddiBaseFont(this); 
     displayStats = false;
     supressPrimTally = false;
 

@@ -191,7 +191,7 @@ pglTexture::pglTexture(pglContext* c)
 pglTexture::~pglTexture()
 {
     for(int i = 0; i < nMipMap+1; i++)
-        delete bits[i];
+        if (bits[i]) delete bits[i];
 
     if(bits) delete [] bits;
 

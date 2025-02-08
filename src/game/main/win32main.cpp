@@ -49,7 +49,9 @@ static void ProcessCommandLineArgumentsFromFile();
 // Returns:     win32 return.
 //
 //=============================================================================
-SDLMAIN_DECLSPEC int SDL_main( int argc, char *argv[] )
+#define SDL_MAIN_HANDLED
+#define main main
+SDLMAIN_DECLSPEC int main( int argc, char *argv[] )
 {
     //
     // Pick out and store command line settings.

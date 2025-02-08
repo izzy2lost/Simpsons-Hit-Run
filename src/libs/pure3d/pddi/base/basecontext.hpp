@@ -386,7 +386,7 @@ protected:
     pddiDevice*      device;
     pddiContextState state;
     float            stats[PDDI_MAX_STATS];
-    pddiFont*        font;
+    pddiBaseFont*    font;
     bool             displayStats;
     bool             supressPrimTally;
 

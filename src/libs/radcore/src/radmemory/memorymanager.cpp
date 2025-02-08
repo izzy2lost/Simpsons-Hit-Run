@@ -226,7 +226,6 @@ extern void radMemorySpaceTerminate( void );
 //============================================================================
 // ::radMemoryInitialize
 //============================================================================
-
 void radMemoryInitialize( void )
 {
     if( g_Initialized )
@@ -235,6 +234,9 @@ void radMemoryInitialize( void )
     }
 
     ::radMemoryPlatInitialize( );
+
+    //This is memory reserved to really bad situations where we need to printf.
+    gEmergencyMemory = radMemoryPlatAlloc( 1024 * 32 );
 
     rAssert( g_Initialized == false );
     g_Initialized = true;

@@ -254,7 +254,7 @@ void ExternalMemoryHeap::operator delete( void * pMemory )
     ExternalMemoryObject * pEmo_Free = m_pEmo_First;
 
     while ( ( pEmo_Free != NULL ) &&
-            ( pEmo_Free->m_ClientAddress != reinterpret_cast< unsigned int >( pMemory ) ) )
+            ( pEmo_Free->m_ClientAddress != reinterpret_cast< uintptr_t >( pMemory ) ) )
     {
         pEmo_Free = pEmo_Free->m_pEmo_Next;
     }
@@ -293,7 +293,7 @@ void ExternalMemoryHeap::operator delete( void * pMemory )
 
     ExternalMemoryObject * pEmo_Free = m_pEmo_First;
 
-    while( ( pEmo_Free != NULL ) && ( pEmo_Free->m_ClientAddress != reinterpret_cast< unsigned int >( pMemory ) ) )
+    while( ( pEmo_Free != NULL ) && ( pEmo_Free->m_ClientAddress != reinterpret_cast< uintptr_t >( pMemory ) ) )
     {
         pEmo_Free = pEmo_Free->m_pEmo_Next;
     }
@@ -482,7 +482,7 @@ void ExternalMemoryHeap::Initialize
     pEmo_FreeMem->Initialize(
         this,
         0,
-        reinterpret_cast< unsigned int >( pStartOfExternalMemory ),
+        reinterpret_cast< uintptr_t >( pStartOfExternalMemory ),
         sizeOfExternalMemory,
         NULL,
         NULL
@@ -641,7 +641,7 @@ ExternalMemoryObject * ExternalMemoryHeap::Allocate
         }
         else
         {
-            rAssert( ((unsigned int) pEmo_New->GetMemoryAddress( ) % alignment ) == 0 );
+            rAssert( ((uintptr_t) pEmo_New->GetMemoryAddress( ) % alignment ) == 0 );
 
             pEmo_New->SetName( radMemoryGetAllocationName( ) );
 
@@ -678,7 +678,7 @@ ExternalMemoryObject * ExternalMemoryHeap::AllocateFirstFit
 
     while ( pEmo_Ptr != NULL )
     {
-        if ( ( pEmo_Ptr->m_ReferenceCount == 0 ) )
+        if ( pEmo_Ptr->m_ReferenceCount == 0 )
         {
             //
             // We have to adjust this block's size for aligning this memory block

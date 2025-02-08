@@ -39,7 +39,7 @@
 #define MASK_ROUNDED     0x40000000
 #define MASK_ALIGNMENT   0x20000000
 #define MASK_SIZE        0x1FFFFFFF
-#endif NOT_ENCODE
+#endif // NOT_ENCODE
 
 #define FREE_VALUE    0xFEEDF00D
 #define USED_VALUE    0x12345678
@@ -242,6 +242,6 @@ void MemorySet( void* block, unsigned int value, unsigned int size );
 // Takes any given value and rounds it up to the next multiple of 4
 // in order to cause values to be aligned to 32-bits.
 
-unsigned int RoundUpAlignment( unsigned int value, unsigned int alignment );
+uintptr_t RoundUpAlignment( uintptr_t value, uintptr_t alignment );
 
 #endif

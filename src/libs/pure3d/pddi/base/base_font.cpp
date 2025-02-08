@@ -13,19 +13,19 @@
 #include <stdlib.h>
 #include <pddi/base/romans.h>  // glyphs
 
-float pddiFont::xscale = 1.0f;
-float pddiFont::yscale = 1.0f;
+float pddiBaseFont::xscale = 1.0f;
+float pddiBaseFont::yscale = 1.0f;
 
-pddiFont::pddiFont(pddiRenderContext* ctx)
+pddiBaseFont::pddiBaseFont(pddiRenderContext* ctx)
 {
     context = ctx; // weak reference, don't addref
 }
 
-pddiFont::~pddiFont()
+pddiBaseFont::~pddiBaseFont()
 {
 }
 
-void pddiFont::Print(const char* str, int x, int y, float z, pddiColour colour)
+void pddiBaseFont::Print(const char* str, int x, int y, float z, pddiColour colour)
 {
     // tweak these values to adjust the screen size of the font
     const float baseline = 10.0f * yscale;
@@ -123,7 +123,7 @@ void pddiFont::Print(const char* str, int x, int y, float z, pddiColour colour)
     }
 }
 
-void pddiFont::SetScale(float xScale, float yScale)
+void pddiBaseFont::SetScale(float xScale, float yScale)
 {
     xscale = xScale;
     yscale = yScale;

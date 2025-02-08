@@ -15,11 +15,11 @@ class pddiDevice;
 class pddiRenderContext;
 class pddiShader;
 
-class pddiFont
+class pddiBaseFont
 {
 public:
-    pddiFont(pddiRenderContext* ctx);
-    ~pddiFont();
+    pddiBaseFont(pddiRenderContext* ctx);
+    ~pddiBaseFont();
 
     void Print(const char* s, int x, int y, float z, pddiColour colour);
 
@@ -32,4 +32,3 @@ private:
 };
 
 #endif /* _FONT_HPP */
-
