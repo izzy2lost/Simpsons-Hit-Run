@@ -15,7 +15,7 @@
 //===========================================================================
 // Includes
 //===========================================================================
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #include <presentation/gui/frontend/guiscreenskingallery.h>
 #include <presentation/gui/frontend/guiscreenscrapbookcontents.h>

@@ -28,7 +28,7 @@
 #include <p3d/utility.hpp>
 
 #ifdef RAD_WIN32
-#include <SDL.h>  // for SDL_PollEvent...
+#include <SDL2/SDL.h>  // for SDL_PollEvent...
 #endif
 
 //========================================

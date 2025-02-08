@@ -15,7 +15,7 @@
 //===========================================================================
 // Includes
 //===========================================================================
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <presentation/gui/ingame/guiscreenphonebooth.h>
 #include <presentation/gui/ingame/guiscreenhud.h>
 #include <presentation/gui/utility/specialfx.h>
