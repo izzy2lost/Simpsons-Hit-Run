@@ -54,8 +54,9 @@ jobs:
 
       - name: Retarget Solution
         run: |
-          "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.exe" SRR2.sln /Upgrade
-
+          & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.exe" "SRR2.sln" /Upgrade
+        shell: pwsh
+        
       - name: App Build
         run: |
           msbuild $env:SolutionPath `
