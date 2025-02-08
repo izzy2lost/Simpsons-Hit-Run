@@ -1,7 +1,7 @@
 name: Build Simpsons:Hit & Run UWP
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   build:
@@ -11,18 +11,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install MinGW-w64 or LLVM
+      - name: Set up Visual Studio with UWP toolset
+        uses: microsoft/setup-msbuild@v2
+        with:
+          vs-version: 2022
+          msbuild-architecture: x64
+          uwp: true  # Make sure to enable UWP support
+
+      - name: Install dependencies
         run: |
-          choco install mingw --force  # Install MinGW-w64 if not already installed
-          echo "CC=mingw64-gcc" >> $GITHUB_ENV
-          echo "CXX=mingw64-g++" >> $GITHUB_ENV
-          echo "CFLAGS=-target x86_64-pc-windows-msvc -DWINAPI_FAMILY=WINAPI_FAMILY_APP" >> $GITHUB_ENV
+          choco install ninja --yes  # Install Ninja if not already installed
+
+      - name: Configure build environment
+        run: |
+          echo "Setting up environment for UWP build"
+          echo "CXX=cl" >> $GITHUB_ENV  # Use Visual Studio's C++ compiler
+          echo "CC=cl" >> $GITHUB_ENV   # Same for C
+          echo "CFLAGS=-DWINAPI_FAMILY=WINAPI_FAMILY_APP" >> $GITHUB_ENV
           echo "CXXFLAGS=$CFLAGS" >> $GITHUB_ENV
 
-      - name: Build Simpsons: Hit & Run UWP
+      - name: Build Simpsons:Hit & Run UWP
         run: |
           mkdir build
           cd build
-          cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=C:/path/to/uwp-toolchain.cmake -DCMAKE_BUILD_TYPE=Release ..
+          cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=uwp-toolchain.cmake -DCMAKE_BUILD_TYPE=Release ..
           ninja
-
