@@ -89,7 +89,7 @@ radThreadMutex::radThreadMutex( void )
     :
     m_ReferenceCount( 1 )
 { 
-    radMemoryMonitorIdentifyAllocation( this, g_nameFTech, "radThreadMutex" )
+    radMemoryMonitorIdentifyAllocation( this, g_nameFTech, "radThreadMutex" );
     m_Mutex = SDL_CreateMutex();
 }
 

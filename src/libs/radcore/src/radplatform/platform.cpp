@@ -30,8 +30,8 @@
 #include <radobjectlist.hpp>
 
 #ifdef RAD_WIN32
-#include <SDL.h>
-#include <SDL_syswm.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_syswm.h>
 #include <windows.h>
 #endif 
 #ifdef RAD_XBOX
@@ -142,7 +142,7 @@ class radPlatform : public IRadPlatform
         m_Initialized = false;
     }
 
-    #idfed RAD_WIN32
+    #ifdef RAD_WIN32
 	virtual HWND GetMainWindowHandle( void )
     {   
         rWarningMsg( m_wmInfo.subsystem != SDL_SYSWM_WINDOWS, "WM info doesn't match the windows subsystem." );
