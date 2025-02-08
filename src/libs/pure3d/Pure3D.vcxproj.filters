@@ -68,6 +68,12 @@
     <Filter Include="Pddi Headers\gl">
       <UniqueIdentifier>{f35bb267-cc9c-49e5-88ff-834a8f763337}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pddi Source\gl\display_win32">
+      <UniqueIdentifier>{3dfb4ef4-c3ca-47bd-96dc-63ab756bca9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pddi Headers\gl\display_win32">
+      <UniqueIdentifier>{2dc3f221-583d-43c0-9424-ba6b773c872d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="p3d\anim\animate.cpp">
@@ -393,6 +399,9 @@
     </ClCompile>
     <ClCompile Include="pddi\gl\gltex.cpp">
       <Filter>Pddi Source\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="pddi\gl\display_win32\gldisplay.cpp">
+      <Filter>Pddi Source\gl\display_win32</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -788,6 +797,15 @@
     </ClInclude>
     <ClInclude Include="pddi\gl\gltex.hpp">
       <Filter>Pddi Headers\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\gl\display_win32\gl.hpp">
+      <Filter>Pddi Headers\gl\display_win32</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\gl\display_win32\gldisplay.hpp">
+      <Filter>Pddi Headers\gl\display_win32</Filter>
+    </ClInclude>
+    <ClInclude Include="pddi\gl\display_win32\resource.h">
+      <Filter>Pddi Headers\gl\display_win32</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

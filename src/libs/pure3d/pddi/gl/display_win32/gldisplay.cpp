@@ -15,7 +15,7 @@
 
 #include <pddi/gl/glcon.hpp>
 #include <pddi/base/debug.hpp>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #include<stdio.h>
 #include<string.h>
