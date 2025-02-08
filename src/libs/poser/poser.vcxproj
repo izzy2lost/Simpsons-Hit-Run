@@ -7,9 +7,11 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
-    <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Tune|Win32">
       <Configuration>Tune</Configuration>
