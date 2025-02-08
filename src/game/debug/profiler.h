@@ -16,19 +16,22 @@
 // Nested Includes
 //========================================
 
-//========================================
-// Forward References
-//========================================
-
-#if !defined( RAD_RELEASE ) && !defined( WORLD_BUILDER ) && !defined( RAD_MW ) && !defined( RAD_WIN32 )
-    #define PROFILER_ENABLED
+#if !defined( RAD_RELEASE ) && !defined( WORLD_BUILDER ) && !defined( RAD_MW )
+#define PROFILER_ENABLED
+//TODO(3ur): too many symbol errors bruhhhhh
+//#define MICROPROFILE_ENABLED 1
 #endif // RAD_RELEASE
 
 
 #include "main/commandlineoptions.h"
 
-#include <p3d/entity.hpp>
-#include <radload/utility/hashtable.hpp>
+#include <p3d/p3dtypes.hpp>
+
+//========================================
+// Forward References
+//========================================
+
+template<class T> class HashTable;
 
 //===========================================================================
 // *** USE THESE MACROS, DO NOT INVOKE PROFILER DIRECTLY ***
@@ -50,6 +53,21 @@
 
     #define SNSTART(id, txt)
     #define SNSTOP(id)
+
+#elif defined MICROPROFILE_ENABLED
+
+    #include <microprofile.h>
+
+    #define CREATE_PROFILER()       MicroProfileSetEnableAllGroups(true); MicroProfileSetForceMetaCounters(true);
+    #define DESTROY_PROFILER()      MicroProfileShutdown();
+
+    #define BEGIN_PROFILE(string)   MICROPROFILE_ENTERI("SRR2", string, MP_YELLOW);
+    #define END_PROFILE(string)     MICROPROFILE_LEAVE();
+
+    #define BEGIN_PROFILER_FRAME()
+    #define END_PROFILER_FRAME()    MicroProfileFlip(nullptr);
+
+	#define RENDER_PROFILER()
 
 #else
 

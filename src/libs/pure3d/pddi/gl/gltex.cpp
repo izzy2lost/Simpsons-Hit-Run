@@ -2,22 +2,124 @@
 // Copyright (c) 2002 Radical Games Ltd.  All rights reserved.
 //=============================================================================
 
-
+#include <pddi/gl/gl.hpp>
+#include <pddi/gl/gldisplay.hpp>
 #include <pddi/gl/gltex.hpp>
 #include <pddi/gl/glcon.hpp>
 
-#ifdef RAD_WIN32
-    #include <pddi/gl/display_win32/gldisplay.hpp>
-    #include <pddi/gl/display_win32/gl.hpp>
-#endif
-
-#ifdef RAD_LINUX
-    #include <pddi/gl/display_linux/gldisplay.hpp>
-    #include <pddi/gl/display_linux/gl.hpp>
-#endif
-
 #include <math.h>
 #include <pddi/base/debug.hpp>
+#include <radmemory.hpp>
+
+#include <microprofile.h>
+
+// bruh
+#define GL_COMPRESSED_RGB_S3TC_DXT1_EXT   0x83F0
+#define GL_COMPRESSED_RGBA_S3TC_DXT1_EXT  0x83F1
+#define GL_COMPRESSED_RGBA_S3TC_DXT3_EXT  0x83F2
+#define GL_COMPRESSED_RGBA_S3TC_DXT5_EXT  0x83F3
+#define GL_SHARED_TEXTURE_PALETTE_EXT     0x81FB
+#define GL_COLOR_INDEX1_EXT               0x80E2
+#define GL_COLOR_INDEX2_EXT               0x80E3
+#define GL_COLOR_INDEX4_EXT               0x80E4
+#define GL_COLOR_INDEX8_EXT               0x80E5
+#define GL_COLOR_INDEX12_EXT              0x80E6
+#define GL_COLOR_INDEX16_EXT              0x80E7
+#define GL_TEXTURE_INDEX_SIZE_EXT         0x80ED
+#define GL_COLOR_TABLE_FORMAT_EXT         0x80D8
+#define GL_COLOR_TABLE_WIDTH_EXT_EXT_EXT  0x80D9
+#define GL_COLOR_TABLE_RED_SIZE_EXT_EXT   0x80DA
+#define GL_COLOR_TABLE_GREEN_SIZE_EXT_EXT 0x80DB
+#define GL_COLOR_TABLE_BLUE_SIZE_EXT_EXT  0x80DC
+#define GL_COLOR_TABLE_ALPHA_SIZE_EXT_EXT 0x80DD
+#define GL_COLOR_TABLE_LUMINANCE_SIZE_EXT 0x80DE
+#define GL_COLOR_TABLE_INTENSITY_SIZE_EXT 0x80DF
+#define GL_BGR_EXT                        0x80E0
+#define GL_BGRA_EXT                       0x80E1
+
+static inline GLenum PickPixelFormat(pddiPixelFormat format)
+{
+    switch (format)
+    {
+#if defined RAD_GLES
+    case PDDI_PIXEL_RGB888: return GL_BGRA_EXT;
+    case PDDI_PIXEL_ARGB8888: return GL_BGRA_EXT;
+#else
+    case PDDI_PIXEL_RGB555:
+    case PDDI_PIXEL_RGB565: return GL_RGB5;
+    case PDDI_PIXEL_ARGB1555: return GL_RGB5_A1;
+    case PDDI_PIXEL_ARGB4444: return GL_RGBA4;
+    case PDDI_PIXEL_RGB888: return GL_RGB8;
+    case PDDI_PIXEL_ARGB8888: return GL_RGBA8;
+    case PDDI_PIXEL_PAL8: return GL_COLOR_INDEX8_EXT;
+    case PDDI_PIXEL_PAL4: return GL_COLOR_INDEX4_EXT;
+    case PDDI_PIXEL_LUM8: return GL_LUMINANCE8;
+    case PDDI_PIXEL_DUDV88: return GL_LUMINANCE8_ALPHA8;
+#endif
+#if defined(RAD_GLES)
+    case PDDI_PIXEL_DXT1: return GL_RGBA;
+    case PDDI_PIXEL_DXT3: return GL_RGBA;
+    case PDDI_PIXEL_DXT5: return GL_RGBA;
+#else
+    case PDDI_PIXEL_DXT1: return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+    case PDDI_PIXEL_DXT3: return GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+    case PDDI_PIXEL_DXT5: return GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+#endif
+    }
+    PDDIASSERT(false);
+    return GL_INVALID_ENUM;
+};
+
+static inline pddiPixelFormat PickPixelFormat(pddiTextureType type, int bitDepth, int alphaDepth)
+{
+    switch (type)
+    {
+    case PDDI_TEXTYPE_RGB:
+        switch (alphaDepth)
+        {
+        case 0:
+            return (bitDepth <= 16) ? PDDI_PIXEL_RGB565 : PDDI_PIXEL_RGB888;
+        case 1:
+            return (bitDepth <= 16) ? PDDI_PIXEL_ARGB1555 : PDDI_PIXEL_ARGB8888;
+        default:
+            return (bitDepth <= 16) ? PDDI_PIXEL_ARGB4444 : PDDI_PIXEL_ARGB8888;
+        }
+        break;
+
+    case PDDI_TEXTYPE_PALETTIZED:
+        return PDDI_PIXEL_PAL8;
+
+    case PDDI_TEXTYPE_LUMINANCE:
+        return PDDI_PIXEL_LUM8;
+
+    case PDDI_TEXTYPE_BUMPMAP:
+        return PDDI_PIXEL_DUDV88;
+
+    case PDDI_TEXTYPE_DXT1:
+        return PDDI_PIXEL_DXT1;
+
+    case PDDI_TEXTYPE_DXT2:
+        return PDDI_PIXEL_DXT2;
+
+    case PDDI_TEXTYPE_DXT3:
+        return PDDI_PIXEL_DXT3;
+
+    case PDDI_TEXTYPE_DXT4:
+        return PDDI_PIXEL_DXT4;
+
+    case PDDI_TEXTYPE_DXT5:
+        return PDDI_PIXEL_DXT5;
+
+    case PDDI_TEXTYPE_YUV:
+        return PDDI_PIXEL_YUV;
+    }
+    PDDIASSERT(false);
+    return PDDI_PIXEL_UNKNOWN;
+};
+
+#if defined(RAD_GLES)
+#include "decompress.h"
+#endif
 
 void pglTexture::SetGLState(void)
 {
@@ -27,6 +129,8 @@ void pglTexture::SetGLState(void)
         gltexture = 0;
     }
 
+    MICROPROFILE_SCOPEI("PDDI", "pglTexture::SetGLState", MP_RED);
+
     glEnable(GL_TEXTURE_2D);
     if(!valid)
     {
@@ -35,8 +139,32 @@ void pglTexture::SetGLState(void)
         glBindTexture(GL_TEXTURE_2D, gltexture);
 
 //      if(nMipMap == 0)
+        if (type == PDDI_TEXTYPE_DXT1 || type == PDDI_TEXTYPE_DXT3 || type == PDDI_TEXTYPE_DXT5)
         {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, xSize,
+#if defined(RAD_GLES)
+            unsigned char* image = new unsigned char[xSize * ySize * 4];
+            unsigned int blocksize = lock.format == PDDI_PIXEL_DXT1 ? 8 : 16;
+            if (type == PDDI_TEXTYPE_DXT1)
+                BlockDecompressImageBC1(xSize, ySize, (const uint8_t*)bits[0], image);
+            else if (type == PDDI_TEXTYPE_DXT3)
+                BlockDecompressImageBC2(xSize, ySize, (const uint8_t*)bits[0], image);
+            else if( type == PDDI_TEXTYPE_DXT5)
+                BlockDecompressImageBC3(xSize, ySize, (const uint8_t*)bits[0], image);
+            glTexImage2D(GL_TEXTURE_2D, 0, PickPixelFormat(lock.format), xSize,
+                ySize, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                image);
+            delete [] image;
+#else
+            unsigned int blocksize = lock.format == PDDI_PIXEL_DXT1 ? 8 : 16;
+            GLenum internalFormat = lock.format == PDDI_PIXEL_DXT5 ? GL_COMPRESSED_RGBA_S3TC_DXT5_EXT :
+                lock.format == PDDI_PIXEL_DXT3 ? GL_COMPRESSED_RGBA_S3TC_DXT3_EXT : GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+            glCompressedTexImage2D(GL_TEXTURE_2D, 0, internalFormat, xSize,
+                ySize, 0, ceil(xSize/4.0)*ceil(ySize/4.0)*blocksize, (GLvoid*)bits[0]);
+#endif
+        }
+        else
+        {
+            glTexImage2D(GL_TEXTURE_2D, 0, PickPixelFormat(lock.format), xSize,
                 ySize, 0, lock.native ? GL_BGRA_EXT : GL_RGBA, GL_UNSIGNED_BYTE,
                 (GLvoid *)bits[0]);
         }
@@ -85,6 +213,7 @@ void pglTexture::SetGLState(void)
             }
         }
         */
+
         valid = true;
     }
     else
@@ -92,8 +221,10 @@ void pglTexture::SetGLState(void)
         glBindTexture(GL_TEXTURE_2D, gltexture);
     }
 
+#if !defined RAD_GLES
     float fpriority = float(priority) / 31.0f;
     glPrioritizeTextures(1, &gltexture, &fpriority);
+#endif
 }
 
 int fastlog2(int x)
@@ -112,12 +243,12 @@ int fastlog2(int x)
     return r;
 }
 
-bool pglTexture::Create(int x, int y, int bpp, int alphaDepth, int nMip, pddiTextureType ty, pddiTextureUsageHint usageHint)
+bool pglTexture::Create(int x, int y, int bpp, int alphaDepth, int nMip, pddiTextureType textureType, pddiTextureUsageHint usageHint)
 {
     xSize = x;
     ySize = y;
     nMipMap = nMip;
-    type = PDDI_TEXTYPE_RGB;
+    type = textureType;
 
     log2X = fastlog2(xSize);
     log2Y = fastlog2(ySize);
@@ -135,12 +266,28 @@ bool pglTexture::Create(int x, int y, int bpp, int alphaDepth, int nMip, pddiTex
         return false;
     }
 
-    bits = new char*[nMipMap+1];
-    for(int i = 0; i < nMipMap+1; i++)
-        bits[i] = new char[(xSize>>i)*(ySize>>i)*4];
+    // TODO palletized
+    if (textureType == PDDI_TEXTYPE_PALETTIZED)
+    {
+        textureType = PDDI_TEXTYPE_RGB;
+        bpp = 32;
+    }
 
-    lock.depth = 32;
-    lock.format = PDDI_PIXEL_ARGB8888;
+    bits = new char* [nMipMap + 1];
+    if (type == PDDI_TEXTYPE_DXT1 || type == PDDI_TEXTYPE_DXT3 || type == PDDI_TEXTYPE_DXT5)
+    {
+        unsigned int blocksize = type == PDDI_TEXTYPE_DXT1 ? 8 : 16;
+        for(int i = 0; i < nMipMap+1; i++)
+            bits[i] = (char*)radMemoryAllocAligned(radMemoryGetCurrentAllocator(), size_t(ceil(double(xSize>>i)/4)*ceil(double(ySize>>i)/4)*blocksize), 16);
+    }
+    else
+    {
+        for(int i = 0; i < nMipMap+1; i++)
+            bits[i] = (char*)radMemoryAllocAligned(radMemoryGetCurrentAllocator(), ((xSize>>i)*(ySize>>i)*bpp)/8, 16);
+    }
+
+    lock.depth = bpp;
+    lock.format = PickPixelFormat(textureType, bpp, alphaDepth);
 
     if(context->GetDisplay()->ExtBGRA())
     {
@@ -172,7 +319,7 @@ bool pglTexture::Create(int x, int y, int bpp, int alphaDepth, int nMip, pddiTex
         lock.rgbaMask[3] = 0xff000000;
     }
 
-    context->ADD_STAT(PDDI_STAT_TEXTURE_ALLOC_32BIT, (float)((xSize * ySize * 4) / 1024));
+    context->ADD_STAT(PDDI_STAT_TEXTURE_ALLOC_32BIT, (float)((xSize * ySize * lock.depth) / 8192));
     context->ADD_STAT(PDDI_STAT_TEXTURE_COUNT_32BIT, 1);
 
     return true;
@@ -190,22 +337,14 @@ pglTexture::pglTexture(pglContext* c)
 
 pglTexture::~pglTexture()
 {
-    if (bits)
-    {
-        for (int i = 0; i < nMipMap + 1; i++)
-        {
-            if (bits[i])
-            {
-                delete bits[i];
-                bits[i] = nullptr;
-            }
-        }
+    if(gltexture) glDeleteTextures(1, &gltexture);
 
-        delete[] bits;
-        bits = nullptr;
-    }
+    for(int i = 0; i < nMipMap+1; i++)
+        radMemoryFreeAligned(bits[i]);
 
-    context->ADD_STAT(PDDI_STAT_TEXTURE_ALLOC_32BIT, -(float)((xSize * ySize * 4) / 1024));
+    if(bits) delete [] bits;
+
+    context->ADD_STAT(PDDI_STAT_TEXTURE_ALLOC_32BIT, -(float)((xSize * ySize * lock.depth) / 8192));
     context->ADD_STAT(PDDI_STAT_TEXTURE_COUNT_32BIT, -1);
 }
 
@@ -245,8 +384,22 @@ pddiLockInfo* pglTexture::Lock(int mipMap, pddiRect* rect)
 
     lock.width = 1 << (log2X-mipMap);
     lock.height = 1 << (log2Y-mipMap);
-    lock.pitch = -lock.width * 4;
-    lock.bits = bits[mipMap] + (lock.width * (lock.height-1) * 4);
+    if (lock.format == PDDI_PIXEL_DXT1 || lock.format == PDDI_PIXEL_DXT3 || lock.format == PDDI_PIXEL_DXT5)
+    {
+        unsigned int blocksize = lock.format == PDDI_PIXEL_DXT1 ? 8 : 16;
+        lock.pitch = ceil( double( xSize >> mipMap ) / 4 ) * blocksize;
+        lock.bits = bits[mipMap];
+    }
+    else if (lock.format == PDDI_PIXEL_YUV)
+    {
+        lock.pitch = (lock.width * lock.depth) / 8;
+        lock.bits = bits[mipMap];
+    }
+    else
+    {
+        lock.pitch = -(lock.width * 4);
+        lock.bits = bits[mipMap] + (lock.width * (lock.height - 1) * 4);
+    }
 
     return &lock;
 }

@@ -4,7 +4,6 @@
 
 
 // stub OpenGL header, all pddi gl code uses this instead of '#include <GL/gl.h>
-
 #include <GL/gl.h>
 
 #define LIGHT_MODEL_COLOR_CONTROL_EXT (GLenum)0x81F8 

@@ -54,7 +54,7 @@ class rDbgComSocketTargetChannel;
 // Defintions
 //=============================================================================
 
-#if defined( RAD_PS2)
+#ifndef RAD_WIN32
 #define SOCKET int
 #endif
 

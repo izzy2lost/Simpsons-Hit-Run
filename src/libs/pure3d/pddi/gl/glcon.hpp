@@ -48,6 +48,9 @@ public :
     // backface culling
     void SetCullMode(pddiCullMode mode);
 
+    // colour buffer control
+    void SetColourWrite( bool red, bool green, bool blue, bool alpha );
+
     // z-buffer control
     void EnableZBuffer(bool enable);
     void SetZCompare(pddiCompareMode compareMode);
@@ -113,6 +116,7 @@ protected:
 //   ULONG compareMode;
 //   BOOL zWrite;
 //   float alphaRef;
+
     int maxTexSize;
 };
 
@@ -162,7 +166,11 @@ protected:
     unsigned short* indices;
     unsigned indexCount;
 
-    float mem;
+    bool valid;
+    GLuint vertexBuffer;
+    GLuint indexBuffer;
+
+    unsigned mem;
 };
     
 #endif

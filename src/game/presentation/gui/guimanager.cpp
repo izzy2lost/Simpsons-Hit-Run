@@ -79,7 +79,7 @@ CGuiManager::CGuiManager
         m_windowHistory[ j ] = CGuiWindow::GUI_WINDOW_ID_UNDEFINED;
     }
     //Load the mouse cursor.
-#ifdef RAD_WIN32
+#ifdef RAD_PC
     tDrawable* pMouseCursor = p3d::find<tDrawable>("mouse_cursor.png");
     GetInputManager()->GetFEMouse()->InitMouseCursor( pMouseCursor );
 #endif
@@ -511,10 +511,7 @@ void CGuiManager::DisplayErrorPrompt
 
     if( promptResponses & ERROR_RESPONSE_FORMAT )
     {
-#ifdef RAD_XBOX
-        responses[ numResponses++ ] = CGuiMenuPrompt::RESPONSE_FORMAT_XBOX;
-#endif
-#ifdef RAD_WIN32
+#if defined(RAD_PC) || defined(RAD_XBOX)
         responses[ numResponses++ ] = CGuiMenuPrompt::RESPONSE_FORMAT_XBOX;
 #endif
 #ifdef RAD_PS2

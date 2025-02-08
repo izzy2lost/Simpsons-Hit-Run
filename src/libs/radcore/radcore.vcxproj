@@ -230,6 +230,7 @@
     <ClCompile Include="src\radobjectlist\weakinterfacewrapper.cpp" />
     <ClCompile Include="src\radobject\object.cpp" />
     <ClCompile Include="src\radplatform\platform.cpp" />
+    <ClCompile Include="src\radprofiler\microprofile.cpp" />
     <ClCompile Include="src\radprofiler\profiler.cpp" />
     <ClCompile Include="src\radprofiler\profiler2.cpp" />
     <ClCompile Include="src\radprofiler\profilesample.cpp" />
@@ -250,6 +251,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\directinputcontroller.hpp" />
+    <ClInclude Include="include\microprofile.h" />
     <ClInclude Include="include\pch.hpp" />
     <ClInclude Include="include\rad1394.hpp" />
     <ClInclude Include="include\radcontroller.hpp" />

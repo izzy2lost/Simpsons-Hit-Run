@@ -163,7 +163,7 @@ CGuiScreenScrapBookContents::CGuiScreenScrapBookContents
     m_LTriggerBgd = m_LTrigger->GetSprite( "LTriggerBgd" );
     m_RTriggerBgd = m_RTrigger->GetSprite( "RTriggerBgd" );
 
-#ifdef RAD_WIN32
+#ifdef RAD_PC
     m_LTriggerBgd->ScaleAboutCenter( 0.5 );
     m_RTriggerBgd->ScaleAboutCenter( 0.5 );
 #endif
@@ -240,7 +240,7 @@ CGuiScreenScrapBookContents::~CGuiScreenScrapBookContents()
     }
 }
 
-#ifdef RAD_WIN32
+#ifdef RAD_PC
 //===========================================================================
 // CGuiScreenScrapBookContents::CheckCursorAgainstHotspots
 //===========================================================================
@@ -317,7 +317,7 @@ void CGuiScreenScrapBookContents::HandleMessage( eGuiMessage message,
                             if( userInputHandler != NULL )
                             {
                                 if( userInputHandler->IsButtonDown( GuiInput::L1 )
-#ifdef RAD_WIN32
+#ifdef RAD_PC
                                     || GetInputManager()->GetFEMouse()->LeftButtonDownOn() == HOTSPOT_LTRIGGER
 #endif  
                                     )
@@ -327,7 +327,7 @@ void CGuiScreenScrapBookContents::HandleMessage( eGuiMessage message,
                                 }
 
                                 if( userInputHandler->IsButtonDown( GuiInput::R1 )
-#ifdef RAD_WIN32
+#ifdef RAD_PC
                                     || GetInputManager()->GetFEMouse()->LeftButtonDownOn() == HOTSPOT_RTRIGGER
 #endif  
                                     )

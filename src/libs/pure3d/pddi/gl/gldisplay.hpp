@@ -47,7 +47,10 @@ public:
 
     void SetContext(pglContext* c) {context = c;}
     bool ExtBGRA(void) { return extBGRA;}
-    bool CheckExtension(char*);
+#ifdef RAD_GLES
+    bool ExtBlend(void) { return extBlend; }
+#endif
+    bool CheckExtension(const char*);
     bool HasReset(void) { return reset; }
 
     static unsigned FillDisplayModes(int, pddiModeInfo*);
@@ -78,10 +81,12 @@ private:
     void* prevRC;
 
     bool extBGRA;
+#ifdef RAD_GLES
+    bool extBlend;
+#endif
     bool reset;
 
     float beginTime;
-    SDL_mutex* mutex;
 };
 
 #endif

@@ -51,6 +51,11 @@ static void ProcessCommandLineArgumentsFromFile();
 //=============================================================================
 #define SDL_MAIN_HANDLED
 #define main main
+
+#ifdef RAD_PC
+#pragma comment(linker, "/ENTRY:mainCRTStartup")
+#endif
+
 SDLMAIN_DECLSPEC int main( int argc, char *argv[] )
 {
     //

@@ -15,17 +15,17 @@
 #include <pddi/base/debug.hpp>
 #include <pddi/base/base_font.hpp>
 
-const int PDDI_MAX_UV_CHANNELS = 4;
-const int PDDI_MAX_CLIP_PLANES = 6;
+#define PDDI_MAX_UV_CHANNELS 4
+#define PDDI_MAX_CLIP_PLANES 6
 
-#if defined(RAD_PS2)
-    const int PDDI_MAX_LIGHTS = 4;
+#if defined(RAD_PS2) || defined(RAD_GLES)
+    #define PDDI_MAX_LIGHTS 4
 #else
-    const int PDDI_MAX_LIGHTS = 8;
+    #define PDDI_MAX_LIGHTS 8
 #endif
 
-const int PDDI_MAX_STATS = 40;
-const int PDDI_MAX_MATRIX_STACKS = 5;
+#define PDDI_MAX_STATS 40
+#define PDDI_MAX_MATRIX_STACKS 5
 
 //-------------------------------------------------------------------
 class pddiFloatRect
@@ -415,4 +415,3 @@ void pddiMemRegAlloc(void* d, unsigned s);
 void pddiMemRegFree(void* d);
 
 #endif //_BASECONTEXT_HPP
-

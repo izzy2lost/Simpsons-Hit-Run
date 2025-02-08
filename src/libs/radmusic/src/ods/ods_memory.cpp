@@ -9,10 +9,12 @@
 //-----------------------------------------------------------------------------
 
 #include "pch.hpp"
+
 #include <ods/ods.hpp>
 #include <radload/loader.hpp>
 #include <radfile.hpp>
 #include <raddebug.hpp>
+
 #include <string.h>
 
 //-----------------------------------------------------------------------------
@@ -1173,11 +1175,7 @@ stream_functions debug_printf_stream_functions = { debug_printf_write, debug_pri
 
 int VsnPrintf( char *buffer, size_t count, const char *format, va_list argptr )
 {
-    #if defined (RAD_WIN32) || defined (RAD_XBOX)
-        return _vsnprintf( buffer, count, format, argptr );
-    #elif defined (RAD_PS2)
-        return vsprintf( buffer, format, argptr );
-    #endif
+    return vsnprintf(buffer, count, format, argptr);
 }
     
 bool stream_printf( stream_info * p_si, const char * fmt, ... )

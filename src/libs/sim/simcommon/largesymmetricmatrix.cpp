@@ -192,7 +192,7 @@ float & LargeSymmetricMatrix::operator() (int row, int col) const
 
 void LargeSymmetricMatrix::Dump( char *szTitle ) const
 {
-#if defined(RAD_WIN32) && defined(RAD_DEBUG)
+#if defined(RAD_PC) && defined(RAD_DEBUG)
     char szTemp[100];
     int i,j;
     
@@ -288,7 +288,7 @@ bool LargeSymmetricMatrix::Invert()
         
         if( pCopy[icol*m_iRows+icol] == 0.0f) 
         {
-#if defined(RAD_WIN32) && defined(RAD_DEBUG)
+#if defined(RAD_PC) && defined(RAD_DEBUG)
             OutputDebugString( "Singular Matrix\r\n" );
 #endif
             return false;

@@ -22,6 +22,9 @@
     #define DLLEXPORT 
 #endif
 
+#define PDDI_STRING(x) #x
+#define PDDI_STRINGIZE(x) PDDI_STRING(x)
+
 //-------------------------------------------------------------------
 // pddiObject
 //-------------------------------------------------------------------
@@ -95,14 +98,24 @@ public:
 };
 
 // system-dependent includes
-#if defined(RAD_WIN32)
+#ifdef RAD_WIN32
     #include <pddi/pddiwin32.hpp>
-#elif defined(RAD_XBOX)
+#endif
+
+#ifdef RAD_XBOX
     #include <pddi/pddixbox.hpp>
-#elif defined(RAD_PS2)
+#endif
+
+#ifdef RAD_PS2
     #include <pddi/pddips2.hpp>
-#elif defined(RAD_LINUX)
+#endif
+
+#ifdef RAD_LINUX
     #include <pddi/pddilinux.hpp>
 #endif
 
-#endif // _PDDITYPE_HPP
+#ifdef RAD_GAMECUBE
+    #include <pddi/pddigc.hpp>
+#endif
+
+#endif /* _PDDITYPE_HPP */

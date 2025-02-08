@@ -23,14 +23,16 @@
 #include <mission/charactersheet/charactersheetmanager.h>
 
 #include <raddebug.hpp>     // Foundation
-#include <group.h>
-#include <layer.h>
-#include <page.h>
-#include <screen.h>
-#include <text.h>
+#include <Group.h>
+#include <Layer.h>
+#include <Page.h>
+#include <Screen.h>
+#include <Text.h>
 
-#include <strings/unicodestring.h>
+#include <strings/unicodeString.h>
 #include <p3d/unicode.hpp>
+#include <p3d/utility.hpp>
+#include <p3d/sprite.hpp>
 #include <string.h>
 
 //===========================================================================
@@ -115,22 +117,35 @@ CGuiScreenController::CGuiScreenController
     //
     m_pMenu->SetMenuItemEnabled( MENU_ITEM_CONFIGURATION, false, true );
 
-    // get the platform-specific Controller page
+#ifdef RAD_CONSOLE
+    // get the PC Controller page
     //
-#ifdef RAD_PS2
-    pPage = m_pScroobyScreen->GetPage( "ControllerPS2" );
-    rAssert( pPage );
-#endif // RAD_PS2
-
-#ifdef RAD_XBOX
-    pPage = m_pScroobyScreen->GetPage( "ControllerXBOX" );
-    rAssert( pPage );
-#endif // RAD_XBOX
-
-#ifdef RAD_WIN32
     pPage = m_pScroobyScreen->GetPage( "ControllerPC" );
     rAssert( pPage );
-#endif // RAD_WIN32
+
+    // and make it invisible
+    //
+    pPage->GetLayerByIndex( 0 )->SetVisible( false );
+
+    // get the Controller image
+    //
+    pPage = m_pScroobyScreen->GetPage( "ControllerImage" );
+    rAssert( pPage );
+
+    // and make it visible
+    //
+    pPage->GetLayerByIndex( 0 )->SetVisible( true );
+
+    // get the platform-specific Controller page
+    //
+#if defined( RAD_PS2 )
+    pPage = m_pScroobyScreen->GetPage( "ControllerPS2" );
+    rAssert( pPage );
+#else
+    pPage = m_pScroobyScreen->GetPage( "ControllerXBOX" );
+#endif
+    rAssert( pPage );
+#endif
 
     // and make it visible
     //
@@ -385,4 +400,3 @@ CGuiScreenController::UpdateLabels()
         m_labels[ i ]->SetIndex( labelIndex );
     }
 }
-

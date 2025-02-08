@@ -37,7 +37,7 @@
 #include <camera/supercamcontroller.h>
 #include <camera/followcam.h>
 #include <camera/wrecklesscam.h>
-#ifdef RAD_WIN32
+#ifdef RAD_PC
 #include <camera/pccam.h>
 #endif
 #include <data/gamedatamanager.h>
@@ -107,7 +107,7 @@ const int NUM_CAMERAS_FOR_DRIVING_WITHOUT_CHEAT = 3;
 SuperCam::Type CAMERAS_FOR_WALKING[] =
 {
     SuperCam::WALKER_CAM,
-#ifdef RAD_WIN32
+#ifdef RAD_PC
     SuperCam::PC_CAM,
 #endif
     SuperCam::DEBUG_CAM,
