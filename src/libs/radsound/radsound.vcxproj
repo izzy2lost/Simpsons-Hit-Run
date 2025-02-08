@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
-      <Platform>x64</Platform>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Tune|x64">
+    <ProjectConfiguration Include="Tune|Win32">
       <Configuration>Tune</Configuration>
-      <Platform>x64</Platform>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -24,88 +26,68 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  
-  <!-- Update Property Groups for x64 -->
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Tune|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
-
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings" />
-  
-  <!-- Property Sheets -->
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Tune|x64'" Label="PropertySheets">
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>17.0.35309.182</_ProjectFileVersion>
   </PropertyGroup>
-  
-  <!-- Output Directories -->
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>.\Debug\</OutDir>
     <IntDir>.\Debug\</IntDir>
   </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>.\Release\</OutDir>
     <IntDir>.\Release\</IntDir>
   </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Tune|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">
     <OutDir>.\Tune\</OutDir>
     <IntDir>.\Tune\</IntDir>
   </PropertyGroup>
-  
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
   </PropertyGroup>
-  
-  <!-- Vcpkg Triplet for x64 -->
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <VcpkgTriplet>x64-windows</VcpkgTriplet>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <VcpkgTriplet>x86-windows</VcpkgTriplet>
   </PropertyGroup>
-  
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <VcpkgTriplet>x64-windows</VcpkgTriplet>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <VcpkgTriplet>x86-windows</VcpkgTriplet>
   </PropertyGroup>
-  
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Tune|x64'">
-    <VcpkgTriplet>x64-windows</VcpkgTriplet>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">
+    <VcpkgTriplet>x86-windows</VcpkgTriplet>
   </PropertyGroup>
-  
-  <!-- Item Definitions for ClCompile (x64) -->
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\src\common;.\include;..\radcore\include;..\..\..\sdks\x64\eax2\Include;..\..\game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\src\common;.\include;..\radcore\include;..\..\..\sdks\win32\eax2\Include;..\..\game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DEBUG;_LIB;WIN32;RAD_WIN32;RAD_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling />
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -117,7 +99,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\Debug\radsound.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\Debug/radsound.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
       <ObjectFileName>.\Debug/</ObjectFileName>
       <ProgramDataBaseFileName>.\Debug/</ProgramDataBaseFileName>
@@ -137,14 +119,13 @@
       <Culture>0x1009</Culture>
     </ResourceCompile>
   </ItemDefinitionGroup>
-
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>.\src\common;.\include;..\radcore\include;..\..\..\sdks\x64\eax2\Include;..\..\game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\src\common;.\include;..\radcore\include;..\..\..\sdks\win32\eax2\Include;..\..\game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;RELEASE;_LIB;WIN32;RAD_WIN32;RAD_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling />
@@ -155,7 +136,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\Release\radsound.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\Release/radsound.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\Release/</AssemblerListingLocation>
       <ObjectFileName>.\Release/</ObjectFileName>
       <ProgramDataBaseFileName>.\Release/</ProgramDataBaseFileName>
@@ -175,14 +156,13 @@
       <Culture>0x1009</Culture>
     </ResourceCompile>
   </ItemDefinitionGroup>
-
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Tune|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">
     <ClCompile>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>.\src\common;.\include;..\radcore\include;..\..\..\sdks\x64\eax2\Include;..\..\game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\src\common;.\include;..\radcore\include;..\..\..\sdks\win32\eax2\Include;..\..\game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;TUNE;_LIB;WIN32;RAD_WIN32;RAD_TUNE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling />
@@ -193,7 +173,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\Tune\radsound.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\Tune/radsound.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\Tune/</AssemblerListingLocation>
       <ObjectFileName>.\Tune/</ObjectFileName>
       <ProgramDataBaseFileName>.\Tune/</ProgramDataBaseFileName>
@@ -212,45 +192,78 @@
       <Culture>0x1009</Culture>
     </ResourceCompile>
   </ItemDefinitionGroup>
-  
   <ItemGroup>
     <ClInclude Include="include\radsound.hpp" />
     <ClInclude Include="include\radsoundfile.hpp" />
     <ClInclude Include="include\radsoundmath.hpp" />
     <ClInclude Include="include\radsound_hal.hpp" />
-    <ClInclude Include="include\radsound_win.hpp" />
-    <ClInclude Include="include\radsound_mac.hpp" />
-    <ClInclude Include="include\radsound_defs.hpp" />
-    <ClInclude Include="include\radsound_inline.hpp" />
-    <ClInclude Include="include\radsound_callbacks.hpp" />
-    <ClInclude Include="include\radsound_config.hpp" />
-    <ClInclude Include="include\radsound_compiler.hpp" />
-    <ClInclude Include="include\radsound_types.hpp" />
-    <ClInclude Include="include\radsound_utils.hpp" />
-    <ClInclude Include="include\radsound_error.hpp" />
-    <ClInclude Include="include\radsound_api.hpp" />
-    <ClInclude Include="include\radsound_ver.hpp" />
-    <ClInclude Include="include\radsound_version.hpp" />
-    <ClInclude Include="include\radsound_debug.hpp" />
-    
-    <ClCompile Include="src\common\radsound.cpp" />
-    <ClCompile Include="src\common\radsoundfile.cpp" />
-    <ClCompile Include="src\common\radsoundmath.cpp" />
-    <ClCompile Include="src\common\radsound_hal.cpp" />
-    <ClCompile Include="src\common\radsound_win.cpp" />
-    <ClCompile Include="src\common\radsound_mac.cpp" />
-    <ClCompile Include="src\common\radsound_defs.cpp" />
-    <ClCompile Include="src\common\radsound_inline.cpp" />
-    <ClCompile Include="src\common\radsound_callbacks.cpp" />
-    <ClCompile Include="src\common\radsound_config.cpp" />
-    <ClCompile Include="src\common\radsound_compiler.cpp" />
-    <ClCompile Include="src\common\radsound_types.cpp" />
-    <ClCompile Include="src\common\radsound_utils.cpp" />
-    <ClCompile Include="src\common\radsound_error.cpp" />
-    <ClCompile Include="src\common\radsound_api.cpp" />
-    <ClCompile Include="src\common\radsound_ver.cpp" />
-    <ClCompile Include="src\common\radsound_version.cpp" />
-    <ClCompile Include="src\common\radsound_debug.cpp" />
-    
+    <ClInclude Include="include\radsound_win32.hpp" />
+    <ClInclude Include="src\common\radsoundobject.hpp" />
+    <ClInclude Include="src\common\radsoundupdatableobject.hpp" />
+    <ClInclude Include="src\hal\common\audioformat.hpp" />
+    <ClInclude Include="src\hal\common\banner.hpp" />
+    <ClInclude Include="src\hal\common\memoryregion.hpp" />
+    <ClInclude Include="src\hal\common\rolloff.hpp" />
+    <ClInclude Include="src\hal\win32\buffer.hpp" />
+    <ClInclude Include="src\hal\win32\bufferloader.hpp" />
+    <ClInclude Include="src\hal\win32\effect.hpp" />
+    <ClInclude Include="src\hal\win32\listener.hpp" />
+    <ClInclude Include="src\hal\win32\positionalgroup.hpp" />
+    <ClInclude Include="src\hal\win32\radinprogext.hpp" />
+    <ClInclude Include="src\hal\win32\radsoundwin.hpp" />
+    <ClInclude Include="src\hal\win32\system.hpp" />
+    <ClInclude Include="src\hal\win32\voice.hpp" />
+    <ClInclude Include="src\pch\pch.hpp" />
+    <ClInclude Include="src\radsound\buffereddatasource.hpp" />
+    <ClInclude Include="src\radsound\clip.hpp" />
+    <ClInclude Include="src\radsound\clipplayer.hpp" />
+    <ClInclude Include="src\radsound\datacache.hpp" />
+    <ClInclude Include="src\radsound\memorydatasource.hpp" />
+    <ClInclude Include="src\radsound\memoryspaceobject.hpp" />
+    <ClInclude Include="src\radsound\radicaladpcm.hpp" />
+    <ClInclude Include="src\radsound\rsdfiledatasource.hpp" />
+    <ClInclude Include="src\radsound\stitcheddatasource.hpp" />
+    <ClInclude Include="src\radsound\streamplayer.hpp" />
   </ItemGroup>
-<Target Name="Build" DependsOnTargets="BuildOutputFiles" />  </Project>  
+  <ItemGroup>
+    <ClCompile Include="src\common\radsoundobject.cpp" />
+    <ClCompile Include="src\common\radsoundupdatableobject.cpp" />
+    <ClCompile Include="src\hal\common\audioformat.cpp" />
+    <ClCompile Include="src\hal\common\banner.cpp" />
+    <ClCompile Include="src\hal\common\memoryregion.cpp" />
+    <ClCompile Include="src\hal\common\radsoundfile.cpp" />
+    <ClCompile Include="src\hal\common\rolloff.cpp" />
+    <ClCompile Include="src\hal\common\softwarelistener.cpp" />
+    <ClCompile Include="src\hal\common\softwarepositionalgroup.cpp" />
+    <ClCompile Include="src\hal\win32\buffer.cpp" />
+    <ClCompile Include="src\hal\win32\bufferloader.cpp" />
+    <ClCompile Include="src\hal\win32\effect.cpp" />
+    <ClCompile Include="src\hal\win32\listener.cpp" />
+    <ClCompile Include="src\hal\win32\positionalgroup.cpp" />
+    <ClCompile Include="src\hal\win32\radsoundwin.cpp" />
+    <ClCompile Include="src\hal\win32\system.cpp" />
+    <ClCompile Include="src\hal\win32\voice.cpp" />
+    <ClCompile Include="src\math\radsoundmath.cpp" />
+    <ClCompile Include="src\pch\pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\radsound\buffereddatasource.cpp" />
+    <ClCompile Include="src\radsound\clip.cpp" />
+    <ClCompile Include="src\radsound\clipplayer.cpp" />
+    <ClCompile Include="src\radsound\datacache.cpp" />
+    <ClCompile Include="src\radsound\memorydatasource.cpp" />
+    <ClCompile Include="src\radsound\memoryspaceobject.cpp" />
+    <ClCompile Include="src\radsound\radicaladpcm.cpp" />
+    <ClCompile Include="src\radsound\rsdfiledatasource.cpp" />
+    <ClCompile Include="src\radsound\stitcheddatasource.cpp" />
+    <ClCompile Include="src\radsound\streamplayer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="releasenotes.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
