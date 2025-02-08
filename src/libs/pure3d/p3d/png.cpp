@@ -60,9 +60,9 @@ bool tPNGHandler::CheckFormat(Format format)
 void tPNGHandler::CreateImage(tFile* file, tImageHandler::Builder* builder)
 {
     png_structp pPNG = png_create_read_struct_2
-    (PNG_LIBPNG_VER_STRING,
-        0, p3d_png_err, p3d_png_warn,
-        0, p3d_png_malloc, p3d_png_free);
+         (PNG_LIBPNG_VER_STRING, 
+         0, p3d_png_err, p3d_png_warn, 
+         0, p3d_png_malloc, p3d_png_free);
 
     if (!pPNG)
     {
@@ -93,7 +93,7 @@ void tPNGHandler::CreateImage(tFile* file, tImageHandler::Builder* builder)
         png_destroy_read_struct(&pPNG, 0, 0);
         return;
     }
-
+    
     // we can't handle interlaced data
     unsigned interlaceType = png_get_interlace_type(pPNG, pngInfo);
     if (interlaceType != 0)
@@ -102,16 +102,16 @@ void tPNGHandler::CreateImage(tFile* file, tImageHandler::Builder* builder)
         png_destroy_read_struct(&pPNG, 0, 0);
         return;
     }
-
+    
     // convert 16 bit/channel images to 8 bit/channel   
     if (channelDepth == 16)
     {
         png_set_strip_16(pPNG);
     }
-
+    
     // convert RGB pixels to BGR
     png_set_bgr(pPNG);
-
+    
     // expand 24 bit pixels to 32
     if (png_get_channels(pPNG, pngInfo) != 4)
     {
@@ -157,11 +157,11 @@ void LoadPNG4(png_structp pPNG, png_infop pngInfo, tImageHandler::Builder* build
     const int bpp = 4;
     int width = png_get_image_width(pPNG, pngInfo);
     int height = png_get_image_height(pPNG, pngInfo);
-
+    
     int numPalette = 0;
     png_color* srcPalette;
-    png_get_PLTE(pPNG, pngInfo, &srcPalette, &numPalette);
-
+    png_get_PLTE(pPNG, pngInfo, &srcPalette, &numPalette);      
+    
     pddiColour dstPalette[256];
     memset(dstPalette, 0, sizeof(pddiColour) * 256);
 
@@ -176,7 +176,7 @@ void LoadPNG4(png_structp pPNG, png_infop pngInfo, tImageHandler::Builder* build
         int numAlpha;
         png_byte* srcAlpha;
         png_get_tRNS(pPNG, pngInfo, &srcAlpha, &numAlpha, 0);
-
+        
         for (int i = 0; i < numAlpha; ++i)
         {
             dstPalette[i].SetAlpha(srcAlpha[i]);
@@ -184,11 +184,11 @@ void LoadPNG4(png_structp pPNG, png_infop pngInfo, tImageHandler::Builder* build
     }
 
     builder->BeginImage(width, height, bpp, tImageHandler::Builder::TOP, (pddiColour*)dstPalette);
-
+    
     // create an image, read in the bits
     unsigned char* srcRow = (unsigned char*)p3d::MallocTemp(png_get_rowbytes(pPNG, pngInfo));
     unsigned char* dstRow = (unsigned char*)p3d::MallocTemp(width);
-
+    
     for (int y = 0; y < height; y++)
     {
         png_read_row(pPNG, (unsigned char*)srcRow, (unsigned char*)NULL);
@@ -199,10 +199,10 @@ void LoadPNG4(png_structp pPNG, png_infop pngInfo, tImageHandler::Builder* build
             dstRow[(i * 2) + 0] = srcRow[i] >> 4;
             dstRow[(i * 2) + 1] = srcRow[i] & 0x0f;
         }
-
+        
         builder->ProcessScanline8((unsigned char*)dstRow);
     }
-
+    
     p3d::FreeTemp(srcRow);
     p3d::FreeTemp(dstRow);
 
@@ -220,7 +220,7 @@ void LoadPNG8(png_structp pPNG, png_infop pngInfo, tImageHandler::Builder* build
     int numPalette = 0;
     png_color* srcPalette;
     png_get_PLTE(pPNG, pngInfo, &srcPalette, &numPalette);
-
+    
     pddiColour dstPalette[256];
     for (int i = 0; i < numPalette; i++)
     {
@@ -264,16 +264,16 @@ void LoadPNG32(png_structp pPNG, png_infop pngInfo, tImageHandler::Builder* buil
     int height = png_get_image_height(pPNG, pngInfo);
 
     builder->BeginImage(width, height, bpp, tImageHandler::Builder::TOP, (pddiColour*)NULL);
-
+    
     // create an image, read in the bits
-    unsigned* row = (unsigned*)p3d::MallocTemp(png_get_rowbytes(pPNG, pngInfo));
-
+    unsigned* row = (unsigned*)p3d::MallocTemp(png_get_rowbytes(pPNG, pngInfo));  
+    
     for (int y = 0; y < height; y++)
     {
         png_read_row(pPNG, (unsigned char*)row, (unsigned char*)NULL);
         builder->ProcessScanline32(row);
     }
-
+    
     p3d::FreeTemp(row);
     builder->EndImage();
 }

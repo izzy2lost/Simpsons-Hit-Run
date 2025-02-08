@@ -96,10 +96,6 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pchsrr2.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>..\..\build\Debug\SRR2.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\build\Debug\</AssemblerListingLocation>
-      <ObjectFileName>..\..\build\Debug\</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\build\Debug\</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -114,7 +110,6 @@
       <OutputFile>$(OutDir)SRR2.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>..\..\build\Debug\SRR2wd.pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -123,7 +118,6 @@
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MkTypLibCompatible>true</MkTypLibCompatible>
-      <TypeLibraryName>..\..\build\Debug\srr2w.tlb</TypeLibraryName>
     </Midl>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -145,10 +139,6 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pchsrr2.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>..\..\build\Release\SRR2.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\build\Release\</AssemblerListingLocation>
-      <ObjectFileName>..\..\build\Release\</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\build\Release\</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat />
       <CompileAs>Default</CompileAs>
@@ -160,7 +150,6 @@
       <OutputFile>$(OutDir)SRR2.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <ProgramDatabaseFile>..\..\build\Release\SRR2xr.pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -184,10 +173,6 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pchsrr2.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>..\..\build\Tune\SRR2.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\build\Tune\</AssemblerListingLocation>
-      <ObjectFileName>..\..\build\Tune\</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\build\Tune\</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -200,7 +185,6 @@
       <OutputFile>$(OutDir)SRR2.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>..\..\build\Tune\SRR2wt.pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>

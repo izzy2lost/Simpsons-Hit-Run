@@ -190,10 +190,20 @@ pglTexture::pglTexture(pglContext* c)
 
 pglTexture::~pglTexture()
 {
-    for(int i = 0; i < nMipMap+1; i++)
-        if (bits[i]) delete bits[i];
+    if (bits)
+    {
+        for (int i = 0; i < nMipMap + 1; i++)
+        {
+            if (bits[i])
+            {
+                delete bits[i];
+                bits[i] = nullptr;
+            }
+        }
 
-    if(bits) delete [] bits;
+        delete[] bits;
+        bits = nullptr;
+    }
 
     context->ADD_STAT(PDDI_STAT_TEXTURE_ALLOC_32BIT, -(float)((xSize * ySize * 4) / 1024));
     context->ADD_STAT(PDDI_STAT_TEXTURE_COUNT_32BIT, -1);
