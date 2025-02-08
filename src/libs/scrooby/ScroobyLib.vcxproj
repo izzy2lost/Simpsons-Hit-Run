@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
+    <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
+    <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Tune|Win32">
+    <ProjectConfiguration Include="Tune|x64">
       <Configuration>Tune</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -24,19 +24,19 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Tune|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
@@ -45,44 +45,44 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Tune|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>17.0.35309.182</_ProjectFileVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Tune|x64'">
     <OutDir>.\Tune\</OutDir>
     <IntDir>.\Tune\</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>.\Debug\</OutDir>
     <IntDir>.\Debug\</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>.\Release\</OutDir>
     <IntDir>.\Release\</IntDir>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
   </PropertyGroup>
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <VcpkgTriplet>x86-windows</VcpkgTriplet>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <VcpkgTriplet>x64-windows</VcpkgTriplet>
   </PropertyGroup>
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <VcpkgTriplet>x86-windows</VcpkgTriplet>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <VcpkgTriplet>x64-windows</VcpkgTriplet>
   </PropertyGroup>
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">
-    <VcpkgTriplet>x86-windows</VcpkgTriplet>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Tune|x64'">
+    <VcpkgTriplet>x64-windows</VcpkgTriplet>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Tune|x64'">
     <ClCompile>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>..\radmath;..\pure3d;..\radcore\include;.\include;.\src;..\radcontent\include;..\..\game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -111,7 +111,7 @@
       <Culture>0x1009</Culture>
     </ResourceCompile>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\radmath;..\pure3d;..\radcore\include;.\include;.\src;..\radcontent\include;..\..\game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -139,7 +139,7 @@
       <Culture>0x1009</Culture>
     </ResourceCompile>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>..\radmath;..\pure3d;..\radcore\include;.\include;.\src;..\radcontent\include;..\..\game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -212,52 +212,41 @@
     <ClInclude Include="include\Owner.h" />
     <ClInclude Include="include\Page.h" />
     <ClInclude Include="include\Polygon.h" />
-    <ClInclude Include="include\Project.h" />
-    <ClInclude Include="include\Pure3dObject.h" />
-    <ClInclude Include="include\ResourceManager.h" />
-    <ClInclude Include="include\Screen.h" />
-    <ClInclude Include="include\Scrooby.hpp" />
-    <ClInclude Include="include\Sprite.h" />
     <ClInclude Include="include\Text.h" />
     <ClInclude Include="include\TextBible.h" />
-    <ClInclude Include="src\FeApp.h" />
-    <ClInclude Include="src\FeBoundedDrawable.h" />
-    <ClInclude Include="src\FeCharMap.h" />
-    <ClInclude Include="src\FeChunkHandler.h" />
-    <ClInclude Include="src\FeDrawable.h" />
-    <ClInclude Include="src\FeEntity.h" />
-    <ClInclude Include="src\FeGroup.h" />
-    <ClInclude Include="src\FeLanguage.h" />
-    <ClInclude Include="src\FeLayer.h" />
-    <ClInclude Include="src\FeLoaders.h" />
-    <ClInclude Include="src\FeLoadTags.h" />
-    <ClInclude Include="src\FeMovie.h" />
-    <ClInclude Include="src\FeOwner.h" />
-    <ClInclude Include="src\FePage.h" />
-    <ClInclude Include="src\FeParent.h" />
-    <ClInclude Include="src\FePolygon.h" />
-    <ClInclude Include="src\FeProject.h" />
-    <ClInclude Include="src\FePure3dObject.h" />
-    <ClInclude Include="src\FeScreen.h" />
-    <ClInclude Include="src\FeSprite.h" />
-    <ClInclude Include="src\FeText.h" />
-    <ClInclude Include="src\FeTextBible.h" />
-    <ClInclude Include="src\FeTextStyle.h" />
-    <ClInclude Include="src\ResourceManager\FeResourceManager.h" />
-    <ClInclude Include="src\strings\pcstring.h" />
-    <ClInclude Include="src\strings\stricmp.h" />
-    <ClInclude Include="src\strings\unicodeString.h" />
-    <ClInclude Include="src\tLinearTable.h" />
-    <ClInclude Include="src\utility\AsyncFileLoader.h" />
-    <ClInclude Include="src\utility\BufferReader.h" />
-    <ClInclude Include="src\utility\debugMessages.h" />
-    <ClInclude Include="src\utility\EnumConversion.h" />
-    <ClInclude Include="src\utility\memory.h" />
-    <ClInclude Include="src\utility\rVector.hpp" />
-    <ClInclude Include="src\xml\XMLParser.h" />
-    <ClInclude Include="src\xml\XMLTree.h" />
+    <ClInclude Include="include\TextStyle.h" />
+    <ClInclude Include="include\ResourceManager\ResourceManager.h" />
+    <ClInclude Include="include\scrooby\ScroobyLib.h" />
+    <ClInclude Include="include\strings\pcstring.h" />
+    <ClInclude Include="include\strings\stricmp.h" />
+    <ClInclude Include="include\strings\UnicodeString.h" />
+    <ClInclude Include="include\tLinearTable.h" />
+    <ClInclude Include="include\utility\AsyncFileLoader.h" />
+    <ClInclude Include="include\utility\BufferReader.h" />
+    <ClInclude Include="include\utility\debugMessages.h" />
+    <ClInclude Include="include\utility\EnumConversion.h" />
+    <ClInclude Include="include\xml\XMLParser.h" />
+    <ClInclude Include="include\xml\XMLTree.h" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\radcore\RadCore.vcxproj">
+      <Project>{FB9C759F-4F2D-4B8C-A91E-B58E6AE2FF3E}</Project>
+      <Name>RadCore</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\pure3d\Pure3D.vcxproj">
+      <Project>{F9E1A77B-5B4A-47D4-8B13-1F457A569EF2}</Project>
+      <Name>Pure3D</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\radmath\RadMath.vcxproj">
+      <Project>{AB7816FF-6873-40A4-BC61-38D2CC539DC9}</Project>
+      <Name>RadMath</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Target Name="Build">
+    <MSBuild Projects="src\game\SRR2.vcxproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform)" />
+  </Target>
 </Project>
