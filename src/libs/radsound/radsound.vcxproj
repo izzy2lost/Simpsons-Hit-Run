@@ -218,7 +218,6 @@
     <ClInclude Include="include\radsoundfile.hpp" />
     <ClInclude Include="include\radsoundmath.hpp" />
     <ClInclude Include="include\radsound_hal.hpp" />
-    <ClInclude Include="include\radsound_win
     <ClInclude Include="include\radsound_win.hpp" />
     <ClInclude Include="include\radsound_mac.hpp" />
     <ClInclude Include="include\radsound_defs.hpp" />
@@ -254,14 +253,4 @@
     <ClCompile Include="src\common\radsound_debug.cpp" />
     
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\radcore\radcore.vcxproj">
-      <Project>{01BBDE94-32B2-4C99-B261-7A6F71B052E7}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
-  
-  <Target Name="Build" DependsOnTargets="BuildOutputFiles" />
-
-</Project>
+<Target Name="Build" DependsOnTargets="BuildOutputFiles" />  </Project>  
