@@ -124,9 +124,10 @@ void radSoundStreamPlayer::AllocateResources( IRadSoundHalAudioFormat * pIRadSou
         }
         else
         {
-            for (int i = 0; i < RSD_STREAM_NUM_BUFFERS; i++)
-                m_xIRadSoundHalBuffers[i]->ReSetAudioFormat(pIRadSoundHalAudioFormat);
-            return;
+            //for (int i = 0; i < RSD_STREAM_NUM_BUFFERS; i++
+                // TODO(3ur): this may need to be added back but apparently it was some gamecube hack ?
+                //m_xIRadSoundHalBuffers[i]->ReSetAudioFormat(pIRadSoundHalAudioFormat);
+            //return;
         }
 	}
     m_xIRadSoundHalAudioFormat = pIRadSoundHalAudioFormat;

@@ -22,6 +22,7 @@
 #ifdef RAD_PS2
     typedef unsigned long radInt64;
 #elif defined( RAD_WIN32 ) || defined ( RAD_XBOX )
+    #include <cstdint>
     typedef uint64_t radInt64;
 #else
     #error 'FTech requires definition of RAD_PS2, RAD_XBOX, or RAD_WIN32'
@@ -74,4 +75,3 @@ private:
 };
 
 #endif // TUIDUNALIGNED_H
-
