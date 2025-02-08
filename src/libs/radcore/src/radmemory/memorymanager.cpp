@@ -42,11 +42,7 @@
 
 #include <memory/leakdetection.h>
 
-#ifdef RAD_MW
-    extern void MemoryHackCallback();
-#endif
-
-#ifdef RAD_XBOX
+#if ( defined RAD_XBOX ) || (defined RAD_MW) || (defined RAD_WIN32)
     extern void MemoryHackCallback();
 #endif
 
@@ -233,7 +229,37 @@ extern void radMemorySpaceTerminate( void );
 
 void radMemoryInitialize( void )
 {
-    // pretty sure this was only gamecube shit so it can go
+    if( g_Initialized )
+    {
+        return;
+    }
+
+    ::radMemoryPlatInitialize( );
+
+    rAssert( g_Initialized == false );
+    g_Initialized = true;
+
+    g_pRadMemoryAllocator_Malloc = new ( g_MemoryForMalloc ) radMemoryAllocatorMalloc( );
+
+    g_AllocatorTreeNode_Root.m_pIRadMemoryAllocator = g_pRadMemoryAllocator_Malloc;
+    g_AllocatorTreeNode_Root.m_pChildren_Head = NULL;
+    g_AllocatorTreeNode_Root.m_pSibling_Next = NULL;
+    g_AllocatorTreeNode_Root.m_pParent = NULL;
+
+    for( unsigned int i = 0; i < ALLOCATOR_TABLE_SIZE; i ++ )
+    {
+        g_AllocatorTreeNodes[ i ].m_pChildren_Head = NULL;
+        g_AllocatorTreeNodes[ i ].m_pParent = NULL;
+        g_AllocatorTreeNodes[ i ].m_pSibling_Next = NULL;
+        g_AllocatorTreeNodes[ i ].m_pIRadMemoryAllocator = g_pRadMemoryAllocator_Malloc;
+    }
+
+    radMemorySpaceInitialize( );
+
+    //
+    // Initialize static heap
+    //
+    //g_StaticHeap.CreateHeap( STATIC_HEAP_SIZE );
 }
 
 //============================================================================
@@ -417,7 +443,7 @@ void * radMemoryAlloc( radMemoryAllocator allocator, unsigned int numberOfBytes 
         allocator = HACK_SMALL_ALLOC;
     }
 #endif
-#if ( defined RAD_XBOX ) || ( defined RAD_MW )
+#if ( defined RAD_XBOX ) || ( defined RAD_MW ) || ( defined RAD_WIN32 )
     if ( !g_Initialized )
     {
         MemoryHackCallback();
@@ -470,7 +496,7 @@ void * radMemoryAllocAligned
     unsigned int alignment
 )
 {
-#if ( defined RAD_MW )
+#if ( defined RAD_XBOX ) || ( defined RAD_MW ) || ( defined RAD_WIN32 )
     if ( !g_Initialized )
     {
         MemoryHackCallback();
@@ -904,7 +930,7 @@ radMemoryAllocator radMemoryGetCurrentAllocator( void )
     //
     // Return the current allocator.
     //
-    return( (radMemoryAllocator) g_CurrentAllocator->GetValue( ) );
+    return( (radMemoryAllocator)(intptr_t) g_CurrentAllocator->GetValue( ) );
 }
 
 //============================================================================
@@ -942,9 +968,9 @@ radMemoryAllocator radMemorySetCurrentAllocator( radMemoryAllocator allocator )
     //
     // Get old value and set new value.  
     //
-    radMemoryAllocator prevAllocator = (radMemoryAllocator) g_CurrentAllocator->GetValue( );
+    radMemoryAllocator prevAllocator = (radMemoryAllocator)(intptr_t) g_CurrentAllocator->GetValue( );
 
-    g_CurrentAllocator->SetValue( (void*) allocator );
+    g_CurrentAllocator->SetValue( (void*)(intptr_t) allocator );
 
     return prevAllocator;
 }

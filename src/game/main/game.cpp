@@ -544,12 +544,6 @@ void Game::Run()
                 InputManager::GetInstance()->Update( elapsed );
             }
         }
-        else
-        {
-#ifdef RAD_GAMECUBE
-            GCManager::GetInstance()->OnTimerDone( elapsed, NULL );
-#endif
-        }
 
         //
         // Service FTech subsystems.

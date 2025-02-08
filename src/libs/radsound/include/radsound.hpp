@@ -300,7 +300,7 @@ struct IRadSoundStitchCallback
 //      as the previous input data source.
 //
 //      The buffer can be located in any memory space on the platform such
-//      as IOP or EE on the PS2, or ARAM on the gamecube.
+//      as IOP or EE on the PS2.
 //============================================================================
 
 struct IRadSoundBufferedDataSource : public IRadSoundHalDataSource

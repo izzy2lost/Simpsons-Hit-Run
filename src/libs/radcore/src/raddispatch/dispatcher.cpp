@@ -276,7 +276,7 @@ void radDispatcher::QueueCallbackFromInterrupt
 
     #endif
 
-    #if defined( RAD_PS2 ) || defined( RAD_GAMECUBE )
+    #if defined( RAD_PS2 )
 
     //
     // Update reference count on the dispatch event object since we are holding
