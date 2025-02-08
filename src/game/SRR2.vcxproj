@@ -58,18 +58,18 @@
     <_ProjectFileVersion>17.0.35309.182</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\build\Debug\</OutDir>
-    <IntDir>..\..\build\Debug\</IntDir>
+    <OutDir>..\..\build\bin-$(Platform)-$(Configuration)\</OutDir>
+    <IntDir>..\..\build\obj-$(Platform)-$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\build\Release\</OutDir>
-    <IntDir>..\..\build\Release\</IntDir>
+    <OutDir>..\..\build\bin-$(Platform)-$(Configuration)\</OutDir>
+    <IntDir>..\..\build\obj-$(Platform)-$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">
-    <OutDir>..\..\build\Tune\</OutDir>
-    <IntDir>..\..\build\Tune\</IntDir>
+    <OutDir>..\..\build\bin-$(Platform)-$(Configuration)\</OutDir>
+    <IntDir>..\..\build\obj-$(Platform)-$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
@@ -111,13 +111,14 @@
       <AdditionalOptions>/MACHINE:I386
 /fixed:no %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;dsound.lib;dxguid.lib;winmm.lib;dinput8.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>..\..\build\win\Simpsons-Debug.exe</OutputFile>
+      <OutputFile>$(OutDir)SRR2.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>..\..\build\Debug\SRR2wd.pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <ForceFileOutput>Enabled</ForceFileOutput>
     </Link>
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -156,7 +157,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;dsound.lib;dxguid.lib;winmm.lib;dinput8.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>..\..\build\win\Simpsons.exe</OutputFile>
+      <OutputFile>$(OutDir)SRR2.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>..\..\build\Release\SRR2xr.pdb</ProgramDatabaseFile>
@@ -165,6 +166,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
+      <ForceFileOutput>Enabled</ForceFileOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Tune|Win32'">
@@ -195,7 +197,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>dsound.lib;dxguid.lib;winmm.lib;dinput8.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>..\..\build\win\Simpsons-Tune.exe</OutputFile>
+      <OutputFile>$(OutDir)SRR2.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>..\..\build\Tune\SRR2wt.pdb</ProgramDatabaseFile>
@@ -204,6 +206,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
+      <ForceFileOutput>Enabled</ForceFileOutput>
     </Link>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
