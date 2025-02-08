@@ -330,7 +330,8 @@ void radSoundClip::SetState( IRadSoundClip::State state )
 	unsigned int actualBytesRead
 )
 {
-	rAssert( framesLoaded == m_xIRadSoundHalBuffer->GetSizeInFrames( ) );
+	// TODO(3ur): why isnt framesLoaded not defined?
+	//rAssert( framesLoaded == m_xIRadSoundHalBuffer->GetSizeInFrames( ) );
 
 	SetState( IRadSoundClip::Initialized );
 }
