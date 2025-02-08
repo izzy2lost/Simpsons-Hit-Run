@@ -24,7 +24,7 @@
 #include <pddi/base/debug.hpp>
 #include <math.h>
 #include <string.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 // vertex arrays rendering
 GLenum primTypeTable[5] =

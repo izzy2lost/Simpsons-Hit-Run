@@ -24,7 +24,7 @@
 #include <stdlib.h>
 // #include <io.h>
 #include <pddi/base/debug.hpp>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #define PDDI_GL_BUILD 36
 

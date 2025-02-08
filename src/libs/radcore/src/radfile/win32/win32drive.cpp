@@ -28,7 +28,7 @@
 #include "win32drive.hpp"
 #include <filesystem>
 #include <fstream>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 //=============================================================================
 // Public Functions 
