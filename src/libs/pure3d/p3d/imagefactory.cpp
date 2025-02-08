@@ -19,6 +19,8 @@
 #include <p3d/dxtn.hpp>
 #include <p3d/rawimage.hpp>
 
+#include <SDL2/SDL.h>
+
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
@@ -491,7 +493,7 @@ bool tImageHandler::CheckExtension(char* ext)
     if(len < handlerLen)
         return false;
 
-    if(strcmpi(handler, &ext[len-handlerLen]) == 0)
+    if(SDL_strcasecmp(handler, &ext[len-handlerLen]) == 0)
         return true;
   
     return false;

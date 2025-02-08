@@ -13,6 +13,9 @@
 #include <constants/chunkids.hpp>
 #include <constants/chunks.h>
 #include <p3d/queue.hpp>
+
+#include <SDL2/SDL.h>
+
 #include <string.h>
 
 #ifdef P3D_TRACK_LOAD_STATS
@@ -29,10 +32,6 @@
 #include <map>
 
 #endif // P3D_TRACK_LOAD_STATS
-
-#ifdef LINUX
-#define strcmpi strcasecmp
-#endif
 
 class tTempStore : public tEntityStore
 {
@@ -118,14 +117,14 @@ bool tP3DFileHandler::CheckExtension(char* file)
         
         if(len >= extLen)
         {
-            if(strcmpi(extensions[i], &file[len-extLen]) == 0)
+            if(SDL_strcasecmp(extensions[i], &file[len-extLen]) == 0)
                 return true;
         }
         if((len == extLen-1))
         {
-          if(strcmp(&extensions[i][1], &file[len-extLen+1]) == 0)
+          if(SDL_strcmp(&extensions[i][1], &file[len-extLen+1]) == 0)
               return true;
-          if(strcmpi(&extensions[i][1], &file[len-extLen+1]) == 0)
+          if(SDL_strcasecmp(&extensions[i][1], &file[len-extLen+1]) == 0)
               return true;
         }
     }
