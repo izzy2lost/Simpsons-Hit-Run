@@ -41,7 +41,7 @@
 
 #include <string.h>
 
-#ifdef RAD_WIN32
+#ifdef RAD_PC
 #include <input/inputmanager.h>
 #endif
 
@@ -219,7 +219,7 @@ CGuiScreen::CGuiScreen
             m_buttonIcons[ BUTTON_ICON_ACCEPT ] = pPage->GetGroup( "AcceptLabel" );
             rAssert( m_buttonIcons[ BUTTON_ICON_ACCEPT ] != NULL );
 
-#ifndef RAD_WIN32
+#ifndef RAD_PC
             // add text outline to accept text
             //
             Scrooby::Text* accept = m_buttonIcons[ BUTTON_ICON_ACCEPT ]->GetText( "Accept" );
@@ -239,7 +239,7 @@ CGuiScreen::CGuiScreen
             m_buttonIcons[ BUTTON_ICON_BACK ] = pPage->GetGroup( "BackLabel" );
             rAssert( m_buttonIcons[ BUTTON_ICON_BACK ] != NULL );
 
-#ifndef RAD_WIN32
+#ifndef RAD_PC
             // add text outline to accept text
             //
             Scrooby::Text* back = m_buttonIcons[ BUTTON_ICON_BACK ]->GetText( "Back" );
@@ -302,7 +302,7 @@ void CGuiScreen::HandleMessage
     }
 
 
-#ifdef RAD_WIN32
+#ifdef RAD_PC
     if( message == GUI_MSG_WINDOW_ENTER )
     {
         // just entered screen, so re-enable mouse
@@ -848,7 +848,7 @@ CGuiScreen::ApplyWideScreenCorrectionScale( Scrooby::Drawable* drawable )
     drawable->Translate( screenWidthBy2, 0 );
 }
 
-#ifdef RAD_WIN32
+#ifdef RAD_PC
 //===========================================================================
 // CGuiScreen::CheckCursorAgainstHotspots
 //===========================================================================

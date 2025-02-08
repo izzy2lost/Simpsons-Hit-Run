@@ -183,6 +183,7 @@
     </ClCompile>
     <ClCompile Include="src\rad1394\win32lib\rad1394master.cpp" />
     <ClCompile Include="src\radcontroller\directinputcontroller.cpp" />
+    <ClCompile Include="src\radcontroller\xboxcontroller.cpp" />
     <ClCompile Include="src\raddebugcommunication\host.cpp" />
     <ClCompile Include="src\raddebugcommunication\host1394socket.cpp" />
     <ClCompile Include="src\raddebugcommunication\hostchannel.cpp" />

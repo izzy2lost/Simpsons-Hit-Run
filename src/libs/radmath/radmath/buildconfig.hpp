@@ -23,10 +23,6 @@
 #error No platform define, define one of RAD_PS2, RAD_XBOX, RAD_WIN32 or RAD_LINUX 
 #endif
 
-#if !defined(RAD_WIN32) && !defined(RAD_CONSOLE) 
-#error Must define one of RAD_WIN32, RAD_CONSOLE
-#endif
-
 // ---------- Set legacy defines -------------
 
 // This'll proably be defined, but...

@@ -305,6 +305,9 @@
     <ClCompile Include="src\radprofiler\microprofile.cpp">
       <Filter>src\radprofiler</Filter>
     </ClCompile>
+    <ClCompile Include="src\radcontroller\xboxcontroller.cpp">
+      <Filter>src\radcontroller</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\raddispatch\dispatcher.hpp">
