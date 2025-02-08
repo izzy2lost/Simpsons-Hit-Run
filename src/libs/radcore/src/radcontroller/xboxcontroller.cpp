@@ -429,7 +429,7 @@ class radControllerInputPointXBox
 
         rAssert( pCallback != NULL );
 
-        ref< IRadWeakCallbackWrapper > xIWcr;
+        radRef< IRadWeakCallbackWrapper > xIWcr;
 
         radWeakCallbackWrapperCreate( &xIWcr, g_ControllerSystemAllocator ); 
 
@@ -583,7 +583,7 @@ class radControllerInputPointXBox
 
     unsigned int m_Offset;
 
-    ref< IRadObjectList > m_xIOl_Callbacks;
+    radRef< IRadObjectList > m_xIOl_Callbacks;
 };
 
 //============================================================================
@@ -1139,7 +1139,7 @@ class radControllerXBox
 
         for ( unsigned int button = 0; button < ( sizeof( g_XBoxPoints ) / sizeof( XBoxInputPoint ) ); button++ )
         {
-			ref< radControllerInputPointXBox > pInputPoint = new( g_ControllerSystemAllocator ) radControllerInputPointXBox
+			radRef< radControllerInputPointXBox > pInputPoint = new( g_ControllerSystemAllocator ) radControllerInputPointXBox
 			(
                 g_XBoxPoints[ button ].m_pType, 
                 g_XBoxPoints[ button ].m_pName,
@@ -1200,11 +1200,11 @@ class radControllerXBox
 
     DWORD m_iController;
 
-    ref< IRadObjectList >             m_xIOl_InputPoints;
-    ref< IRadObjectList >             m_xIOl_OutputPoints;
+    radRef< IRadObjectList >             m_xIOl_InputPoints;
+    radRef< IRadObjectList >             m_xIOl_OutputPoints;
 
-    ref< IRadString >                 m_xIString_Location;
-    ref< IRadControllerBuffer >       m_xIControllerBuffer2;
+    radRef< IRadString >                 m_xIString_Location;
+    radRef< IRadControllerBuffer >       m_xIControllerBuffer2;
     
     XINPUT_VIBRATION                  m_XInputFeedback;
 };
@@ -1242,8 +1242,8 @@ class radControllerSystemXBox
                     //
                     // Find the controller in question (may not exist though)
                     //
-                    ref< IRadController > xIController2;
-                    ref< IRadControllerXBox > xIXBoxController2;
+                    radRef< IRadController > xIController2;
+                    radRef< IRadControllerXBox > xIXBoxController2;
 
                     char location[ 255 ];
 
@@ -1294,7 +1294,12 @@ class radControllerSystemXBox
                             (
                                 xIController2
                             );
-                        }                        
+                        }
+                        else
+                        {
+                            Release();
+                            return;
+                        }
                     }
 
 
@@ -1308,9 +1313,7 @@ class radControllerSystemXBox
                         IRadControllerConnectionChangeCallback * pCallback = (IRadControllerConnectionChangeCallback *) pIWir->GetWeakInterface( );
                         pCallback->OnControllerConnectionStatusChange( xIController2 );
                     }
-
-                                                                                 
-                }                
+                }
             }
         }
 
@@ -1534,7 +1537,7 @@ class radControllerSystemXBox
 
         rAssert( pCallback != NULL );
 
-        ref< IRadWeakInterfaceWrapper > xIWir;
+        radRef< IRadWeakInterfaceWrapper > xIWir;
 
         ::radWeakInterfaceWrapperCreate( & xIWir, g_ControllerSystemAllocator );
 
@@ -1707,11 +1710,11 @@ class radControllerSystemXBox
 
     IRadControllerConnectionChangeCallback* m_DefaultConnectionChangeCallback;
 
-    ref< IRadObjectList >     m_xIOl_Callbacks;
+    radRef< IRadObjectList >     m_xIOl_Callbacks;
 
-    ref< IRadObjectList >     m_xIOl_Controllers;
-    ref< IRadTimer >          m_xITimer;
-    ref< IRadTimerList >      m_xITimerList;
+    radRef< IRadObjectList >     m_xIOl_Controllers;
+    radRef< IRadTimer >          m_xITimer;
+    radRef< IRadTimerList >      m_xITimerList;
 
 };
 
