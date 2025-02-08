@@ -2750,7 +2750,7 @@ void MissionScriptLoader::SetStageCamera(int argc, const char** argv)
     else if (strcmp(argv[1], "walker") == 0)
     {
         //Set to walker cam
-#ifdef RAD_PC
+#ifdef RAD_WIN32
         spInstance->mpStage->SetCameraInfo(SuperCam::ON_FOOT_CAM, cut, qTrans);
 #else
         spInstance->mpStage->SetCameraInfo(SuperCam::WALKER_CAM, cut, qTrans);
@@ -5118,13 +5118,13 @@ void MissionScriptLoader::EnableTutorialMode(int argc, const char** argv)
 {
     int enableInt = atoi(argv[1]);
     bool enable = (enableInt != 0);
-#ifdef RAD_PC
+#ifdef RAD_WIN32
 
     if (!GetInputManager()->GetController(0)->IsTutorialDisabled())
     {
 #endif       
         TutorialManager::GetInstance()->EnableTutorialMode(enable);
-#ifdef RAD_PC
+#ifdef RAD_WIN32
     }
 #endif 
 }

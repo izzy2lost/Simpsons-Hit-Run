@@ -26,8 +26,8 @@
 #error No platform defined, define one of RAD_PS2, RAD_XBOX, RAD_WIN32 or RAD_LINUX 
 #endif
 
-#if !defined(RAD_PC) && !defined(RAD_CONSOLE) 
-#error Must define one of RAD_PC, RAD_CONSOLE
+#if !defined(RAD_WIN32) && !defined(RAD_CONSOLE) 
+#error Must define one of RAD_WIN32, RAD_CONSOLE
 #endif
 
 
@@ -47,7 +47,7 @@
 
 #ifndef CHOREO_TOOL
 // compile as tool on pc
-#if (defined(RAD_PC) && !defined(RAD_RELEASE))
+#if (defined(RAD_WIN32) && !defined(RAD_RELEASE))
 #define CHOREO_TOOL
 #endif
 #endif

@@ -24,12 +24,12 @@
 #error No platform defined (define one of RAD_PS2, RAD_XBOX, RAD_WIN32 or RAD_LINUX) 
 #endif
 
-#if !defined(RAD_PC) && !defined(RAD_CONSOLE) 
-#error No platform type defined (Define one of RAD_PC, RAD_CONSOLE)
+#if !defined(RAD_WIN32) && !defined(RAD_CONSOLE) 
+#error No platform type defined (Define one of RAD_WIN32, RAD_CONSOLE)
 #endif
 
-#if defined(RAD_PC) && defined(RAD_CONSOLE) 
-#error Cannot define RAD_PC and RAD_CONSOLE at the same time!
+#if defined(RAD_WIN32) && defined(RAD_CONSOLE) 
+#error Cannot define RAD_WIN32 and RAD_CONSOLE at the same time!
 #endif
 
 // ---------- Select FTT components Pure3D will use -------------
