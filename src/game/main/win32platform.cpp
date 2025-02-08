@@ -13,7 +13,6 @@
 //========================================
 // System Includes
 //========================================
-#include <SDL2/SDL.h>
 // Standard Lib
 #include <stdlib.h>
 #include <string.h>
@@ -372,7 +371,7 @@ void Win32Platform::InitializeFoundation()
     //
     // Initilalize the platform system
     // 
-    ::radPlatformInitialize( mhWnd );
+    ::radPlatformInitialize( mWnd );
 
     //
     // Initialize the timer system

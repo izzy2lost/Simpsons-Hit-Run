@@ -24,6 +24,7 @@
 //========================================
 #include "platform.h" // base class
 #include <data/config/gameconfig.h> // interface
+#include <SDL2/SDL.h>
 
 //========================================
 // Forward References
