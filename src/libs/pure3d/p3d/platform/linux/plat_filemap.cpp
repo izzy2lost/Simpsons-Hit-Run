@@ -13,7 +13,7 @@
 
 tLinuxFileMap::tLinuxFileMap(const char* filename)
 {
-    memory = position = NULL;
+    memory = position = 0;
     length = 0;
     Open(filename);
     SetFilename(filename);
@@ -39,19 +39,21 @@ tLinuxFileMap::Open(const char* filename)
         return;
     }
 
-    memory = (unsigned char*)mmap(NULL, length, PROT_READ, MAP_PRIVATE, fh, 0);
+    unsigned char* memory = (unsigned char*)mmap(NULL, length, PROT_READ, MAP_PRIVATE, fh, 0);
     if(!memory)
     {
         close(fh);
         return;
     }
+
+    dataStream->Release();
+    dataStream = new radLoadDataStream(memory, length, del);
     position = memory;
 }
 
 void tLinuxFileMap::Close()
 {
-    munmap((caddr_t)(memory),length);
+    munmap(GetMemory(), length);
     close(fh);
-    position = memory = NULL;
 }
 
