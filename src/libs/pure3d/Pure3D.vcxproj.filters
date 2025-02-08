@@ -382,7 +382,7 @@
     <ClCompile Include="pddi\base\baseshader.cpp">
       <Filter>Pddi Source\base</Filter>
     </ClCompile>
-    <ClCompile Include="pddi\base\font.cpp">
+    <ClCompile Include="pddi\base\base_font.cpp">
       <Filter>Pddi Source\base</Filter>
     </ClCompile>
     <ClCompile Include="pddi\base\pddiobj.cpp">
@@ -780,7 +780,7 @@
     <ClInclude Include="pddi\base\debug.hpp">
       <Filter>Pddi Headers\base</Filter>
     </ClInclude>
-    <ClInclude Include="pddi\base\font.hpp">
+    <ClInclude Include="pddi\base\base_font.hpp">
       <Filter>Pddi Headers\base</Filter>
     </ClInclude>
     <ClInclude Include="pddi\base\romans.h">

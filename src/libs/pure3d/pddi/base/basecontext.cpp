@@ -7,7 +7,7 @@
 ===========================================================================*/
 
 #include <pddi/base/basecontext.hpp>
-#include <pddi/base/font.hpp>
+#include <pddi/base/base_font.hpp>
 #include <pddi/base/debug.hpp>
 
 #include <stdio.h>

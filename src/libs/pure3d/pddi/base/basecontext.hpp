@@ -13,7 +13,7 @@
 #include <pddi/pddiext.hpp>
 #include <pddi/base/basetype.hpp>
 #include <pddi/base/debug.hpp>
-#include <pddi/base/font.hpp>
+#include <pddi/base/base_font.hpp>
 
 const int PDDI_MAX_UV_CHANNELS = 4;
 const int PDDI_MAX_CLIP_PLANES = 6;
