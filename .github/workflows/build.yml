@@ -51,25 +51,29 @@ jobs:
         id: set_package_name
         run: |
           echo "PACKAGE_NAME=${{ github.event.inputs.package_name }}_${{ github.event.inputs.tag_name }}" >> $GITHUB_ENV
-
-      - name: Retarget Projects to v143
-        run: |
-          Get-ChildItem -Path . -Recurse -Filter "*.vcxproj" | ForEach-Object {
-          (Get-Content $_.FullName) -replace 'v100', 'v143' | Set-Content $_.FullName
-          }
-        shell: pwsh
         
       - name: App Build
         run: |
           msbuild $env:SolutionPath `
-            /p:Platform=$env:Platform `
-            /p:Configuration=$env:Configuration `
-            /p:UapAppxPackageBuildMode=$env:BuildMode `
-            /p:AppxBundle=$env:AppxBundle `
-            /p:PackageCertificateThumbprint="${{ env.THUMBPRINT }}" `
-            /p:AppxPackageTestDir="${{ env.PackageOutputRootDir }}\${{ env.PACKAGE_NAME }}" `
-            /p:AppxPackageSigningEnabled=true `
-            /restore
+          /t:Clean `
+          /p:Platform=$env:Platform `
+          /p:Configuration=$env:Configuration `
+          /p:UapAppxPackageBuildMode=$env:BuildMode `
+          /p:AppxBundle=$env:AppxBundle `
+          /p:PackageCertificateThumbprint="${{ env.THUMBPRINT }}" `
+          /p:AppxPackageTestDir="${{ env.PackageOutputRootDir }}\${{ env.PACKAGE_NAME }}" `
+          /p:AppxPackageSigningEnabled=true `
+          /restore
+
+          msbuild $env:SolutionPath `
+          /t:Build `
+          /p:Platform=$env:Platform `
+          /p:Configuration=$env:Configuration `
+          /p:UapAppxPackageBuildMode=$env:BuildMode `
+          /p:AppxBundle=$env:AppxBundle `
+          /p:PackageCertificateThumbprint="${{ env.THUMBPRINT }}" `
+          /p:AppxPackageTestDir="${{ env.PackageOutputRootDir }}\${{ env.PACKAGE_NAME }}" `
+          /p:AppxPackageSigningEnabled=true
         shell: pwsh
 
       - name: Clean the Package
