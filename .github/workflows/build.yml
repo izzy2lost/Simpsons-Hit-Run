@@ -16,7 +16,6 @@ jobs:
         with:
           vs-version: 2022
           msbuild-architecture: x64
-          uwp: true  # Make sure to enable UWP support
 
       - name: Install dependencies
         run: |
