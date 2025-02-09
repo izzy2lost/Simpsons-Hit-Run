@@ -19,7 +19,7 @@ jobs:
         submodules: recursive  # Ensure submodules are checked out if required
 
     - name: Set up Rust
-      uses: actions/setup-rust@v1
+      uses: actions/setup-rust@v1  # Ensure correct version is used
       with:
         rust-version: 1.70.0  # Set the Rust version you need
 
@@ -37,7 +37,7 @@ jobs:
         pnpm install  # Install the necessary Node.js dependencies
 
     - name: Set up CMake
-      uses: actions/setup-cmake@v2
+      uses: cmake/setup-cmake@v3  # Correct setup-cmake action
       with:
         cmake-version: '3.21'  # Specify the version needed for the build
 
