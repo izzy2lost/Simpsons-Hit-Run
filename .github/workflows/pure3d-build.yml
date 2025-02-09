@@ -29,8 +29,8 @@ jobs:
       
       - name: Install the required dependencies using vcpkg
         run: |
-          ./vcpkg install your-dependencies --triplet x64-windows
-        
+          ./vcpkg install sdl2 openal-soft glad --triplet x64-uwp
+          
       - name: Set up MSBuild
         uses: microsoft/setup-msbuild@v1
         with:
