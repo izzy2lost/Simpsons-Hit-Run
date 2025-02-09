@@ -15,9 +15,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
-      - name: Set up vcpkg
-        uses: microsoft/vcpkg-action@v2
+        
+      - name: vcpkg-action     
+        uses: johnwason/vcpkg-action@v6  
         with:
           vcpkg-root: ${{ github.workspace }}/vcpkg
 
