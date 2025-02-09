@@ -24,7 +24,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16'  # Use the appropriate version of Node.js
+        node-version: '18.12'  # Use the appropriate version of Node.js
 
     - name: Install pnpm
       run: |
@@ -33,11 +33,6 @@ jobs:
     - name: actions-setup-cmake
       uses: jwlawson/actions-setup-cmake@v2.0.2
       
-    - name: Setup Rust Toolchain for GitHub CI
-      uses: actions-rust-lang/setup-rust-toolchain@v1.10.1 
-      with:
-        cmake-version: '3.21'  # Specify the version needed for the build
-
     - name: Build Choreo (Windows)
       run: |
         # Ensure all necessary tools (e.g., Visual Studio 2022) are installed
