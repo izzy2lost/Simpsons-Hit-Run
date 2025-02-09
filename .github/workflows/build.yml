@@ -55,14 +55,13 @@ jobs:
           ./vcpkg integrate install
         working-directory: ${{ github.workspace }}
 
-      - name: Install dependencies with Meson (Mesa)
+      - name: Clone and Install Meson
         run: |
           git clone https://github.com/aerisarn/meson.git
           cd meson
-          python3 meson.py setup build_release --wipe --backend=vs --uwp --buildtype=release -Dcpp_std=vc++17 -Dcpp_args=["'/D _XBOX_UWP'"] -Dc_args=["'/D _XBOX_UWP'"] -Db_pch=false -Dc_winlibs=[] -Dcpp_winlibs=[]
-          python3 meson.py install -C build_release
+          python3 setup.py install
         working-directory: ${{ github.workspace }}
-
+        
       - name: Clean solution
         run: |
           msbuild SRR2.sln /t:Clean /p:Configuration=Release
