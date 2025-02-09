@@ -13,26 +13,29 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Setup latest CMake
-      - uses: lukka/get-cmake@latest
-
       # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      # Setup latest CMake
+      - uses: lukka/get-cmake@latest
 
       # Run the PowerShell script to setup vcpkg and install dependencies
       - name: Setup vcpkg and Install Dependencies
         run: |
           powershell -ExecutionPolicy Bypass -File ./setup_vcpkg.ps1
 
-      # Run CMake consuming CMakePreset.json and run vcpkg to build packages
-      - name: Run CMake and build with vcpkg
-        uses: lukka/run-cmake@v10
-        with:
-          configurePreset: 'ninja-multi-vcpkg'
-          buildPreset: 'ninja-multi-vcpkg'
-          testPreset: 'ninja-multi-vcpkg'
-          # Optional: Additional args for CMake configuration and build
-          configurePresetAdditionalArgs: "['-DENABLE_YOUR_FEATURE=1']"
-          buildPresetAdditionalArgs: "['--config Release']"
-          testPresetAdditionalArgs: "['--config Release']"
+      # Generate CMake project files with Visual Studio (MSVC toolchain)
+      - name: Generate project files with CMake
+        run: |
+          cmake -S . -B build -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX=./install
+
+      # Build the project with Visual Studio
+      - name: Build with Visual Studio
+        run: |
+          cmake --build build --config Release --target INSTALL
+          
+      # Optionally, run tests if needed
+      - name: Run tests
+        run: |
+          ctest --test-dir build
