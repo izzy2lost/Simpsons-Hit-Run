@@ -7,11 +7,19 @@ on:
   pull_request:
     branches:
       - main  # or the branch you want to trigger for PRs
+
 jobs:
   build:
+    runs-on: windows-latest
+
     steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       # Setup latest CMake
-      - uses: lukka/get-cmake@latest
+      - name: Setup CMake
+        uses: lukka/get-cmake@latest
 
       # Setup vcpkg (ensures vcpkg is downloaded and built)
       - name: Setup vcpkg
@@ -36,21 +44,11 @@ jobs:
           # Optional: Additional args for CMake configuration and build
           configurePresetAdditionalArgs: "['-DENABLE_YOUR_FEATURE=1']"
           buildPresetAdditionalArgs: "['--config Release']"
-          
-          uses: microsoft/setup-msbuild@v1
-          with:
-            vs-version: '2022'  # Ensure this matches the Visual Studio version you are using
+          testPresetAdditionalArgs: "['--config Release']"
 
-      - name: Build with MSBuild
-        run: |
-          # Build the solution using MSBuild (adjust the configuration as needed)
-          msbuild SRR2.sln /p:Configuration=Release /p:Platform=x64
-
+      # Optional: Upload build artifacts if needed (example)
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: build-artifacts
-          path: |
-            **/bin/Release/*
-            **/bin/Debug/*
-            # Adjust paths to where your artifacts are being output
+          name: my-artifacts
+          path: ./path/to/artifacts
