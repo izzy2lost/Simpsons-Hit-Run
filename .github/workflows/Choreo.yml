@@ -18,22 +18,31 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Install Choreo CLI
+    - name: Install Dependencies
       run: |
-        # Download choreo-cli.exe from the repository
-        curl -L -o choreo-cli.exe https://github.com/izzy2lost/Simpsons-Hit-Run/raw/main/choreo-cli.exe
+        choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+        choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools"
+        choco install pnpm
+
+    - name: Install Choreo Dependencies via pnpm
+      run: |
+        # Assuming you need to fetch the dependencies via pnpm from ChoreoLib2025.json
+        mkdir -p choreo
+        cd choreo
+        curl -L -o ChoreoLib2025.json https://lib.choreo.autos/dep/ChoreoLib2025.json
+        pnpm install
 
     - name: Build Choreo Library
       run: |
-        # Run the choreo-cli.exe to build the Choreo library
-        .\choreo-cli.exe build --config "release"  # Adjust based on your actual build command
+        cd choreo
+        pnpm run build
 
     - name: Verify Build Output
       run: |
-        # Check if the build was successful, or look for output files
-        if (Test-Path "./output") {
-          Write-Host "Build completed successfully."
+        # Check if the library was built
+        if (Test-Path "choreo/build/Release/choreo.lib") {
+          Write-Host "Choreo library built successfully."
         } else {
-          Write-Host "Build failed."
+          Write-Host "Choreo build failed."
           exit 1
         }
