@@ -1,0 +1,31 @@
+name: Download, Split, and Upload Archive
+
+on:
+  workflow_dispatch:
+
+jobs:
+  process_archive:
+    runs-on: windows-latest
+
+    steps:
+      - name: Install gdown
+        run: pip install gdown
+
+      - name: Download Archive from Google Drive
+        run: |
+          gdown --id 1Z5lru4xhEd2Jxyp9YUkzQWCVDsJBS6QA -O large_archive.zip
+
+      - name: Extract Archive
+        run: |
+          7z x large_archive.zip -oextracted_content
+
+      - name: Compress and Split
+        run: |
+          7z a -v1900m compressed_part.7z extracted_content\*
+
+      - name: Upload Split Files as Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: compressed-archive
+          path: compressed_part*.7z
+          retention-days: 7
