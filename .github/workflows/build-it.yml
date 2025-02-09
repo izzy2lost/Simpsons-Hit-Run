@@ -1,0 +1,27 @@
+name: Build Choreo
+
+on: 
+  workflow_dispatch: # Allows manual triggering
+  push:
+    branches:
+      - main # Adjust if needed
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Build Script
+        run: build_choreo.bat
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Choreo-Build
+          path: |
+            Choreo/output/** # Adjust path based on actual output files
+          retention-days: 7
