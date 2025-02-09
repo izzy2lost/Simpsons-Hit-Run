@@ -23,11 +23,7 @@ jobs:
 
       # Setup vcpkg (ensures vcpkg is downloaded and built)
       - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11
-        with:
-          # Location for vcpkg sources (defaults to workspace)
-          # If you need to specify a location, uncomment and set vcpkgDirectory.
-          # vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+        uses: lukka/run-vcpkg@v11            
 
       # Install the required dependencies using vcpkg
       - name: Install vcpkg dependencies
