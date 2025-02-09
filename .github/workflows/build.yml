@@ -31,10 +31,6 @@ jobs:
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.1
         
-      - name: Clean solution
-        run: |
-          msbuild SRR2.sln /t:Clean /p:Configuration=Release
-        
       - name: Setup NuGet.exe for use with actions
         uses: NuGet/setup-nuget@v1.1.1
         
@@ -43,6 +39,10 @@ jobs:
         with:
           submodules: true 
           fetch-depth: 0
+
+      - name: Clean solution
+        run: |
+          msbuild SRR2.sln /t:Clean /p:Configuration=Release
         
       - name: Generate Self-Signed Certificate
         id: generate_cert
