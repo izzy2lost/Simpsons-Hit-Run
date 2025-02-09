@@ -45,10 +45,9 @@ jobs:
         run: |
           git clone https://github.com/microsoft/vcpkg.git
           cd vcpkg
-          git pull origin master  # Ensure the latest version of vcpkg
-          ./bootstrap-vcpkg.bat   # Re-run the bootstrap process to update vcpkg
-          working-directory: ${{ github.workspace }}
-  
+          ./bootstrap-vcpkg.bat
+        working-directory: ${{ github.workspace }}
+        
       - name: Install dependencies with vcpkg
         run: |
           cd vcpkg
