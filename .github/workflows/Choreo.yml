@@ -59,7 +59,7 @@ jobs:
         }
 
     - name: Upload Choreo Library Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: choreo-library
         path: choreo-build/Release/ChoreoLib.lib
