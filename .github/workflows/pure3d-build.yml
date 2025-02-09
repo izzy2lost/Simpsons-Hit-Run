@@ -28,7 +28,7 @@ jobs:
       # Install the required dependencies using vcpkg
       - name: Install vcpkg dependencies
         run: |
-          .\vcpkg.exe install sdl2 openal-soft glad --triplet x64-uwp
+          vcpkg.exe install sdl2 openal-soft glad --triplet x64-uwp
           
       # Run CMake consuming CMakePreset.json and run vcpkg to build packages
       - name: Run CMake and build with vcpkg
