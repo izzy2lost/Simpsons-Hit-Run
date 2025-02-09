@@ -70,13 +70,14 @@ jobs:
         run: python split_archives.py
 
       - name: Create Independent Archives
+        shell: cmd
         run: |
           7z a archive_part1.7z @filelist_part1.txt
           7z a archive_part2.7z @filelist_part2.txt
           7z a archive_part3.7z @filelist_part3.txt
           7z a archive_part4.7z @filelist_part4.txt
           7z a archive_part5.7z @filelist_part5.txt
-
+          
       - name: List Created Archives
         run: dir /b archive_part*.7z
 
