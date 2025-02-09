@@ -22,27 +22,44 @@ jobs:
       run: |
         choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
         choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools"
-        choco install pnpm
+        choco install curl
 
-    - name: Install Choreo Dependencies via pnpm
+    - name: Download Choreo C++ Library
       run: |
-        # Assuming you need to fetch the dependencies via pnpm from ChoreoLib2025.json
+        # Create directory for Choreo library and download ChoreoLib2025.json
         mkdir -p choreo
         cd choreo
         curl -L -o ChoreoLib2025.json https://lib.choreo.autos/dep/ChoreoLib2025.json
-        pnpm install
 
-    - name: Build Choreo Library
+    - name: Install Choreo C++ Dependencies
       run: |
-        cd choreo
-        pnpm run build
+        # Use the C++ dependencies from the JSON file
+        # Here, you might need to write a custom script or use a package manager to download ChoreoLib-cpp
+        # For now, we'll just download the appropriate package manually as per the JSON configuration
+        curl -L -o ChoreoLib-cpp-2025.0.3-windows-x86_64.zip https://lib.choreo.autos/dep/choreo/ChoreoLib-cpp/2025.0.3/windowsx86-64/ChoreoLib-cpp-2025.0.3-windows-x86_64.zip
+        # Unzip the downloaded package
+        tar -xvzf ChoreoLib-cpp-2025.0.3-windows-x86_64.zip
+
+    - name: Build Choreo Library (C++)
+      run: |
+        # Assuming Choreo is built with CMake, create the build directory and run cmake
+        mkdir -p choreo-build
+        cd choreo-build
+        cmake ../choreo
+        cmake --build .
 
     - name: Verify Build Output
       run: |
-        # Check if the library was built
-        if (Test-Path "choreo/build/Release/choreo.lib") {
+        # Verify if Choreo library was successfully built
+        if (Test-Path "choreo-build/Release/ChoreoLib.lib") {
           Write-Host "Choreo library built successfully."
         } else {
           Write-Host "Choreo build failed."
           exit 1
         }
+
+    - name: Upload Choreo Library Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: choreo-library
+        path: choreo-build/Release/ChoreoLib.lib
