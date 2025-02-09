@@ -1,0 +1,54 @@
+name: Build and Upload Artifacts
+
+on:
+  push:
+    branches:
+      - main  # or the branch you want to trigger the workflow on
+  pull_request:
+    branches:
+      - main  # or the branch you want to trigger for PRs
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up vcpkg
+        uses: microsoft/vcpkg-action@v2
+        with:
+          vcpkg-root: ${{ github.workspace }}/vcpkg
+
+      - name: Cache vcpkg dependencies
+        uses: actions/cache@v3
+        with:
+        path: |
+           ~/.cache/vcpkg
+           ./vcpkg
+           key: ${{ runner.os }}-vcpkg-${{              hashFiles('**/vcpkg.json') }}
+
+      - name: Install dependencies
+        run: |
+          # Install the required dependencies using vcpkg
+          ./vcpkg install <your-dependencies> --triplet x64-windows
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v1
+        with:
+          vs-version: '2022'  # Ensure this matches the Visual Studio version you are using
+
+      - name: Build with MSBuild
+        run: |
+          # Build the solution using MSBuild (adjust the configuration as needed)
+          msbuild SRR2.sln /p:Configuration=Release /p:Platform=x64
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: |
+            **/bin/Release/*
+            **/bin/Debug/*
+            # Adjust paths to where your artifacts are being output

@@ -7,42 +7,42 @@ set(CMAKE_CXX_STANDARD 17)
 # Automatically find all .cpp files in the src/ directory and its subdirectories
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
 
-# Add SDL2 include and library directories
-include_directories(${PROJECT_SOURCE_DIR}/include/SDL2)
-link_directories(${PROJECT_SOURCE_DIR}/lib/SDL2)
+# Find OpenGL package (required for OpenGL-based rendering)
+find_package(OpenGL REQUIRED)
 
-# Add GLAD include and library directories
-include_directories(${PROJECT_SOURCE_DIR}/include/glad)  # Adjust path to where GLAD headers are located
-link_directories(${PROJECT_SOURCE_DIR}/lib/glad)        # Adjust path to where GLAD libraries are located
-
-# Add Mesa include and library directories
-include_directories(${PROJECT_SOURCE_DIR}/include/mesa)  # Adjust path to where Mesa headers are located
-link_directories(${PROJECT_SOURCE_DIR}/lib/mesa)        # Adjust path to where Mesa libraries are located
-
-# Add OpenAL include and library directories (from the aerisarn fork or your own build)
-include_directories(${PROJECT_SOURCE_DIR}/include/openal)
-link_directories(${PROJECT_SOURCE_DIR}/lib/openal)
-
-# Add Choreo include and library directories (if it's located in src/libs/choreo)
-add_subdirectory(src/libs/choreo)  # This will build Choreo if it has its own CMakeLists.txt
-
-# Add SDL2, GLAD, Mesa, and OpenAL as link libraries
+# Add the main executable
 add_executable(SimpsonsHitRun ${SOURCE_FILES})
 
-# Link libraries (SDL2, OpenGL, Mesa, GLAD, Choreo, OpenAL)
-target_link_libraries(SimpsonsHitRun 
-    SDL2
-    OpenGL::GL  # Standard OpenGL package
-    glad        # Link to GLAD for OpenGL extensions
-    mesa        # Link to Mesa (assumes Mesa built as a library)
-    choreo      # Link to Choreo library target if available
-    openal-soft # If OpenAL Soft is being used (adjust based on your setup)
+# Add SDL2, GLAD, Mesa, and OpenAL include directories
+target_include_directories(SimpsonsHitRun PRIVATE
+    ${PROJECT_SOURCE_DIR}/include/SDL2
+    ${PROJECT_SOURCE_DIR}/include/glad
+    ${PROJECT_SOURCE_DIR}/include/mesa
+    ${PROJECT_SOURCE_DIR}/include/openal
 )
 
-# Optional: Install the executable
-# install(TARGETS SimpsonsHitRun DESTINATION bin)
+# Link the necessary libraries
+target_link_directories(SimpsonsHitRun PRIVATE
+    ${PROJECT_SOURCE_DIR}/lib/SDL2
+    ${PROJECT_SOURCE_DIR}/lib/glad
+    ${PROJECT_SOURCE_DIR}/lib/mesa
+    ${PROJECT_SOURCE_DIR}/lib/openal
+)
 
-# UWP-specific settings (if building for UWP)
+# Add Choreo subdirectory (this assumes a CMakeLists.txt exists for Choreo)
+add_subdirectory(src/libs/choreo)
+
+# Link libraries to the project
+target_link_libraries(SimpsonsHitRun PRIVATE
+    SDL2
+    OpenGL::GL
+    glad
+    mesa
+    choreo
+    openal-soft
+)
+
+# UWP-specific settings (only applied for MSVC)
 if(MSVC)
     # Enable UWP platform
     set(CMAKE_SYSTEM_NAME WindowsStore)
