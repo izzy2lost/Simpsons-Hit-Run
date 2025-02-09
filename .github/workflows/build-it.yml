@@ -18,10 +18,12 @@ jobs:
       - name: Run Build Script
         run: cmd.exe /c build_choreo.bat
 
+      - name: List Build Output
+        run: dir /s /b
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Choreo-Build
-          path: |
-            Choreo/output/** # Adjust based on actual output files
+          path: Choreo/build/** # Update based on actual output location
           retention-days: 7
