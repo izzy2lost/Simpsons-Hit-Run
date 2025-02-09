@@ -26,6 +26,7 @@ jobs:
       ProjectDirectory: src/game
       PackageOutputRootDir: C:\AppPackage
       PackageOutputDir: SimpsonsHitRun
+      UWPGLSampleDir: ${{ github.workspace }}/uwp_gl_sample  # Directory for the uwp_gl_sample repo
 
     steps:
       - name: Add msbuild to PATH
@@ -53,7 +54,15 @@ jobs:
           ./vcpkg install --triplet x64-uwp
           ./vcpkg integrate install
         working-directory: ${{ github.workspace }}
-        
+
+      - name: Install dependencies with Meson (Mesa)
+        run: |
+          git clone https://github.com/aerisarn/meson.git
+          cd meson
+          python3 meson.py setup build_release --wipe --backend=vs --uwp --buildtype=release -Dcpp_std=vc++17 -Dcpp_args=["'/D _XBOX_UWP'"] -Dc_args=["'/D _XBOX_UWP'"] -Db_pch=false -Dc_winlibs=[] -Dcpp_winlibs=[]
+          python3 meson.py install -C build_release
+        working-directory: ${{ github.workspace }}
+
       - name: Clean solution
         run: |
           msbuild SRR2.sln /t:Clean /p:Configuration=Release
@@ -83,6 +92,21 @@ jobs:
           /p:AppxPackageSigningEnabled=true `
           /p:PlatformToolset=v143 `
           /p:CMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+        shell: pwsh
+
+      - name: Copy Mesa and GLAD libraries
+        run: |
+          # Copying libraries from uwp_gl_sample to the output directory
+          $glSampleLibs = @("glad.dll", "libgallium_wgl.dll", "libglapi.dll", "opengl32.dll", "z-1.dll")
+          $destinationDir = "${{ env.PackageOutputRootDir }}\${{ env.PACKAGE_NAME }}\bin"
+
+          foreach ($lib in $glSampleLibs) {
+            Copy-Item -Path "${{ env.UWPGLSampleDir }}\lib\$lib" -Destination $destinationDir -Force
+          }
+          
+          # If you have any other necessary files from uwp_gl_sample, add them here
+          Copy-Item -Path "${{ env.UWPGLSampleDir }}\lib\sdl2.dll" -Destination $destinationDir -Force
+          Copy-Item -Path "${{ env.UWPGLSampleDir }}\lib\glad.h" -Destination $destinationDir -Force
         shell: pwsh
 
       - name: Clean the Package
