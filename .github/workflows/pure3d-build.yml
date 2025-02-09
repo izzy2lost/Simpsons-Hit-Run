@@ -3,21 +3,19 @@ name: Build and Upload Artifacts
 on:
   push:
     branches:
-      - main  # or the branch you want to trigger the workflow on
+      - main
   pull_request:
     branches:
-      - main  # or the branch you want to trigger for PRs
+      - main
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-      # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Setup latest CMake
       - uses: lukka/get-cmake@latest
 
       # Run the PowerShell script to setup vcpkg and install dependencies
@@ -25,16 +23,16 @@ jobs:
         run: |
           powershell -ExecutionPolicy Bypass -File ./setup_vcpkg.ps1
 
-      # Generate CMake project files with Visual Studio (MSVC toolchain)
+      # Generate project files with Visual Studio (MSVC toolchain)
       - name: Generate project files with CMake
         run: |
-          cmake -S . -B build -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX=./install
+          cmake -S . -B build -G "Visual Studio 17 2022" -A x64
 
-      # Build the project with Visual Studio
-      - name: Build with Visual Studio
+      # Build the Pure3D.vcxproj project with Visual Studio (without install)
+      - name: Build Pure3D project with Visual Studio
         run: |
-          cmake --build build --config Release --target INSTALL
-          
+          msbuild "src/libs/pure3d/Pure3D.vcxproj" /p:Configuration=Release
+
       # Optionally, run tests if needed
       - name: Run tests
         run: |
