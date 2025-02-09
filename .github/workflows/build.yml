@@ -50,9 +50,10 @@ jobs:
       - name: Install dependencies with vcpkg
         run: |
           cd vcpkg
-          ./vcpkg install --triplet x64-windows
+          ./vcpkg install --triplet x64-uwp
+          ./vcpkg integrate install
         working-directory: ${{ github.workspace }}
-
+        
       - name: Clean solution
         run: |
           msbuild SRR2.sln /t:Clean /p:Configuration=Release
