@@ -50,7 +50,7 @@ jobs:
       - name: Install dependencies with vcpkg
         run: |
           cd vcpkg
-          ./vcpkg install --config-root $(pwd)/vcpkg.json --triplet x64-windows
+          ./vcpkg install --triplet x64-windows
         working-directory: ${{ github.workspace }}
 
       - name: Clean solution
