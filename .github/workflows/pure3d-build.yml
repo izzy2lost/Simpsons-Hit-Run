@@ -16,16 +16,14 @@ jobs:
       # Setup latest CMake
       - uses: lukka/get-cmake@latest
 
-      # Setup vcpkg (ensures vcpkg is downloaded and built)
-      - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgDirectory: D:/a/Simpsons-Hit-Run/Simpsons-Hit-Run/vcpkg
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      # Install the required dependencies using vcpkg
-      - name: Install vcpkg dependencies
+      # Run the PowerShell script to setup vcpkg and install dependencies
+      - name: Setup vcpkg and Install Dependencies
         run: |
-          vcpkg install sdl2 openal-soft glad --triplet x64-uwp
+          powershell -ExecutionPolicy Bypass -File ./setup_vcpkg.ps1
 
       # Run CMake consuming CMakePreset.json and run vcpkg to build packages
       - name: Run CMake and build with vcpkg
