@@ -6,5 +6,6 @@
     "opengl",
     "sdl2",
     "glad"
-  ]
+  ],
+  "builtin-baseline": "latest"
 }
