@@ -40,6 +40,19 @@ jobs:
           submodules: true 
           fetch-depth: 0
 
+      - name: Install vcpkg
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          cd vcpkg
+          ./bootstrap-vcpkg.bat
+        working-directory: ${{ github.workspace }}
+
+      - name: Install dependencies with vcpkg
+        run: |
+          cd vcpkg
+          ./vcpkg install --config-root $(pwd)/vcpkg.json --triplet x64-windows
+        working-directory: ${{ github.workspace }}
+
       - name: Clean solution
         run: |
           msbuild SRR2.sln /t:Clean /p:Configuration=Release
@@ -67,7 +80,8 @@ jobs:
           /p:PackageCertificateThumbprint="${{ env.THUMBPRINT }}" `
           /p:AppxPackageTestDir="${{ env.PackageOutputRootDir }}\${{ env.PACKAGE_NAME }}" `
           /p:AppxPackageSigningEnabled=true `
-          /p:PlatformToolset=v143
+          /p:PlatformToolset=v143 `
+          /p:CMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
         shell: pwsh
 
       - name: Clean the Package
