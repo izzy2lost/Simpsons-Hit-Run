@@ -16,9 +16,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Setup vcpkg
-        uses: johnwason/vcpkg-action@v6
-
+      - name: run-vcpkg
+        uses: lukka/run-vcpkg@v11.5
+        
       - name: Cache vcpkg dependencies
         uses: actions/cache@v3
         with:
