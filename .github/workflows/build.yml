@@ -30,12 +30,7 @@ jobs:
     steps:
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.1
-
-      - name: Delete bin and obj directories
-        run: |
-          Remove-Item -Recurse -Force ./src/*/bin
-          Remove-Item -Recurse -Force ./src/*/obj
-
+        
       - name: Clean solution
         run: |
           msbuild SRR2.sln /t:Clean /p:Configuration=Release
