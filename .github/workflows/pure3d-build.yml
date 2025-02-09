@@ -7,34 +7,39 @@ on:
   pull_request:
     branches:
       - main  # or the branch you want to trigger for PRs
-
 jobs:
   build:
-    runs-on: windows-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      # Setup latest CMake
+      - uses: lukka/get-cmake@latest
 
-      - name: run-vcpkg
-        uses: lukka/run-vcpkg@v11.5
-        
-      - name: Cache vcpkg dependencies
-        uses: actions/cache@v3
+      # Setup vcpkg (ensures vcpkg is downloaded and built)
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
         with:
-          path: |
-            ~/.cache/vcpkg
-            ./vcpkg
-          key: ${{ runner.os }}-vcpkg-${{ hashFiles('**/vcpkg.json') }}
-      
-      - name: Install the required dependencies using vcpkg
+          # Location for vcpkg sources (defaults to workspace)
+          # If you need to specify a location, uncomment and set vcpkgDirectory.
+          # vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+
+      # Install the required dependencies using vcpkg
+      - name: Install vcpkg dependencies
         run: |
           ./vcpkg install sdl2 openal-soft glad --triplet x64-uwp
-          
-      - name: Set up MSBuild
-        uses: microsoft/setup-msbuild@v1
+
+      # Run CMake consuming CMakePreset.json and run vcpkg to build packages
+      - name: Run CMake and build with vcpkg
+        uses: lukka/run-cmake@v10
         with:
-          vs-version: '2022'  # Ensure this matches the Visual Studio version you are using
+          configurePreset: 'ninja-multi-vcpkg'
+          buildPreset: 'ninja-multi-vcpkg'
+          testPreset: 'ninja-multi-vcpkg'
+          # Optional: Additional args for CMake configuration and build
+          configurePresetAdditionalArgs: "['-DENABLE_YOUR_FEATURE=1']"
+          buildPresetAdditionalArgs: "['--config Release']"
+          
+          uses: microsoft/setup-msbuild@v1
+          with:
+            vs-version: '2022'  # Ensure this matches the Visual Studio version you are using
 
       - name: Build with MSBuild
         run: |
