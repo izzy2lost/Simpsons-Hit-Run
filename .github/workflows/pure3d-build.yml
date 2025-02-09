@@ -27,11 +27,9 @@ jobs:
             ./vcpkg
           key: ${{ runner.os }}-vcpkg-${{ hashFiles('**/vcpkg.json') }}
       
-      - name: Install dependencies
-        run: |
-          # Install the required dependencies using vcpkg
-          ./vcpkg install <your-dependencies> --triplet x64-windows
-
+      - name: Install the required dependencies using vcpkg
+        run: ./vcpkg install <your-dependencies> --triplet x64-windows
+        
       - name: Set up MSBuild
         uses: microsoft/setup-msbuild@v1
         with:
