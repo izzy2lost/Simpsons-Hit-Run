@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest  # You can change this to macOS or ubuntu-latest for cross-platform builds
+    runs-on: windows-latest  # Or macOS or ubuntu-latest depending on your environment
     
     steps:
     - name: Checkout code
@@ -19,7 +19,7 @@ jobs:
         submodules: recursive  # Ensure submodules are checked out if required
 
     - name: Set up Rust
-      uses: actions/setup-rust@v1  # Ensure correct version is used
+      uses: rust-lang/setup-rust@v1  # Use rust-lang/setup-rust instead of actions/setup-rust
       with:
         rust-version: 1.70.0  # Set the Rust version you need
 
@@ -37,13 +37,13 @@ jobs:
         pnpm install  # Install the necessary Node.js dependencies
 
     - name: Set up CMake
-      uses: cmake/setup-cmake@v3  # Correct setup-cmake action
+      uses: lukka/setup-cmake@v3  # Use lukka/setup-cmake instead of cmake/setup-cmake
       with:
         cmake-version: '3.21'  # Specify the version needed for the build
 
     - name: Build Choreo (Windows)
       run: |
-        # Make sure you have all the necessary tools installed (e.g., Visual Studio 2022)
+        # Ensure all necessary tools (e.g., Visual Studio 2022) are installed
         pnpm build  # Run the build command for Choreo (or adjust as needed)
 
     - name: Verify Build Output
