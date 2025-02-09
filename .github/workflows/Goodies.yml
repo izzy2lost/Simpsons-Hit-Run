@@ -78,12 +78,9 @@ jobs:
           7z a archive_part4.7z @filelist_part4.txt
           7z a archive_part5.7z @filelist_part5.txt
           
-      - name: List Created Archives
-        run: dir /b archive_part*.7z
-
       - name: Upload Split Archives as Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: compressed-archives
-          path: archive_part*.7z
-          retention-days: 7
+         name: compressed-archives
+         path: '**/archive_part*.7z'  # Search recursively in all directories
+         retention-days: 7
