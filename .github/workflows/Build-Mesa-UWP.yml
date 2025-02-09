@@ -19,31 +19,31 @@ jobs:
       - name: Set up Python and install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install meson ninja
+          pip install ninja
 
-      # Step 3: Clone the Mesa UWP fork
-      - name: Clone Mesa UWP Fork
+      # Step 3: Clone the UWP-compatible Meson fork (aerisarn)
+      - name: Clone Meson UWP Fork
         run: |
-          git clone https://github.com/worleydl/mesa-uwp.git
-          cd mesa-uwp
+          git clone https://github.com/aerisarn/meson.git
+          cd meson
 
-      # Step 4: Set up Meson build for UWP
-      - name: Set up Meson Build
+      # Step 4: Set up Meson Build (UWP)
+      - name: Set up Meson Build (UWP)
         run: |
-          meson setup build_release --wipe --backend=vs --uwp --buildtype=release -Dcpp_std=vc++17 -Dcpp_args=["'/D _XBOX_UWP'"] -Dc_args=["'/D _XBOX_UWP'"] -Db_pch=false -Dc_winlibs=[] -Dcpp_winlibs=[]
+          python3 meson.py setup build_release --wipe --backend=vs --uwp --buildtype=release -Dcpp_std=vc++17 -Dcpp_args=["'/D _XBOX_UWP'"] -Dc_args=["'/D _XBOX_UWP'"] -Db_pch=false -Dc_winlibs=[] -Dcpp_winlibs=[]
 
       # Step 5: Build Mesa for UWP
       - name: Build Mesa for UWP
         run: |
-          meson compile -C build_release
+          python3 meson.py compile -C build_release
 
       # Step 6: Install Mesa for UWP
       - name: Install Mesa for UWP
         run: |
-          meson install -C build_release
+          python3 meson.py install -C build_release
 
       # Step 7: Upload built artifacts (Mesa DLLs and libraries)
-      - name: Upload Artifacts (Mesa DLLs)
+      - name: Upload Artifacts (Mesa UWP Libraries)
         uses: actions/upload-artifact@v4
         with:
           name: Mesa-UWP-Libraries
