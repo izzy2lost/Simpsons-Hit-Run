@@ -13,23 +13,19 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Checkout the code
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       # Setup latest CMake
-      - name: Setup CMake
-        uses: lukka/get-cmake@latest
+      - uses: lukka/get-cmake@latest
 
       # Setup vcpkg (ensures vcpkg is downloaded and built)
       - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11            
-
+        uses: lukka/run-vcpkg@v11
+        
       # Install the required dependencies using vcpkg
       - name: Install vcpkg dependencies
         run: |
-          vcpkg.exe install sdl2 openal-soft glad --triplet x64-uwp
-          
+          # Ensure that vcpkg is in the PATH
+          vcpkg install sdl2 openal-soft glad --triplet x64-uwp
+
       # Run CMake consuming CMakePreset.json and run vcpkg to build packages
       - name: Run CMake and build with vcpkg
         uses: lukka/run-cmake@v10
@@ -41,10 +37,3 @@ jobs:
           configurePresetAdditionalArgs: "['-DENABLE_YOUR_FEATURE=1']"
           buildPresetAdditionalArgs: "['--config Release']"
           testPresetAdditionalArgs: "['--config Release']"
-
-      # Optional: Upload build artifacts if needed (example)
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: my-artifacts
-          path: ./path/to/artifacts
