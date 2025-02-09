@@ -24,10 +24,10 @@ jobs:
       - name: Cache vcpkg dependencies
         uses: actions/cache@v3
         with:
-        path: |
-           ~/.cache/vcpkg
-           ./vcpkg
-           key: ${{ runner.os }}-vcpkg-${{              hashFiles('**/vcpkg.json') }}
+         path: |
+            ~/.cache/vcpkg
+            ./vcpkg
+            key: ${{ runner.os }}-vcpkg-${{              hashFiles('**/vcpkg.json') }}
 
       - name: Install dependencies
         run: |
