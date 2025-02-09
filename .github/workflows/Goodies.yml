@@ -1,4 +1,4 @@
-name: Download, Split, and Upload Archive
+name: Download, Extract, Automatically Split Archives
 
 on:
   workflow_dispatch:
@@ -19,13 +19,70 @@ jobs:
         run: |
           7z x large_archive.zip -oextracted_content
 
-      - name: Compress and Split
+      - name: Create Python Script for Automatic Splitting
+        # Use bash shell to write out a multi-line Python script.
+        shell: bash
         run: |
-          7z a -v1900m compressed_part.7z extracted_content\*
+          cat << 'EOF' > split_archives.py
+          import os
+          
+          # Number of independent archives to create
+          num_parts = 5
+          
+          def get_all_files(directory):
+              file_list = []
+              for root, dirs, files in os.walk(directory):
+                  for f in files:
+                      full_path = os.path.join(root, f)
+                      try:
+                          size = os.path.getsize(full_path)
+                      except Exception:
+                          size = 0
+                      file_list.append((full_path, size))
+              return file_list
+          
+          def greedy_partition(files, num_parts):
+              # Sort files in descending order by size
+              files = sorted(files, key=lambda x: x[1], reverse=True)
+              groups = [[] for _ in range(num_parts)]
+              group_sizes = [0] * num_parts
+              for filepath, size in files:
+                  # Assign to the group with the smallest total size so far
+                  idx = group_sizes.index(min(group_sizes))
+                  groups[idx].append(filepath)
+                  group_sizes[idx] += size
+              return groups, group_sizes
+          
+          if __name__ == '__main__':
+              directory = 'extracted_content'
+              files = get_all_files(directory)
+              groups, group_sizes = greedy_partition(files, num_parts)
+              for i, group in enumerate(groups, start=1):
+                  with open(f'filelist_part{i}.txt', 'w') as f:
+                      for filepath in group:
+                          f.write(filepath + '\n')
+              # Output group sizes for logging
+              for i, size in enumerate(group_sizes, start=1):
+                  print(f'Archive part {i}: {size} bytes')
+          EOF
 
-      - name: Upload Split Files as Artifacts
+      - name: Partition Files into 5 Groups
+        run: python split_archives.py
+
+      - name: Create Independent Archives
+        run: |
+          7z a archive_part1.7z @filelist_part1.txt
+          7z a archive_part2.7z @filelist_part2.txt
+          7z a archive_part3.7z @filelist_part3.txt
+          7z a archive_part4.7z @filelist_part4.txt
+          7z a archive_part5.7z @filelist_part5.txt
+
+      - name: List Created Archives
+        run: dir /b archive_part*.7z
+
+      - name: Upload Split Archives as Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: compressed-archive
-          path: compressed_part*.7z
+          name: compressed-archives
+          path: archive_part*.7z
           retention-days: 7
