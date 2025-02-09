@@ -18,10 +18,10 @@ jobs:
       with:
         submodules: recursive  # Ensure submodules are checked out if required
 
-    - name: Set up Rust
-      uses: rust-lang/setup-rust@v1  # Use rust-lang/setup-rust instead of actions/setup-rust
+    - name: Set up Rust toolchain
+      uses: dtolnay/setup-rust-toolchain-for-github-ci@v1  # Using the Rust setup action
       with:
-        rust-version: 1.70.0  # Set the Rust version you need
+        toolchain: stable  # You can specify a specific Rust version like '1.70.0'
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
@@ -37,7 +37,7 @@ jobs:
         pnpm install  # Install the necessary Node.js dependencies
 
     - name: Set up CMake
-      uses: lukka/setup-cmake@v3  # Use lukka/setup-cmake instead of cmake/setup-cmake
+      uses: actions/setup-cmake@v3  # Official action for setting up CMake
       with:
         cmake-version: '3.21'  # Specify the version needed for the build
 
