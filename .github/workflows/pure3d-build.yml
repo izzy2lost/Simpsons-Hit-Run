@@ -19,11 +19,12 @@ jobs:
       # Setup vcpkg (ensures vcpkg is downloaded and built)
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
-        
+        with:
+          vcpkgDirectory: D:/a/Simpsons-Hit-Run/Simpsons-Hit-Run/vcpkg
+
       # Install the required dependencies using vcpkg
       - name: Install vcpkg dependencies
         run: |
-          # Ensure that vcpkg is in the PATH
           vcpkg install sdl2 openal-soft glad --triplet x64-uwp
 
       # Run CMake consuming CMakePreset.json and run vcpkg to build packages
