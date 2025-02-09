@@ -45,7 +45,7 @@ jobs:
           msbuild SRR2.sln /p:Configuration=Release /p:Platform=x64
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: |
